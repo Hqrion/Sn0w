@@ -1,0 +1,23 @@
+Summary for Sn0w-v1.2-cyborgedition-noauth.jar
+Decompiled with CFR 0.151
+
+
+me.zeroeightsix.kami.command.commands.ConfigCommand
+----------------------------
+
+call(java.lang.String[] )
+  Unable to fully structure code
+
+
+org.spongepowered.asm.lib.Type
+----------------------------
+
+getReturnType(java.lang.String )
+  Unable to fully structure code
+
+
+org.spongepowered.asm.mixin.refmap.ReferenceMapper
+----------------------------
+
+read(java.lang.String )
+  Loose catch block
