@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -25,19 +27,19 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (ReverseStep.mc.field_71441_e == null || ReverseStep.mc.field_71439_g == null) {
+        if (ReverseStep.mc.world == null || ReverseStep.mc.player == null) {
             return;
         }
-        if (ReverseStep.mc.field_71439_g.func_70090_H() || ReverseStep.mc.field_71439_g.func_180799_ab() || ReverseStep.mc.field_71439_g.func_70617_f_() || ReverseStep.mc.field_71474_y.field_74314_A.func_151470_d()) {
+        if (ReverseStep.mc.player.isInWater() || ReverseStep.mc.player.isInLava() || ReverseStep.mc.player.isOnLadder() || ReverseStep.mc.gameSettings.keyBindJump.isKeyDown()) {
             return;
         }
         if (this.CancelOnSpeed.getValue().booleanValue() && ModuleManager.isModuleEnabled("Speed")) {
             return;
         }
-        if (ReverseStep.mc.field_71439_g != null && ReverseStep.mc.field_71439_g.field_70122_E && !ReverseStep.mc.field_71439_g.func_70090_H() && !ReverseStep.mc.field_71439_g.func_70617_f_()) {
+        if (ReverseStep.mc.player != null && ReverseStep.mc.player.onGround && !ReverseStep.mc.player.isInWater() && !ReverseStep.mc.player.isOnLadder()) {
             for (double y = 0.0; y < (double)this.height.getValue().floatValue() + 0.5; y += 0.01) {
-                if (ReverseStep.mc.field_71441_e.func_184144_a((Entity)ReverseStep.mc.field_71439_g, ReverseStep.mc.field_71439_g.func_174813_aQ().func_72317_d(0.0, -y, 0.0)).isEmpty()) continue;
-                ReverseStep.mc.field_71439_g.field_70181_x = -10.0;
+                if (ReverseStep.mc.world.getCollisionBoxes((Entity)ReverseStep.mc.player, ReverseStep.mc.player.getEntityBoundingBox().offset(0.0, -y, 0.0)).isEmpty()) continue;
+                ReverseStep.mc.player.motionY = -10.0;
                 break;
             }
         }

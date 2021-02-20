@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -23,8 +25,8 @@ extends AbstractParser {
         if (!blockNames.isEmpty()) {
             return;
         }
-        for (ResourceLocation resourceLocation : Block.field_149771_c.func_148742_b()) {
-            blockNames.put(resourceLocation.toString().replace("minecraft:", "").replace("_", ""), (Block)Block.field_149771_c.func_82594_a((Object)resourceLocation));
+        for (ResourceLocation resourceLocation : Block.REGISTRY.getKeys()) {
+            blockNames.put(resourceLocation.toString().replace("minecraft:", "").replace("_", ""), (Block)Block.REGISTRY.getObject((Object)resourceLocation));
         }
     }
 

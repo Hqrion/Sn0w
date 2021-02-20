@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -65,17 +67,17 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (this.isDisabled() || AutoNomadHut.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || AutoNomadHut.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (this.offsetStep == 0) {
-            this.basePos = new BlockPos(AutoNomadHut.mc.field_71439_g.func_174791_d()).func_177977_b();
-            this.playerHotbarSlot = Wrapper.getPlayer().field_71071_by.field_70461_c;
+            this.basePos = new BlockPos(AutoNomadHut.mc.player.getPositionVector()).down();
+            this.playerHotbarSlot = Wrapper.getPlayer().inventory.currentItem;
             if (this.debugMessages.getValue().booleanValue()) {
                 Command.sendChatMessage("[AutoFeetPlace] Starting Loop, current Player Slot: " + this.playerHotbarSlot);
             }
             if (!this.spoofHotbar.getValue().booleanValue()) {
-                this.lastHotbarSlot = AutoNomadHut.mc.field_71439_g.field_71071_by.field_70461_c;
+                this.lastHotbarSlot = AutoNomadHut.mc.player.inventory.currentItem;
             }
         }
         for (int i = 0; i < (int)Math.floor(this.blockPerTick.getValue()); ++i) {
@@ -87,21 +89,21 @@ extends Module {
                 return;
             }
             Vec3d offset = this.surroundTargets[this.offsetStep];
-            this.placeBlock(new BlockPos((Vec3i)this.basePos.func_177963_a(offset.field_72450_a, offset.field_72448_b, offset.field_72449_c)));
+            this.placeBlock(new BlockPos((Vec3i)this.basePos.add(offset.x, offset.y, offset.z)));
             ++this.offsetStep;
         }
     }
 
     @Override
     protected void onEnable() {
-        if (AutoNomadHut.mc.field_71439_g == null) {
+        if (AutoNomadHut.mc.player == null) {
             this.disable();
             return;
         }
         if (this.debugMessages.getValue().booleanValue()) {
             Command.sendChatMessage("[AutoFeetPlace] Enabling");
         }
-        this.playerHotbarSlot = Wrapper.getPlayer().field_71071_by.field_70461_c;
+        this.playerHotbarSlot = Wrapper.getPlayer().inventory.currentItem;
         this.lastHotbarSlot = -1;
         if (this.debugMessages.getValue().booleanValue()) {
             Command.sendChatMessage("[AutoFeetPlace] Saving initial Slot  = " + this.playerHotbarSlot);
@@ -110,7 +112,7 @@ extends Module {
 
     @Override
     protected void onDisable() {
-        if (AutoNomadHut.mc.field_71439_g == null) {
+        if (AutoNomadHut.mc.player == null) {
             return;
         }
         if (this.debugMessages.getValue().booleanValue()) {
@@ -121,9 +123,9 @@ extends Module {
                 Command.sendChatMessage("[AutoFeetPlace] Setting Slot to  = " + this.playerHotbarSlot);
             }
             if (this.spoofHotbar.getValue().booleanValue()) {
-                AutoNomadHut.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketHeldItemChange(this.playerHotbarSlot));
+                AutoNomadHut.mc.player.connection.sendPacket((Packet)new CPacketHeldItemChange(this.playerHotbarSlot));
             } else {
-                Wrapper.getPlayer().field_71071_by.field_70461_c = this.playerHotbarSlot;
+                Wrapper.getPlayer().inventory.currentItem = this.playerHotbarSlot;
             }
         }
         this.playerHotbarSlot = -1;
@@ -140,9 +142,9 @@ extends Module {
                 Command.sendChatMessage("[AutoFeetPlace] Setting Slot back to  = " + this.playerHotbarSlot);
             }
             if (this.spoofHotbar.getValue().booleanValue()) {
-                AutoNomadHut.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketHeldItemChange(this.playerHotbarSlot));
+                AutoNomadHut.mc.player.connection.sendPacket((Packet)new CPacketHeldItemChange(this.playerHotbarSlot));
             } else {
-                Wrapper.getPlayer().field_71071_by.field_70461_c = this.playerHotbarSlot;
+                Wrapper.getPlayer().inventory.currentItem = this.playerHotbarSlot;
             }
             this.lastHotbarSlot = this.playerHotbarSlot;
         }
@@ -152,7 +154,7 @@ extends Module {
     }
 
     private void placeBlock(BlockPos blockPos) {
-        if (!Wrapper.getWorld().func_180495_p(blockPos).func_185904_a().func_76222_j()) {
+        if (!Wrapper.getWorld().getBlockState(blockPos).getMaterial().isReplaceable()) {
             if (this.debugMessages.getValue().booleanValue()) {
                 Command.sendChatMessage("[AutoFeetPlace] Block is already placed, skipping");
             }
@@ -171,8 +173,8 @@ extends Module {
         int slot = -1;
         for (int i = 0; i < 9; ++i) {
             Block block;
-            ItemStack stack = Wrapper.getPlayer().field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || !(stack.func_77973_b() instanceof ItemBlock) || !((block = ((ItemBlock)stack.func_77973_b()).func_179223_d()) instanceof BlockObsidian)) continue;
+            ItemStack stack = Wrapper.getPlayer().inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock) || !((block = ((ItemBlock)stack.getItem()).getBlock()) instanceof BlockObsidian)) continue;
             slot = i;
             break;
         }
@@ -180,24 +182,24 @@ extends Module {
     }
 
     public void placeBlockExecute(BlockPos pos) {
-        Vec3d eyesPos = new Vec3d(Wrapper.getPlayer().field_70165_t, Wrapper.getPlayer().field_70163_u + (double)Wrapper.getPlayer().func_70047_e(), Wrapper.getPlayer().field_70161_v);
+        Vec3d eyesPos = new Vec3d(Wrapper.getPlayer().posX, Wrapper.getPlayer().posY + (double)Wrapper.getPlayer().getEyeHeight(), Wrapper.getPlayer().posZ);
         for (EnumFacing side : EnumFacing.values()) {
             int obiSlot;
-            BlockPos neighbor = pos.func_177972_a(side);
-            EnumFacing side2 = side.func_176734_d();
+            BlockPos neighbor = pos.offset(side);
+            EnumFacing side2 = side.getOpposite();
             if (!AutoNomadHut.canBeClicked(neighbor)) {
                 if (!this.debugMessages.getValue().booleanValue()) continue;
                 Command.sendChatMessage("[AutoFeetPlace] No neighbor to click at!");
                 continue;
             }
-            Vec3d hitVec = new Vec3d((Vec3i)neighbor).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(side2.func_176730_m()).func_186678_a(0.5));
-            if (eyesPos.func_72436_e(hitVec) > 18.0625) {
+            Vec3d hitVec = new Vec3d((Vec3i)neighbor).add(0.5, 0.5, 0.5).add(new Vec3d(side2.getDirectionVec()).scale(0.5));
+            if (eyesPos.squareDistanceTo(hitVec) > 18.0625) {
                 if (!this.debugMessages.getValue().booleanValue()) continue;
                 Command.sendChatMessage("[AutoFeetPlace] Distance > 4.25 blocks!");
                 continue;
             }
             boolean needSneak = false;
-            Block blockBelow = AutoNomadHut.mc.field_71441_e.func_180495_p(neighbor).func_177230_c();
+            Block blockBelow = AutoNomadHut.mc.world.getBlockState(neighbor).getBlock();
             if (BlockInteractionHelper.blackList.contains(blockBelow) || BlockInteractionHelper.shulkerList.contains(blockBelow)) {
                 if (this.debugMessages.getValue().booleanValue()) {
                     Command.sendChatMessage("[AutoFeetPlace] Sneak enabled!");
@@ -205,7 +207,7 @@ extends Module {
                 needSneak = true;
             }
             if (needSneak) {
-                AutoNomadHut.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)AutoNomadHut.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+                AutoNomadHut.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoNomadHut.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             }
             if ((obiSlot = this.findObiInHotbar()) == -1) {
                 if (this.debugMessages.getValue().booleanValue()) {
@@ -219,54 +221,54 @@ extends Module {
                     Command.sendChatMessage("[AutoFeetPlace] Setting Slot to Obi at  = " + obiSlot);
                 }
                 if (this.spoofHotbar.getValue().booleanValue()) {
-                    AutoNomadHut.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketHeldItemChange(obiSlot));
+                    AutoNomadHut.mc.player.connection.sendPacket((Packet)new CPacketHeldItemChange(obiSlot));
                 } else {
-                    Wrapper.getPlayer().field_71071_by.field_70461_c = obiSlot;
+                    Wrapper.getPlayer().inventory.currentItem = obiSlot;
                 }
                 this.lastHotbarSlot = obiSlot;
             }
-            AutoNomadHut.mc.field_71442_b.func_187099_a(Wrapper.getPlayer(), AutoNomadHut.mc.field_71441_e, neighbor, side2, hitVec, EnumHand.MAIN_HAND);
-            AutoNomadHut.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketAnimation(EnumHand.MAIN_HAND));
+            AutoNomadHut.mc.playerController.processRightClickBlock(Wrapper.getPlayer(), AutoNomadHut.mc.world, neighbor, side2, hitVec, EnumHand.MAIN_HAND);
+            AutoNomadHut.mc.player.connection.sendPacket((Packet)new CPacketAnimation(EnumHand.MAIN_HAND));
             if (needSneak) {
                 if (this.debugMessages.getValue().booleanValue()) {
                     Command.sendChatMessage("[AutoFeetPlace] Sneak disabled!");
                 }
-                AutoNomadHut.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)AutoNomadHut.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+                AutoNomadHut.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoNomadHut.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             }
             return;
         }
     }
 
     private static boolean canBeClicked(BlockPos pos) {
-        return AutoNomadHut.getBlock(pos).func_176209_a(AutoNomadHut.getState(pos), false);
+        return AutoNomadHut.getBlock(pos).canCollideCheck(AutoNomadHut.getState(pos), false);
     }
 
     private static Block getBlock(BlockPos pos) {
-        return AutoNomadHut.getState(pos).func_177230_c();
+        return AutoNomadHut.getState(pos).getBlock();
     }
 
     private static IBlockState getState(BlockPos pos) {
-        return Wrapper.getWorld().func_180495_p(pos);
+        return Wrapper.getWorld().getBlockState(pos);
     }
 
     private static void faceVectorPacketInstant(Vec3d vec) {
         float[] rotations = AutoNomadHut.getLegitRotations(vec);
-        Wrapper.getPlayer().field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], Wrapper.getPlayer().field_70122_E));
+        Wrapper.getPlayer().connection.sendPacket((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], Wrapper.getPlayer().onGround));
     }
 
     private static float[] getLegitRotations(Vec3d vec) {
         Vec3d eyesPos = AutoNomadHut.getEyesPos();
-        double diffX = vec.field_72450_a - eyesPos.field_72450_a;
-        double diffY = vec.field_72448_b - eyesPos.field_72448_b;
-        double diffZ = vec.field_72449_c - eyesPos.field_72449_c;
+        double diffX = vec.x - eyesPos.x;
+        double diffY = vec.y - eyesPos.y;
+        double diffZ = vec.z - eyesPos.z;
         double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
         float yaw = (float)Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0f;
         float pitch = (float)(-Math.toDegrees(Math.atan2(diffY, diffXZ)));
-        return new float[]{Wrapper.getPlayer().field_70177_z + MathHelper.func_76142_g((float)(yaw - Wrapper.getPlayer().field_70177_z)), Wrapper.getPlayer().field_70125_A + MathHelper.func_76142_g((float)(pitch - Wrapper.getPlayer().field_70125_A))};
+        return new float[]{Wrapper.getPlayer().rotationYaw + MathHelper.wrapDegrees((float)(yaw - Wrapper.getPlayer().rotationYaw)), Wrapper.getPlayer().rotationPitch + MathHelper.wrapDegrees((float)(pitch - Wrapper.getPlayer().rotationPitch))};
     }
 
     private static Vec3d getEyesPos() {
-        return new Vec3d(Wrapper.getPlayer().field_70165_t, Wrapper.getPlayer().field_70163_u + (double)Wrapper.getPlayer().func_70047_e(), Wrapper.getPlayer().field_70161_v);
+        return new Vec3d(Wrapper.getPlayer().posX, Wrapper.getPlayer().posY + (double)Wrapper.getPlayer().getEyeHeight(), Wrapper.getPlayer().posZ);
     }
 }
 

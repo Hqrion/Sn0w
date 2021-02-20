@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -27,17 +29,17 @@ extends Module {
     @EventHandler
     private Listener<PlayerMoveEvent> moveListener = new Listener<PlayerMoveEvent>(event -> {
         if (this.speedmode.getValue().equals((Object)speedmethods.IDK)) {
-            if (!(Speed.mc.field_71439_g.func_70093_af() || Speed.mc.field_71439_g.func_70090_H() || Speed.mc.field_71439_g.func_180799_ab() || Speed.mc.field_71439_g.field_71158_b.field_192832_b == 0.0f && Speed.mc.field_71439_g.field_71158_b.field_78902_a == 0.0f)) {
-                MotionUtils.setSpeed((EntityLivingBase)Speed.mc.field_71439_g, EntityUtil.getMaxSpeed());
+            if (!(Speed.mc.player.isSneaking() || Speed.mc.player.isInWater() || Speed.mc.player.isInLava() || Speed.mc.player.movementInput.moveForward == 0.0f && Speed.mc.player.movementInput.moveStrafe == 0.0f)) {
+                MotionUtils.setSpeed((EntityLivingBase)Speed.mc.player, EntityUtil.getMaxSpeed());
                 if (this.gamer) {
-                    Speed.mc.field_71474_y.field_74336_f = false;
+                    Speed.mc.gameSettings.viewBobbing = false;
                 }
             } else {
-                MotionUtils.setSpeed((EntityLivingBase)Speed.mc.field_71439_g, MotionUtils.getBaseMoveSpeed());
-                if (!(Speed.mc.field_71439_g.func_70093_af() || Speed.mc.field_71439_g.func_70090_H() || Speed.mc.field_71439_g.func_180799_ab() || Speed.mc.field_71439_g.field_71158_b.field_192832_b == 0.0f && Speed.mc.field_71439_g.field_71158_b.field_78902_a == 0.0f)) {
-                    MotionUtils.setSpeed((EntityLivingBase)Speed.mc.field_71439_g, EntityUtil.getMaxSpeed());
+                MotionUtils.setSpeed((EntityLivingBase)Speed.mc.player, MotionUtils.getBaseMoveSpeed());
+                if (!(Speed.mc.player.isSneaking() || Speed.mc.player.isInWater() || Speed.mc.player.isInLava() || Speed.mc.player.movementInput.moveForward == 0.0f && Speed.mc.player.movementInput.moveStrafe == 0.0f)) {
+                    MotionUtils.setSpeed((EntityLivingBase)Speed.mc.player, EntityUtil.getMaxSpeed());
                     if (this.gamer) {
-                        Speed.mc.field_71474_y.field_74336_f = true;
+                        Speed.mc.gameSettings.viewBobbing = true;
                     }
                 }
             }
@@ -46,7 +48,7 @@ extends Module {
 
     @Override
     public void onEnable() {
-        if (Speed.mc.field_71474_y.field_74336_f) {
+        if (Speed.mc.gameSettings.viewBobbing) {
             this.gamer = true;
         }
         KamiMod.EVENT_BUS.subscribe((Object)this);
@@ -57,20 +59,20 @@ extends Module {
         if (this.speedmode.getValue().equals((Object)speedmethods.IDK)) {
             KamiMod.EVENT_BUS.unsubscribe((Object)this);
             if (this.gamer) {
-                Speed.mc.field_71474_y.field_74336_f = true;
+                Speed.mc.gameSettings.viewBobbing = true;
             }
-            MotionUtils.setSpeed((EntityLivingBase)Speed.mc.field_71439_g, MotionUtils.getBaseMoveSpeed());
+            MotionUtils.setSpeed((EntityLivingBase)Speed.mc.player, MotionUtils.getBaseMoveSpeed());
         }
         this.gamer = false;
     }
 
     @Override
     public void onUpdate() {
-        if (this.speed.getValue().equals((Object)speedmethods.NORMAL) && (Speed.mc.field_71439_g.field_191988_bg != 0.0f || Speed.mc.field_71439_g.field_70702_br != 0.0f) && !Speed.mc.field_71439_g.func_70093_af() && Speed.mc.field_71439_g.field_70122_E) {
-            Speed.mc.field_71439_g.func_70664_aZ();
-            Speed.mc.field_71439_g.field_70159_w *= (double)this.speed.getValue().floatValue();
-            Speed.mc.field_71439_g.field_70181_x *= 0.4;
-            Speed.mc.field_71439_g.field_70179_y *= (double)this.speed.getValue().floatValue();
+        if (this.speed.getValue().equals((Object)speedmethods.NORMAL) && (Speed.mc.player.moveForward != 0.0f || Speed.mc.player.moveStrafing != 0.0f) && !Speed.mc.player.isSneaking() && Speed.mc.player.onGround) {
+            Speed.mc.player.jump();
+            Speed.mc.player.motionX *= (double)this.speed.getValue().floatValue();
+            Speed.mc.player.motionY *= 0.4;
+            Speed.mc.player.motionZ *= (double)this.speed.getValue().floatValue();
         }
     }
 

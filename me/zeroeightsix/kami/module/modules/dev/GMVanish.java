@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -22,30 +24,30 @@ extends Module {
 
     @Override
     public void onEnable() {
-        if (GMVanish.mc.field_71439_g == null || GMVanish.mc.field_71439_g.func_184187_bx() == null) {
+        if (GMVanish.mc.player == null || GMVanish.mc.player.getRidingEntity() == null) {
             this.disable();
             return;
         }
-        this.entity = GMVanish.mc.field_71439_g.func_184187_bx();
-        GMVanish.mc.field_71439_g.func_184210_p();
-        GMVanish.mc.field_71441_e.func_72900_e(this.entity);
+        this.entity = GMVanish.mc.player.getRidingEntity();
+        GMVanish.mc.player.dismountRidingEntity();
+        GMVanish.mc.world.removeEntity(this.entity);
     }
 
     @Override
     public void onUpdate() {
-        if (this.isDisabled() || GMVanish.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || GMVanish.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
-        if (GMVanish.mc.field_71439_g.func_184187_bx() == null) {
+        if (GMVanish.mc.player.getRidingEntity() == null) {
             this.disable();
             return;
         }
         if (this.entity != null) {
-            this.entity.field_70165_t = GMVanish.mc.field_71439_g.field_70165_t;
-            this.entity.field_70163_u = GMVanish.mc.field_71439_g.field_70163_u;
-            this.entity.field_70161_v = GMVanish.mc.field_71439_g.field_70161_v;
+            this.entity.posX = GMVanish.mc.player.posX;
+            this.entity.posY = GMVanish.mc.player.posY;
+            this.entity.posZ = GMVanish.mc.player.posZ;
             try {
-                Objects.requireNonNull(mc.func_147114_u()).func_147297_a((Packet)new CPacketVehicleMove(this.entity));
+                Objects.requireNonNull(mc.getConnection()).sendPacket((Packet)new CPacketVehicleMove(this.entity));
             }
             catch (Exception e) {
                 System.out.println("ERROR: Dude we kinda have a problem here:");

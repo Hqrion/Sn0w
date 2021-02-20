@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -25,38 +27,38 @@ extends Module {
     private boolean eating = false;
 
     private boolean isValid(ItemStack stack, int food) {
-        return stack.func_77973_b() instanceof ItemFood && (Integer)this.healthbar.getValue() - food >= ((ItemFood)stack.func_77973_b()).func_150905_g(stack);
+        return stack.getItem() instanceof ItemFood && (Integer)this.healthbar.getValue() - food >= ((ItemFood)stack.getItem()).getHealAmount(stack);
     }
 
     @Override
     public void onUpdate() {
-        if (this.eating && !OffhandEatOLD.mc.field_71439_g.func_184587_cr()) {
+        if (this.eating && !OffhandEatOLD.mc.player.isHandActive()) {
             if (this.lastSlot != -1) {
-                OffhandEatOLD.mc.field_71439_g.field_71071_by.field_70461_c = this.lastSlot;
+                OffhandEatOLD.mc.player.inventory.currentItem = this.lastSlot;
                 this.lastSlot = -1;
             }
             this.eating = false;
-            KeyBinding.func_74510_a((int)OffhandEatOLD.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)false);
+            KeyBinding.setKeyBindState((int)OffhandEatOLD.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)false);
             return;
         }
         if (this.eating) {
             return;
         }
-        float playerAbsorption = OffhandEatOLD.mc.field_71439_g.func_110139_bj();
-        if (this.isValid(OffhandEatOLD.mc.field_71439_g.func_184592_cb(), (int)OffhandEatOLD.mc.field_71439_g.func_110143_aJ() + (int)playerAbsorption)) {
-            OffhandEatOLD.mc.field_71439_g.func_184598_c(EnumHand.OFF_HAND);
+        float playerAbsorption = OffhandEatOLD.mc.player.getAbsorptionAmount();
+        if (this.isValid(OffhandEatOLD.mc.player.getHeldItemOffhand(), (int)OffhandEatOLD.mc.player.getHealth() + (int)playerAbsorption)) {
+            OffhandEatOLD.mc.player.setActiveHand(EnumHand.OFF_HAND);
             this.eating = true;
-            KeyBinding.func_74510_a((int)OffhandEatOLD.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)true);
-            mc.func_147121_ag();
+            KeyBinding.setKeyBindState((int)OffhandEatOLD.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)true);
+            mc.rightClickMouse();
             return;
         }
         for (int i = 0; i < 9; ++i) {
-            if (!this.isValid(OffhandEatOLD.mc.field_71439_g.field_71071_by.func_70301_a(i), (int)OffhandEatOLD.mc.field_71439_g.func_110143_aJ() + (int)playerAbsorption)) continue;
-            this.lastSlot = OffhandEatOLD.mc.field_71439_g.field_71071_by.field_70461_c;
-            OffhandEatOLD.mc.field_71439_g.field_71071_by.field_70461_c = i;
+            if (!this.isValid(OffhandEatOLD.mc.player.inventory.getStackInSlot(i), (int)OffhandEatOLD.mc.player.getHealth() + (int)playerAbsorption)) continue;
+            this.lastSlot = OffhandEatOLD.mc.player.inventory.currentItem;
+            OffhandEatOLD.mc.player.inventory.currentItem = i;
             this.eating = true;
-            KeyBinding.func_74510_a((int)OffhandEatOLD.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)true);
-            mc.func_147121_ag();
+            KeyBinding.setKeyBindState((int)OffhandEatOLD.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)true);
+            mc.rightClickMouse();
             return;
         }
     }

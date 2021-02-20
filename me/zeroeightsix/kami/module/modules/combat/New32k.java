@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -71,16 +73,16 @@ extends Module {
         this.dispenserTicks = 0;
         this.timer = 0;
         for (x = 0; x <= 8; ++x) {
-            Item item = New32k.mc.field_71439_g.field_71071_by.func_70301_a(x).func_77973_b();
-            if (item == Item.func_150898_a((Block)Blocks.field_150438_bZ)) {
+            Item item = New32k.mc.player.inventory.getStackInSlot(x).getItem();
+            if (item == Item.getItemFromBlock((Block)Blocks.HOPPER)) {
                 this.hopper = x;
                 continue;
             }
-            if (item == Item.func_150898_a((Block)Blocks.field_150367_z)) {
+            if (item == Item.getItemFromBlock((Block)Blocks.DISPENSER)) {
                 dispenser = x;
                 continue;
             }
-            if (item == Item.func_150898_a((Block)Blocks.field_150451_bX)) {
+            if (item == Item.getItemFromBlock((Block)Blocks.REDSTONE_BLOCK)) {
                 this.redstone = x;
                 continue;
             }
@@ -120,11 +122,11 @@ extends Module {
                             nArray5[1] = 1;
                         }
                         this.rot = nArray;
-                        this.pos = New32k.mc.field_71439_g.func_180425_c().func_177982_a(x, y, z);
-                        if (!(New32k.mc.field_71439_g.func_174824_e(mc.func_184121_ak()).func_72438_d(New32k.mc.field_71439_g.func_174791_d().func_72441_c((double)(x - this.rot[0] / 2), (double)y + 0.5, (double)(z + this.rot[1] / 2))) <= 4.5) || !(New32k.mc.field_71439_g.func_174824_e(mc.func_184121_ak()).func_72438_d(New32k.mc.field_71439_g.func_174791_d().func_72441_c((double)x + 0.5, (double)y + 2.5, (double)z + 0.5)) <= 4.5) || !WorldUtils.canPlaceBlock(this.pos) || !WorldUtils.isBlockEmpty(this.pos) || !WorldUtils.isBlockEmpty(this.pos.func_177982_a(this.rot[0], 0, this.rot[1])) || !WorldUtils.isBlockEmpty(this.pos.func_177982_a(0, 1, 0)) || !WorldUtils.isBlockEmpty(this.pos.func_177982_a(0, 2, 0)) || !WorldUtils.isBlockEmpty(this.pos.func_177982_a(this.rot[0], 1, this.rot[1]))) continue;
+                        this.pos = New32k.mc.player.getPosition().add(x, y, z);
+                        if (!(New32k.mc.player.getPositionEyes(mc.getRenderPartialTicks()).distanceTo(New32k.mc.player.getPositionVector().add((double)(x - this.rot[0] / 2), (double)y + 0.5, (double)(z + this.rot[1] / 2))) <= 4.5) || !(New32k.mc.player.getPositionEyes(mc.getRenderPartialTicks()).distanceTo(New32k.mc.player.getPositionVector().add((double)x + 0.5, (double)y + 2.5, (double)z + 0.5)) <= 4.5) || !WorldUtils.canPlaceBlock(this.pos) || !WorldUtils.isBlockEmpty(this.pos) || !WorldUtils.isBlockEmpty(this.pos.add(this.rot[0], 0, this.rot[1])) || !WorldUtils.isBlockEmpty(this.pos.add(0, 1, 0)) || !WorldUtils.isBlockEmpty(this.pos.add(0, 2, 0)) || !WorldUtils.isBlockEmpty(this.pos.add(this.rot[0], 1, this.rot[1]))) continue;
                         WorldUtils.placeBlock(this.pos, block, true, false);
-                        WorldUtils.rotatePacket((double)this.pos.func_177982_a(-this.rot[0], 1, -this.rot[1]).func_177958_n() + 0.5, this.pos.func_177956_o() + 1, (double)this.pos.func_177982_a(-this.rot[0], 1, -this.rot[1]).func_177952_p() + 0.5);
-                        WorldUtils.placeBlock(this.pos.func_177982_a(0, 1, 0), dispenser, false, false);
+                        WorldUtils.rotatePacket((double)this.pos.add(-this.rot[0], 1, -this.rot[1]).getX() + 0.5, this.pos.getY() + 1, (double)this.pos.add(-this.rot[0], 1, -this.rot[1]).getZ() + 0.5);
+                        WorldUtils.placeBlock(this.pos.add(0, 1, 0), dispenser, false, false);
                         return;
                     }
                 }
@@ -138,47 +140,47 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if ((this.isEnabled() || this.active || this.ticksPassed <= 25) && (!this.active || New32k.mc.field_71462_r instanceof GuiHopper)) {
-            if (New32k.mc.field_71462_r instanceof GuiDispenser) {
+        if ((this.isEnabled() || this.active || this.ticksPassed <= 25) && (!this.active || New32k.mc.currentScreen instanceof GuiHopper)) {
+            if (New32k.mc.currentScreen instanceof GuiDispenser) {
                 this.openedDispenser = true;
             }
-            if (New32k.mc.field_71462_r instanceof GuiHopper) {
+            if (New32k.mc.currentScreen instanceof GuiHopper) {
                 int slot;
-                GuiHopper gui = (GuiHopper)New32k.mc.field_71462_r;
+                GuiHopper gui = (GuiHopper)New32k.mc.currentScreen;
                 for (slot = 32; slot <= 40; ++slot) {
-                    if (EnchantmentHelper.func_77506_a((Enchantment)Enchantments.field_185302_k, (ItemStack)gui.field_147002_h.func_75139_a(slot).func_75211_c()) <= 5) continue;
-                    New32k.mc.field_71439_g.field_71071_by.field_70461_c = slot - 32;
+                    if (EnchantmentHelper.getEnchantmentLevel((Enchantment)Enchantments.SHARPNESS, (ItemStack)gui.inventorySlots.getSlot(slot).getStack()) <= 5) continue;
+                    New32k.mc.player.inventory.currentItem = slot - 32;
                     break;
                 }
                 this.active = true;
-                if (!(((Slot)gui.field_147002_h.field_75151_b.get(0)).func_75211_c().func_77973_b() instanceof ItemAir) && this.active) {
-                    slot = New32k.mc.field_71439_g.field_71071_by.field_70461_c;
+                if (!(((Slot)gui.inventorySlots.inventorySlots.get(0)).getStack().getItem() instanceof ItemAir) && this.active) {
+                    slot = New32k.mc.player.inventory.currentItem;
                     boolean pull = false;
                     for (int i = 40; i >= 32; --i) {
-                        if (!gui.field_147002_h.func_75139_a(i).func_75211_c().func_190926_b()) continue;
+                        if (!gui.inventorySlots.getSlot(i).getStack().isEmpty()) continue;
                         slot = i;
                         pull = true;
                         break;
                     }
                     if (pull) {
-                        New32k.mc.field_71442_b.func_187098_a(gui.field_147002_h.field_75152_c, 0, 0, ClickType.PICKUP, (EntityPlayer)New32k.mc.field_71439_g);
-                        New32k.mc.field_71442_b.func_187098_a(gui.field_147002_h.field_75152_c, slot, 0, ClickType.PICKUP, (EntityPlayer)New32k.mc.field_71439_g);
+                        New32k.mc.playerController.windowClick(gui.inventorySlots.windowId, 0, 0, ClickType.PICKUP, (EntityPlayer)New32k.mc.player);
+                        New32k.mc.playerController.windowClick(gui.inventorySlots.windowId, slot, 0, ClickType.PICKUP, (EntityPlayer)New32k.mc.player);
                     }
                 }
             }
             if (this.ticksPassed == 0) {
-                WorldUtils.openBlock(this.pos.func_177982_a(0, 1, 0));
+                WorldUtils.openBlock(this.pos.add(0, 1, 0));
             }
             if (this.openedDispenser && this.dispenserTicks == 0) {
-                New32k.mc.field_71442_b.func_187098_a(New32k.mc.field_71439_g.field_71070_bA.field_75152_c, 36 + this.shulker, 0, ClickType.QUICK_MOVE, (EntityPlayer)New32k.mc.field_71439_g);
+                New32k.mc.playerController.windowClick(New32k.mc.player.openContainer.windowId, 36 + this.shulker, 0, ClickType.QUICK_MOVE, (EntityPlayer)New32k.mc.player);
             }
             if (this.dispenserTicks == 1) {
-                mc.func_147108_a(null);
-                WorldUtils.placeBlock(this.pos.func_177982_a(0, 2, 0), this.redstone, true, false);
+                mc.displayGuiScreen(null);
+                WorldUtils.placeBlock(this.pos.add(0, 2, 0), this.redstone, true, false);
             }
-            if (New32k.mc.field_71441_e.func_180495_p(this.pos.func_177982_a(this.rot[0], 1, this.rot[1])).func_177230_c() instanceof BlockShulkerBox && New32k.mc.field_71441_e.func_180495_p(this.pos.func_177982_a(this.rot[0], 0, this.rot[1])).func_177230_c() != Blocks.field_150438_bZ) {
-                WorldUtils.placeBlock(this.pos.func_177982_a(this.rot[0], 0, this.rot[1]), this.hopper, false, false);
-                WorldUtils.openBlock(this.pos.func_177982_a(this.rot[0], 0, this.rot[1]));
+            if (New32k.mc.world.getBlockState(this.pos.add(this.rot[0], 1, this.rot[1])).getBlock() instanceof BlockShulkerBox && New32k.mc.world.getBlockState(this.pos.add(this.rot[0], 0, this.rot[1])).getBlock() != Blocks.HOPPER) {
+                WorldUtils.placeBlock(this.pos.add(this.rot[0], 0, this.rot[1]), this.hopper, false, false);
+                WorldUtils.openBlock(this.pos.add(this.rot[0], 0, this.rot[1]));
             }
             if (this.openedDispenser) {
                 ++this.dispenserTicks;

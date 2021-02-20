@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -43,35 +45,35 @@ extends Module {
         block8: {
             block7: {
                 if (mode.getValue() != BossStackMode.MINIMIZE) break block7;
-                Map map = Minecraft.func_71410_x().field_71456_v.func_184046_j().field_184060_g;
+                Map map = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos;
                 if (map == null) {
                     return;
                 }
-                ScaledResolution scaledresolution = new ScaledResolution(Minecraft.func_71410_x());
-                int i = scaledresolution.func_78326_a();
+                ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+                int i = scaledresolution.getScaledWidth();
                 int j = 12;
                 for (Map.Entry entry : map.entrySet()) {
                     BossInfoClient info = (BossInfoClient)entry.getValue();
-                    String text = info.func_186744_e().func_150254_d();
+                    String text = info.getName().getFormattedText();
                     int k = (int)((double)i / scale.getValue() / 2.0 - 91.0);
                     GL11.glScaled((double)scale.getValue(), (double)scale.getValue(), (double)1.0);
                     if (!event.isCanceled()) {
-                        GlStateManager.func_179131_c((float)1.0f, (float)1.0f, (float)1.0f, (float)1.0f);
-                        Minecraft.func_71410_x().func_110434_K().func_110577_a(GUI_BARS_TEXTURES);
-                        Minecraft.func_71410_x().field_71456_v.func_184046_j().func_184052_a(k, j, (BossInfo)info);
-                        Minecraft.func_71410_x().field_71466_p.func_175063_a(text, (float)((double)i / scale.getValue() / 2.0 - (double)(Minecraft.func_71410_x().field_71466_p.func_78256_a(text) / 2)), (float)(j - 9), 0xFFFFFF);
+                        GlStateManager.color((float)1.0f, (float)1.0f, (float)1.0f, (float)1.0f);
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_BARS_TEXTURES);
+                        Minecraft.getMinecraft().ingameGUI.getBossOverlay().render(k, j, (BossInfo)info);
+                        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, (float)((double)i / scale.getValue() / 2.0 - (double)(Minecraft.getMinecraft().fontRenderer.getStringWidth(text) / 2)), (float)(j - 9), 0xFFFFFF);
                     }
                     GL11.glScaled((double)(1.0 / scale.getValue()), (double)(1.0 / scale.getValue()), (double)1.0);
-                    j += 10 + Minecraft.func_71410_x().field_71466_p.field_78288_b;
+                    j += 10 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
                 }
                 break block8;
             }
             if (mode.getValue() != BossStackMode.STACK) break block8;
-            Map map = Minecraft.func_71410_x().field_71456_v.func_184046_j().field_184060_g;
+            Map map = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos;
             HashMap to = new HashMap();
             for (Map.Entry entry : map.entrySet()) {
                 Pair p;
-                String s = ((BossInfoClient)entry.getValue()).func_186744_e().func_150254_d();
+                String s = ((BossInfoClient)entry.getValue()).getName().getFormattedText();
                 if (to.containsKey(s)) {
                     p = (Pair)to.get(s);
                     p = new Pair(p.getKey(), p.getValue() + 1);
@@ -81,8 +83,8 @@ extends Module {
                 p = new Pair(entry.getValue(), 1);
                 to.put(s, p);
             }
-            ScaledResolution scaledresolution = new ScaledResolution(Minecraft.func_71410_x());
-            int i = scaledresolution.func_78326_a();
+            ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+            int i = scaledresolution.getScaledWidth();
             int j = 12;
             for (Map.Entry entry : to.entrySet()) {
                 String text = (String)entry.getKey();
@@ -92,13 +94,13 @@ extends Module {
                 int k = (int)((double)i / scale.getValue() / 2.0 - 91.0);
                 GL11.glScaled((double)scale.getValue(), (double)scale.getValue(), (double)1.0);
                 if (!event.isCanceled()) {
-                    GlStateManager.func_179131_c((float)1.0f, (float)1.0f, (float)1.0f, (float)1.0f);
-                    Minecraft.func_71410_x().func_110434_K().func_110577_a(GUI_BARS_TEXTURES);
-                    Minecraft.func_71410_x().field_71456_v.func_184046_j().func_184052_a(k, j, (BossInfo)info);
-                    Minecraft.func_71410_x().field_71466_p.func_175063_a(text, (float)((double)i / scale.getValue() / 2.0 - (double)(Minecraft.func_71410_x().field_71466_p.func_78256_a(text) / 2)), (float)(j - 9), 0xFFFFFF);
+                    GlStateManager.color((float)1.0f, (float)1.0f, (float)1.0f, (float)1.0f);
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_BARS_TEXTURES);
+                    Minecraft.getMinecraft().ingameGUI.getBossOverlay().render(k, j, (BossInfo)info);
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, (float)((double)i / scale.getValue() / 2.0 - (double)(Minecraft.getMinecraft().fontRenderer.getStringWidth(text) / 2)), (float)(j - 9), 0xFFFFFF);
                 }
                 GL11.glScaled((double)(1.0 / scale.getValue()), (double)(1.0 / scale.getValue()), (double)1.0);
-                j += 10 + Minecraft.func_71410_x().field_71466_p.field_78288_b;
+                j += 10 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
             }
         }
     }

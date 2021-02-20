@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -31,63 +33,63 @@ extends Module {
     public void onUpdate() {
         int i;
         int t;
-        if (AutoTotem.mc.field_71462_r instanceof GuiContainer) {
+        if (AutoTotem.mc.currentScreen instanceof GuiContainer) {
             return;
         }
         if (this.returnI) {
             t = -1;
             for (i = 0; i < 45; ++i) {
-                if (!AutoTotem.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_190928_g) continue;
+                if (!AutoTotem.mc.player.inventory.getStackInSlot((int)i).isEmpty) continue;
                 t = i;
                 break;
             }
             if (t == -1) {
                 return;
             }
-            AutoTotem.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.field_71439_g);
+            AutoTotem.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.player);
             this.returnI = false;
         }
-        this.totems = AutoTotem.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_190929_cY).mapToInt(ItemStack::func_190916_E).sum();
-        if (AutoTotem.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_190929_cY) {
+        this.totems = AutoTotem.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+        if (AutoTotem.mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) {
             ++this.totems;
         } else {
-            if (this.soft.getValue().booleanValue() && !AutoTotem.mc.field_71439_g.func_184592_cb().field_190928_g) {
+            if (this.soft.getValue().booleanValue() && !AutoTotem.mc.player.getHeldItemOffhand().isEmpty) {
                 return;
             }
             if (this.moving) {
-                AutoTotem.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.field_71439_g);
+                AutoTotem.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.player);
                 this.moving = false;
-                if (!AutoTotem.mc.field_71439_g.field_71071_by.field_70457_g.func_190926_b()) {
+                if (!AutoTotem.mc.player.inventory.itemStack.isEmpty()) {
                     this.returnI = true;
                 }
                 return;
             }
-            if (AutoTotem.mc.field_71439_g.field_71071_by.field_70457_g.func_190926_b()) {
+            if (AutoTotem.mc.player.inventory.itemStack.isEmpty()) {
                 if (this.totems == 0) {
                     return;
                 }
                 t = -1;
                 for (i = 0; i < 45; ++i) {
-                    if (AutoTotem.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_190929_cY) continue;
+                    if (AutoTotem.mc.player.inventory.getStackInSlot(i).getItem() != Items.TOTEM_OF_UNDYING) continue;
                     t = i;
                     break;
                 }
                 if (t == -1) {
                     return;
                 }
-                AutoTotem.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.field_71439_g);
+                AutoTotem.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.player);
                 this.moving = true;
             } else if (!this.soft.getValue().booleanValue()) {
                 t = -1;
                 for (i = 0; i < 45; ++i) {
-                    if (!AutoTotem.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_190928_g) continue;
+                    if (!AutoTotem.mc.player.inventory.getStackInSlot((int)i).isEmpty) continue;
                     t = i;
                     break;
                 }
                 if (t == -1) {
                     return;
                 }
-                AutoTotem.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.field_71439_g);
+                AutoTotem.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)AutoTotem.mc.player);
             }
         }
     }

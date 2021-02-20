@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -44,10 +46,10 @@ extends Module {
     public static double coordsDiff(char s) {
         switch (s) {
             case 'x': {
-                return SpeedDisplay.mc.field_71439_g.field_70165_t - SpeedDisplay.mc.field_71439_g.field_70169_q;
+                return SpeedDisplay.mc.player.posX - SpeedDisplay.mc.player.prevPosX;
             }
             case 'z': {
-                return SpeedDisplay.mc.field_71439_g.field_70161_v - SpeedDisplay.mc.field_71439_g.field_70166_s;
+                return SpeedDisplay.mc.player.posZ - SpeedDisplay.mc.player.prevPosZ;
             }
         }
         return 0.0;
@@ -62,22 +64,22 @@ extends Module {
         int cblue = this.blue.getValue();
         int drgb = color = ColourUtils.toRGBA(ared, bgreen, cblue, 255);
         this.sign = this.gamer.getValue() != false ? ": " : " ";
-        this.xPos = this.OrderOtherWay.getValue() != false ? this.x.getValue().floatValue() - (float)SpeedDisplay.mc.field_71466_p.func_78256_a("Speed" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + this.df.format((double)MathHelper.func_76133_a((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h") : this.x.getValue().floatValue();
+        this.xPos = this.OrderOtherWay.getValue() != false ? this.x.getValue().floatValue() - (float)SpeedDisplay.mc.fontRenderer.getStringWidth("Speed" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + this.df.format((double)MathHelper.sqrt((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h") : this.x.getValue().floatValue();
         if (this.smooth.getValue().booleanValue()) {
             if (this.rainbow.getValue().booleanValue()) {
-                RainbowText.renderRainbowWave("Speed" + this.sign + this.df.format((double)MathHelper.func_76133_a((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", Float.valueOf(this.xPos), this.y.getValue(), 0.6f, true);
+                RainbowText.renderRainbowWave("Speed" + this.sign + this.df.format((double)MathHelper.sqrt((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", Float.valueOf(this.xPos), this.y.getValue(), 0.6f, true);
             } else {
-                this.cFontRenderer.drawStringWithShadow("Speed" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + this.df.format((double)MathHelper.func_76133_a((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", this.xPos, (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
+                this.cFontRenderer.drawStringWithShadow("Speed" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + this.df.format((double)MathHelper.sqrt((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", this.xPos, (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
             }
         } else if (this.rainbow.getValue().booleanValue()) {
             if (this.fullrainbow.getValue().booleanValue()) {
-                RainbowText.renderRainbowWave("Speed" + this.sign + this.df.format((double)MathHelper.func_76133_a((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", Float.valueOf(this.xPos), Float.valueOf(yCount), 0.6f, false);
+                RainbowText.renderRainbowWave("Speed" + this.sign + this.df.format((double)MathHelper.sqrt((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", Float.valueOf(this.xPos), Float.valueOf(yCount), 0.6f, false);
             } else {
-                Wrapper.getMinecraft().field_71466_p.func_175063_a("Speed" + this.sign, this.xPos, yCount, -1);
-                RainbowText.renderRainbowWave(this.df.format((double)MathHelper.func_76133_a((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", Float.valueOf(this.xPos + (float)SpeedDisplay.mc.field_71466_p.func_78256_a("Speed" + this.sign)), Float.valueOf(yCount), 0.6f, false);
+                Wrapper.getMinecraft().fontRenderer.drawStringWithShadow("Speed" + this.sign, this.xPos, yCount, -1);
+                RainbowText.renderRainbowWave(this.df.format((double)MathHelper.sqrt((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", Float.valueOf(this.xPos + (float)SpeedDisplay.mc.fontRenderer.getStringWidth("Speed" + this.sign)), Float.valueOf(yCount), 0.6f, false);
             }
         } else {
-            Wrapper.getMinecraft().field_71466_p.func_175063_a("Speed" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + this.df.format((double)MathHelper.func_76133_a((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", this.xPos, yCount, color);
+            Wrapper.getMinecraft().fontRenderer.drawStringWithShadow("Speed" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + this.df.format((double)MathHelper.sqrt((double)(Math.pow(SpeedDisplay.coordsDiff('x'), 2.0) + Math.pow(SpeedDisplay.coordsDiff('z'), 2.0))) / 0.05 * 3.6) + " km/h", this.xPos, yCount, color);
         }
     }
 }

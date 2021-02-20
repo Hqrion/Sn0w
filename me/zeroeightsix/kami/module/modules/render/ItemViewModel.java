@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -25,7 +27,7 @@ import net.minecraft.util.EnumHandSide;
 @Module.Info(name="Item View Model WIP", category=Module.Category.RENDER)
 public class ItemViewModel
 extends Module {
-    private static RenderItem itemRender = Minecraft.func_71410_x().func_175599_af();
+    private static RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
     private Setting<Double> xLeft = this.register(Settings.d("Left X", -2.0));
     private Setting<Double> yLeft = this.register(Settings.d("Left Y", -2.0));
     private Setting<Double> zLeft = this.register(Settings.d("Left Z", -2.0));
@@ -35,9 +37,9 @@ extends Module {
     @EventHandler
     private final Listener<TransformSideFirstPersonEvent> eventListener = new Listener<TransformSideFirstPersonEvent>(event -> {
         if (event.getHandSide() == EnumHandSide.RIGHT) {
-            GlStateManager.func_179137_b((double)this.xRight.getValue(), (double)this.yRight.getValue(), (double)this.zRight.getValue());
+            GlStateManager.translate((double)this.xRight.getValue(), (double)this.yRight.getValue(), (double)this.zRight.getValue());
         } else if (event.getHandSide() == EnumHandSide.LEFT) {
-            GlStateManager.func_179137_b((double)this.xLeft.getValue(), (double)this.yLeft.getValue(), (double)this.zLeft.getValue());
+            GlStateManager.translate((double)this.xLeft.getValue(), (double)this.yLeft.getValue(), (double)this.zLeft.getValue());
         }
     }, new Predicate[0]);
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -19,7 +21,7 @@ public abstract class MixinGuiNewChat {
     @Redirect(method={"drawChat"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/gui/GuiNewChat;drawRect(IIIII)V"))
     private void drawRectBackgroundClean(int left, int top, int right, int bottom, int color) {
         if (!ModuleManager.isModuleEnabled("CleanChat")) {
-            Gui.func_73734_a((int)left, (int)top, (int)right, (int)bottom, (int)color);
+            Gui.drawRect((int)left, (int)top, (int)right, (int)bottom, (int)color);
         }
     }
 }

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -38,7 +40,7 @@ extends Module {
     private Setting<Boolean> epearls = this.register(Settings.b("Epearls", true));
     private Setting<Boolean> xPorb = this.register(Settings.b("XPorb", true));
     private Setting<Boolean> Outline = this.register(Settings.b("Outline", true));
-    RenderItem itemRenderer = mc.func_175599_af();
+    RenderItem itemRenderer = mc.getRenderItem();
 
     @Override
     public void onWorldRender(RenderEvent event) {
@@ -46,26 +48,26 @@ extends Module {
         Color friend = new Color(0, 0, 255, this.a.getValue());
         Color enemy = new Color(255, 0, 0, this.a.getValue());
         Color finalC = c;
-        BoxESP.mc.field_71441_e.field_72996_f.stream().filter(entity -> entity != BoxESP.mc.field_71439_g).forEach(e -> {
+        BoxESP.mc.world.loadedEntityList.stream().filter(entity -> entity != BoxESP.mc.player).forEach(e -> {
             KamiTessellator.prepare(7);
             if (this.players.getValue().booleanValue() && e instanceof EntityPlayer) {
-                if (Friends.isFriend(e.func_70005_c_())) {
-                    KamiTessellator.drawBox(e.func_184177_bl(), friend.getRGB(), 63);
+                if (Friends.isFriend(e.getName())) {
+                    KamiTessellator.drawBox(e.getRenderBoundingBox(), friend.getRGB(), 63);
                 } else {
-                    KamiTessellator.drawBox(e.func_184177_bl(), enemy.getRGB(), 63);
+                    KamiTessellator.drawBox(e.getRenderBoundingBox(), enemy.getRGB(), 63);
                 }
             }
             if (this.exp.getValue().booleanValue() && e instanceof EntityExpBottle) {
-                KamiTessellator.drawBox(e.func_184177_bl(), finalC.getRGB(), 63);
+                KamiTessellator.drawBox(e.getRenderBoundingBox(), finalC.getRGB(), 63);
             }
             if (this.epearls.getValue().booleanValue() && e instanceof EntityEnderPearl) {
-                KamiTessellator.drawBox(e.func_184177_bl(), finalC.getRGB(), 63);
+                KamiTessellator.drawBox(e.getRenderBoundingBox(), finalC.getRGB(), 63);
             }
             if (this.items.getValue().booleanValue() && e instanceof EntityItem) {
-                KamiTessellator.drawBox(e.func_184177_bl(), finalC.getRGB(), 63);
+                KamiTessellator.drawBox(e.getRenderBoundingBox(), finalC.getRGB(), 63);
             }
             if (this.xPorb.getValue().booleanValue() && e instanceof EntityXPOrb) {
-                KamiTessellator.drawBox(e.func_184177_bl(), finalC.getRGB(), 63);
+                KamiTessellator.drawBox(e.getRenderBoundingBox(), finalC.getRGB(), 63);
             }
             KamiTessellator.release();
         });

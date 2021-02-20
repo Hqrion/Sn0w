@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -23,15 +25,15 @@ public class MixinEntity {
         if (entityCollisionEvent.isCancelled()) {
             return;
         }
-        entity.field_70159_w += x;
-        entity.field_70181_x += y;
-        entity.field_70179_y += z;
-        entity.field_70160_al = true;
+        entity.motionX += x;
+        entity.motionY += y;
+        entity.motionZ += z;
+        entity.isAirBorne = true;
     }
 
     @Redirect(method={"move"}, at=@At(value="INVOKE", target="Lnet/minecraft/entity/Entity;isSneaking()Z"))
     public boolean isSneaking(Entity entity) {
-        return SafeWalk.shouldSafewalk() || entity.func_70093_af();
+        return SafeWalk.shouldSafewalk() || entity.isSneaking();
     }
 }
 

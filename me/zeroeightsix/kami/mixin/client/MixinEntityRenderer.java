@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -55,7 +57,7 @@ public class MixinEntityRenderer {
         if (ModuleManager.isModuleEnabled("CameraClip")) {
             return null;
         }
-        return world.func_72933_a(start, end);
+        return world.rayTraceBlocks(start, end);
     }
 
     @Inject(method={"setupFog"}, at={@At(value="HEAD")}, cancellable=true)
@@ -68,9 +70,9 @@ public class MixinEntityRenderer {
     @Redirect(method={"setupFog"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/renderer/ActiveRenderInfo;getBlockStateAtEntityViewpoint(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;F)Lnet/minecraft/block/state/IBlockState;"))
     public IBlockState getBlockStateAtEntityViewpoint(World worldIn, Entity entityIn, float p_186703_2_) {
         if (AntiFog.enabled() && AntiFog.mode.getValue() == AntiFog.VisionMode.AIR) {
-            return Blocks.field_150350_a.field_176228_M;
+            return Blocks.AIR.defaultBlockState;
         }
-        return ActiveRenderInfo.func_186703_a((World)worldIn, (Entity)entityIn, (float)p_186703_2_);
+        return ActiveRenderInfo.getBlockStateAtEntityViewpoint((World)worldIn, (Entity)entityIn, (float)p_186703_2_);
     }
 
     @Inject(method={"hurtCameraEffect"}, at={@At(value="HEAD")}, cancellable=true)
@@ -83,7 +85,7 @@ public class MixinEntityRenderer {
     @Redirect(method={"updateLightmap"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/entity/EntityPlayerSP;isPotionActive(Lnet/minecraft/potion/Potion;)Z"))
     public boolean isPotionActive(EntityPlayerSP player, Potion potion) {
         this.nightVision = Brightness.shouldBeActive();
-        return this.nightVision || player.func_70644_a(potion);
+        return this.nightVision || player.isPotionActive(potion);
     }
 
     @Redirect(method={"updateLightmap"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/renderer/EntityRenderer;getNightVisionBrightness(Lnet/minecraft/entity/EntityLivingBase;F)F"))
@@ -91,7 +93,7 @@ public class MixinEntityRenderer {
         if (this.nightVision) {
             return Brightness.getCurrentBrightness();
         }
-        return renderer.func_180438_a(entity, partialTicks);
+        return renderer.getNightVisionBrightness(entity, partialTicks);
     }
 
     @Redirect(method={"getMouseOver"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/multiplayer/WorldClient;getEntitiesInAABBexcluding(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/AxisAlignedBB;Lcom/google/common/base/Predicate;)Ljava/util/List;"))
@@ -99,7 +101,7 @@ public class MixinEntityRenderer {
         if (NoMiningTrace.spoofTrace()) {
             return new ArrayList<Entity>();
         }
-        return worldClient.func_175674_a(entityIn, boundingBox, predicate);
+        return worldClient.getEntitiesInAABBexcluding(entityIn, boundingBox, predicate);
     }
 }
 

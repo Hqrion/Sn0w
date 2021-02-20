@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -88,25 +90,25 @@ extends Module {
         this.placeTarget = null;
         this.placeTarget2 = null;
         for (int x = 0; x <= 8; ++x) {
-            Item item = Hopper32k.mc.field_71439_g.field_71071_by.func_70301_a(x).func_77973_b();
-            if (item == Item.func_150898_a((Block)Blocks.field_150438_bZ)) {
+            Item item = Hopper32k.mc.player.inventory.getStackInSlot(x).getItem();
+            if (item == Item.getItemFromBlock((Block)Blocks.HOPPER)) {
                 this.Hopperslot = x;
                 continue;
             }
             if (!(item instanceof ItemShulkerBox)) continue;
             this.ShulkerSlot = x;
         }
-        RayTraceResult lookingAt = Minecraft.func_71410_x().field_71476_x;
-        if (lookingAt != null && lookingAt.field_72313_a == RayTraceResult.Type.BLOCK) {
-            this.placeTarget = Hopper32k.mc.field_71476_x.func_178782_a().func_177984_a();
-            this.placeTarget2 = Hopper32k.mc.field_71476_x.func_178782_a().func_177981_b(1);
-            Hopper32k.mc.field_71439_g.field_71071_by.field_70461_c = this.Hopperslot;
+        RayTraceResult lookingAt = Minecraft.getMinecraft().objectMouseOver;
+        if (lookingAt != null && lookingAt.typeOfHit == RayTraceResult.Type.BLOCK) {
+            this.placeTarget = Hopper32k.mc.objectMouseOver.getBlockPos().up();
+            this.placeTarget2 = Hopper32k.mc.objectMouseOver.getBlockPos().up(1);
+            Hopper32k.mc.player.inventory.currentItem = this.Hopperslot;
             this.stagething = "HOPPER";
             this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
-            Hopper32k.mc.field_71439_g.field_71071_by.field_70461_c = this.ShulkerSlot;
+            Hopper32k.mc.player.inventory.currentItem = this.ShulkerSlot;
             this.stagething = "SHULKER";
-            this.placeBlock(new BlockPos((Vec3i)this.placeTarget.func_177984_a()), EnumFacing.DOWN);
-            Hopper32k.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)Hopper32k.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            this.placeBlock(new BlockPos((Vec3i)this.placeTarget.up()), EnumFacing.DOWN);
+            Hopper32k.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)Hopper32k.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             this.isSneaking = false;
             this.stagething = "OPENING";
             WorldUtils.openBlock(this.placeTarget);
@@ -123,28 +125,28 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (Hopper32k.mc.field_71462_r instanceof GuiHopper) {
+        if (Hopper32k.mc.currentScreen instanceof GuiHopper) {
             int slot;
-            GuiHopper gui = (GuiHopper)Hopper32k.mc.field_71462_r;
+            GuiHopper gui = (GuiHopper)Hopper32k.mc.currentScreen;
             for (slot = 32; slot <= 40; ++slot) {
-                if (EnchantmentHelper.func_77506_a((Enchantment)Enchantments.field_185302_k, (ItemStack)gui.field_147002_h.func_75139_a(slot).func_75211_c()) <= 5) continue;
-                Hopper32k.mc.field_71439_g.field_71071_by.field_70461_c = slot - 32;
+                if (EnchantmentHelper.getEnchantmentLevel((Enchantment)Enchantments.SHARPNESS, (ItemStack)gui.inventorySlots.getSlot(slot).getStack()) <= 5) continue;
+                Hopper32k.mc.player.inventory.currentItem = slot - 32;
                 break;
             }
             this.active = true;
-            if (!(((Slot)gui.field_147002_h.field_75151_b.get(0)).func_75211_c().func_77973_b() instanceof ItemAir) && this.active) {
-                slot = Hopper32k.mc.field_71439_g.field_71071_by.field_70461_c;
+            if (!(((Slot)gui.inventorySlots.inventorySlots.get(0)).getStack().getItem() instanceof ItemAir) && this.active) {
+                slot = Hopper32k.mc.player.inventory.currentItem;
                 boolean pull = false;
                 for (int i = 40; i >= 32; --i) {
-                    if (!gui.field_147002_h.func_75139_a(i).func_75211_c().func_190926_b()) continue;
+                    if (!gui.inventorySlots.getSlot(i).getStack().isEmpty()) continue;
                     slot = i;
                     pull = true;
                     break;
                 }
                 if (pull) {
                     this.stagething = "HOPPER GUI";
-                    Hopper32k.mc.field_71442_b.func_187098_a(gui.field_147002_h.field_75152_c, 0, 0, ClickType.PICKUP, (EntityPlayer)Hopper32k.mc.field_71439_g);
-                    Hopper32k.mc.field_71442_b.func_187098_a(gui.field_147002_h.field_75152_c, slot, 0, ClickType.PICKUP, (EntityPlayer)Hopper32k.mc.field_71439_g);
+                    Hopper32k.mc.playerController.windowClick(gui.inventorySlots.windowId, 0, 0, ClickType.PICKUP, (EntityPlayer)Hopper32k.mc.player);
+                    Hopper32k.mc.playerController.windowClick(gui.inventorySlots.windowId, slot, 0, ClickType.PICKUP, (EntityPlayer)Hopper32k.mc.player);
                     this.disable();
                 }
             }
@@ -152,18 +154,18 @@ extends Module {
     }
 
     private void placeBlock(BlockPos pos, EnumFacing side) {
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
         if (!this.isSneaking) {
-            Hopper32k.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)Hopper32k.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            Hopper32k.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)Hopper32k.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             this.isSneaking = true;
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         if (this.rotate.getValue().booleanValue()) {
             BlockInteractionHelper.faceVectorPacketInstant(hitVec);
         }
-        Hopper32k.mc.field_71442_b.func_187099_a(Hopper32k.mc.field_71439_g, Hopper32k.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        Hopper32k.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+        Hopper32k.mc.playerController.processRightClickBlock(Hopper32k.mc.player, Hopper32k.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        Hopper32k.mc.player.swingArm(EnumHand.MAIN_HAND);
     }
 }
 

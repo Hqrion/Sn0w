@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -34,15 +36,15 @@ extends GuiChat {
         if (!startString.equals(Command.getCommandPrefix())) {
             this.calculateCommand(startString.substring(Command.getCommandPrefix().length()));
         }
-        this.field_146410_g = historybuffer;
+        this.historyBuffer = historybuffer;
         this.cursor = sentHistoryCursor;
     }
 
-    protected void func_73869_a(char typedChar, int keyCode) throws IOException {
-        this.field_146416_h = this.cursor;
-        super.func_73869_a(typedChar, keyCode);
-        this.cursor = this.field_146416_h;
-        String chatLine = this.field_146415_a.func_146179_b();
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        this.sentHistoryCursor = this.cursor;
+        super.keyTyped(typedChar, keyCode);
+        this.cursor = this.sentHistoryCursor;
+        String chatLine = this.inputField.getText();
         if (!chatLine.startsWith(Command.getCommandPrefix())) {
             GuiChat newGUI = new GuiChat(chatLine){
                 int cursor;
@@ -50,14 +52,14 @@ extends GuiChat {
                     this.cursor = KamiGuiChat.this.cursor;
                 }
 
-                protected void func_73869_a(char typedChar, int keyCode) throws IOException {
-                    this.field_146416_h = this.cursor;
-                    super.func_73869_a(typedChar, keyCode);
-                    this.cursor = this.field_146416_h;
+                protected void keyTyped(char typedChar, int keyCode) throws IOException {
+                    this.sentHistoryCursor = this.cursor;
+                    super.keyTyped(typedChar, keyCode);
+                    this.cursor = this.sentHistoryCursor;
                 }
             };
-            newGUI.field_146410_g = this.field_146410_g;
-            this.field_146297_k.func_147108_a((GuiScreen)newGUI);
+            newGUI.historyBuffer = this.historyBuffer;
+            this.mc.displayGuiScreen((GuiScreen)newGUI);
             return;
         }
         if (chatLine.equals(Command.getCommandPrefix())) {
@@ -106,15 +108,15 @@ extends GuiChat {
         }
     }
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks) {
-        KamiGuiChat.func_73734_a((int)2, (int)(this.field_146295_m - 14), (int)(this.field_146294_l - 2), (int)(this.field_146295_m - 2), (int)Integer.MIN_VALUE);
-        int x = this.field_146415_a.field_146211_a.func_78256_a(this.field_146415_a.func_146179_b() + "") + 4;
-        int y = this.field_146415_a.func_146181_i() ? this.field_146415_a.field_146210_g + (this.field_146415_a.field_146219_i - 8) / 2 : this.field_146415_a.field_146210_g;
-        this.field_146415_a.field_146211_a.func_175063_a(this.currentFillinLine, (float)x, (float)y, 0x666666);
-        this.field_146415_a.func_146194_f();
-        ITextComponent itextcomponent = this.field_146297_k.field_71456_v.func_146158_b().func_146236_a(Mouse.getX(), Mouse.getY());
-        if (itextcomponent != null && itextcomponent.func_150256_b().func_150210_i() != null) {
-            this.func_175272_a(itextcomponent, mouseX, mouseY);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        KamiGuiChat.drawRect((int)2, (int)(this.height - 14), (int)(this.width - 2), (int)(this.height - 2), (int)Integer.MIN_VALUE);
+        int x = this.inputField.fontRenderer.getStringWidth(this.inputField.getText() + "") + 4;
+        int y = this.inputField.getEnableBackgroundDrawing() ? this.inputField.y + (this.inputField.height - 8) / 2 : this.inputField.y;
+        this.inputField.fontRenderer.drawStringWithShadow(this.currentFillinLine, (float)x, (float)y, 0x666666);
+        this.inputField.drawTextBox();
+        ITextComponent itextcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
+        if (itextcomponent != null && itextcomponent.getStyle().getHoverEvent() != null) {
+            this.handleComponentHover(itextcomponent, mouseX, mouseY);
         }
         boolean a = GL11.glIsEnabled((int)3042);
         boolean b = GL11.glIsEnabled((int)3553);
@@ -122,14 +124,14 @@ extends GuiChat {
         GL11.glDisable((int)3553);
         GL11.glColor3f((float)0.8f, (float)0.1f, (float)0.0f);
         GL11.glBegin((int)1);
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f - 2), (float)(this.field_146415_a.field_146210_g - 2));
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f + this.field_146415_a.func_146200_o() - 2), (float)(this.field_146415_a.field_146210_g - 2));
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f + this.field_146415_a.func_146200_o() - 2), (float)(this.field_146415_a.field_146210_g - 2));
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f + this.field_146415_a.func_146200_o() - 2), (float)(this.field_146415_a.field_146210_g + this.field_146415_a.field_146219_i - 2));
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f + this.field_146415_a.func_146200_o() - 2), (float)(this.field_146415_a.field_146210_g + this.field_146415_a.field_146219_i - 2));
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f - 2), (float)(this.field_146415_a.field_146210_g + this.field_146415_a.field_146219_i - 2));
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f - 2), (float)(this.field_146415_a.field_146210_g + this.field_146415_a.field_146219_i - 2));
-        GL11.glVertex2f((float)(this.field_146415_a.field_146209_f - 2), (float)(this.field_146415_a.field_146210_g - 2));
+        GL11.glVertex2f((float)(this.inputField.x - 2), (float)(this.inputField.y - 2));
+        GL11.glVertex2f((float)(this.inputField.x + this.inputField.getWidth() - 2), (float)(this.inputField.y - 2));
+        GL11.glVertex2f((float)(this.inputField.x + this.inputField.getWidth() - 2), (float)(this.inputField.y - 2));
+        GL11.glVertex2f((float)(this.inputField.x + this.inputField.getWidth() - 2), (float)(this.inputField.y + this.inputField.height - 2));
+        GL11.glVertex2f((float)(this.inputField.x + this.inputField.getWidth() - 2), (float)(this.inputField.y + this.inputField.height - 2));
+        GL11.glVertex2f((float)(this.inputField.x - 2), (float)(this.inputField.y + this.inputField.height - 2));
+        GL11.glVertex2f((float)(this.inputField.x - 2), (float)(this.inputField.y + this.inputField.height - 2));
+        GL11.glVertex2f((float)(this.inputField.x - 2), (float)(this.inputField.y - 2));
         GL11.glEnd();
         if (a) {
             GL11.glEnable((int)3042);

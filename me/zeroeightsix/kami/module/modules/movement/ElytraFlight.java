@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -25,44 +27,44 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (!ElytraFlight.mc.field_71439_g.func_184613_cA()) {
+        if (!ElytraFlight.mc.player.isElytraFlying()) {
             return;
         }
         switch (this.mode.getValue()) {
             case BOOST: {
-                if (ElytraFlight.mc.field_71439_g.func_70090_H()) {
-                    mc.func_147114_u().func_147297_a((Packet)new CPacketEntityAction((Entity)ElytraFlight.mc.field_71439_g, CPacketEntityAction.Action.START_FALL_FLYING));
+                if (ElytraFlight.mc.player.isInWater()) {
+                    mc.getConnection().sendPacket((Packet)new CPacketEntityAction((Entity)ElytraFlight.mc.player, CPacketEntityAction.Action.START_FALL_FLYING));
                     return;
                 }
-                if (ElytraFlight.mc.field_71474_y.field_74314_A.func_151470_d()) {
-                    ElytraFlight.mc.field_71439_g.field_70181_x += 0.08;
-                } else if (ElytraFlight.mc.field_71474_y.field_74311_E.func_151470_d()) {
-                    ElytraFlight.mc.field_71439_g.field_70181_x -= 0.04;
+                if (ElytraFlight.mc.gameSettings.keyBindJump.isKeyDown()) {
+                    ElytraFlight.mc.player.motionY += 0.08;
+                } else if (ElytraFlight.mc.gameSettings.keyBindSneak.isKeyDown()) {
+                    ElytraFlight.mc.player.motionY -= 0.04;
                 }
-                if (ElytraFlight.mc.field_71474_y.field_74351_w.func_151470_d()) {
-                    float yaw = (float)Math.toRadians(ElytraFlight.mc.field_71439_g.field_70177_z);
-                    ElytraFlight.mc.field_71439_g.field_70159_w -= (double)(MathHelper.func_76126_a((float)yaw) * 0.05f);
-                    ElytraFlight.mc.field_71439_g.field_70179_y += (double)(MathHelper.func_76134_b((float)yaw) * 0.05f);
+                if (ElytraFlight.mc.gameSettings.keyBindForward.isKeyDown()) {
+                    float yaw = (float)Math.toRadians(ElytraFlight.mc.player.rotationYaw);
+                    ElytraFlight.mc.player.motionX -= (double)(MathHelper.sin((float)yaw) * 0.05f);
+                    ElytraFlight.mc.player.motionZ += (double)(MathHelper.cos((float)yaw) * 0.05f);
                     break;
                 }
-                if (!ElytraFlight.mc.field_71474_y.field_74368_y.func_151470_d()) break;
-                float yaw = (float)Math.toRadians(ElytraFlight.mc.field_71439_g.field_70177_z);
-                ElytraFlight.mc.field_71439_g.field_70159_w += (double)(MathHelper.func_76126_a((float)yaw) * 0.05f);
-                ElytraFlight.mc.field_71439_g.field_70179_y -= (double)(MathHelper.func_76134_b((float)yaw) * 0.05f);
+                if (!ElytraFlight.mc.gameSettings.keyBindBack.isKeyDown()) break;
+                float yaw = (float)Math.toRadians(ElytraFlight.mc.player.rotationYaw);
+                ElytraFlight.mc.player.motionX += (double)(MathHelper.sin((float)yaw) * 0.05f);
+                ElytraFlight.mc.player.motionZ -= (double)(MathHelper.cos((float)yaw) * 0.05f);
                 break;
             }
             case FLY: {
-                ElytraFlight.mc.field_71439_g.field_71075_bZ.field_75100_b = true;
+                ElytraFlight.mc.player.capabilities.isFlying = true;
             }
         }
     }
 
     @Override
     protected void onDisable() {
-        if (ElytraFlight.mc.field_71439_g.field_71075_bZ.field_75098_d) {
+        if (ElytraFlight.mc.player.capabilities.isCreativeMode) {
             return;
         }
-        ElytraFlight.mc.field_71439_g.field_71075_bZ.field_75100_b = false;
+        ElytraFlight.mc.player.capabilities.isFlying = false;
     }
 
     private static enum ElytraFlightMode {

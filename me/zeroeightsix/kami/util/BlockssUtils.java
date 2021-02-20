@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -36,13 +38,13 @@ public class BlockssUtils {
     static Minecraft mc;
 
     public static IBlockState getState(BlockPos pos) {
-        return BlockssUtils.mc.field_71441_e.func_180495_p(pos);
+        return BlockssUtils.mc.world.getBlockState(pos);
     }
 
     public static boolean checkForNeighbours(BlockPos blockPos) {
         if (!BlockssUtils.hasNeighbour(blockPos)) {
             for (EnumFacing side : EnumFacing.values()) {
-                BlockPos neighbour = blockPos.func_177972_a(side);
+                BlockPos neighbour = blockPos.offset(side);
                 if (!BlockssUtils.hasNeighbour(neighbour)) continue;
                 return true;
             }
@@ -53,45 +55,45 @@ public class BlockssUtils {
 
     private static boolean hasNeighbour(BlockPos blockPos) {
         for (EnumFacing side : EnumFacing.values()) {
-            BlockPos neighbour = blockPos.func_177972_a(side);
-            if (Wrapper.getWorld().func_180495_p(neighbour).func_185904_a().func_76222_j()) continue;
+            BlockPos neighbour = blockPos.offset(side);
+            if (Wrapper.getWorld().getBlockState(neighbour).getMaterial().isReplaceable()) continue;
             return true;
         }
         return false;
     }
 
     public static Block getBlock(BlockPos pos) {
-        return BlockssUtils.getState(pos).func_177230_c();
+        return BlockssUtils.getState(pos).getBlock();
     }
 
     public static boolean canBeClicked(BlockPos pos) {
-        return BlockssUtils.getBlock(pos).func_176209_a(BlockssUtils.getState(pos), false);
+        return BlockssUtils.getBlock(pos).canCollideCheck(BlockssUtils.getState(pos), false);
     }
 
     public static void faceVectorPacketInstant(Vec3d vec) {
         float[] rotations = BlockssUtils.getNeededRotations2(vec);
-        BlockssUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], BlockssUtils.mc.field_71439_g.field_70122_E));
+        BlockssUtils.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], BlockssUtils.mc.player.onGround));
     }
 
     private static float[] getNeededRotations2(Vec3d vec) {
         Vec3d eyesPos = BlockssUtils.getEyesPos();
-        double diffX = vec.field_72450_a - eyesPos.field_72450_a;
-        double diffY = vec.field_72448_b - eyesPos.field_72448_b;
-        double diffZ = vec.field_72449_c - eyesPos.field_72449_c;
+        double diffX = vec.x - eyesPos.x;
+        double diffY = vec.y - eyesPos.y;
+        double diffZ = vec.z - eyesPos.z;
         double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
         float yaw = (float)Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0f;
         float pitch = (float)(-Math.toDegrees(Math.atan2(diffY, diffXZ)));
-        return new float[]{BlockssUtils.mc.field_71439_g.field_70177_z + MathHelper.func_76142_g((float)(yaw - BlockssUtils.mc.field_71439_g.field_70177_z)), BlockssUtils.mc.field_71439_g.field_70125_A + MathHelper.func_76142_g((float)(pitch - BlockssUtils.mc.field_71439_g.field_70125_A))};
+        return new float[]{BlockssUtils.mc.player.rotationYaw + MathHelper.wrapDegrees((float)(yaw - BlockssUtils.mc.player.rotationYaw)), BlockssUtils.mc.player.rotationPitch + MathHelper.wrapDegrees((float)(pitch - BlockssUtils.mc.player.rotationPitch))};
     }
 
     public static Vec3d getEyesPos() {
-        return new Vec3d(BlockssUtils.mc.field_71439_g.field_70165_t, BlockssUtils.mc.field_71439_g.field_70163_u + (double)BlockssUtils.mc.field_71439_g.func_70047_e(), BlockssUtils.mc.field_71439_g.field_70161_v);
+        return new Vec3d(BlockssUtils.mc.player.posX, BlockssUtils.mc.player.posY + (double)BlockssUtils.mc.player.getEyeHeight(), BlockssUtils.mc.player.posZ);
     }
 
     public static List<BlockPos> getCircle(BlockPos loc, int y, float r, boolean hollow) {
         ArrayList<BlockPos> circleblocks = new ArrayList<BlockPos>();
-        int cx = loc.func_177958_n();
-        int cz = loc.func_177952_p();
+        int cx = loc.getX();
+        int cz = loc.getZ();
         int x = cx - (int)r;
         while ((float)x <= (float)cx + r) {
             int z = cz - (int)r;
@@ -111,18 +113,18 @@ public class BlockssUtils {
     public static EnumFacing getPlaceableSide(BlockPos pos) {
         for (EnumFacing side : EnumFacing.values()) {
             IBlockState blockState;
-            BlockPos neighbour = pos.func_177972_a(side);
-            if (!BlockssUtils.mc.field_71441_e.func_180495_p(neighbour).func_177230_c().func_176209_a(BlockssUtils.mc.field_71441_e.func_180495_p(neighbour), false) || (blockState = BlockssUtils.mc.field_71441_e.func_180495_p(neighbour)).func_185904_a().func_76222_j()) continue;
+            BlockPos neighbour = pos.offset(side);
+            if (!BlockssUtils.mc.world.getBlockState(neighbour).getBlock().canCollideCheck(BlockssUtils.mc.world.getBlockState(neighbour), false) || (blockState = BlockssUtils.mc.world.getBlockState(neighbour)).getMaterial().isReplaceable()) continue;
             return side;
         }
         return null;
     }
 
     static {
-        mc = Minecraft.func_71410_x();
-        blackList = Arrays.asList(Blocks.field_150477_bB, Blocks.field_150486_ae, Blocks.field_150447_bR, Blocks.field_150462_ai, Blocks.field_150467_bQ, Blocks.field_150382_bo, Blocks.field_150438_bZ, Blocks.field_150409_cd, Blocks.field_150367_z);
-        shulkerList = Arrays.asList(Blocks.field_190977_dl, Blocks.field_190978_dm, Blocks.field_190979_dn, Blocks.field_190980_do, Blocks.field_190981_dp, Blocks.field_190982_dq, Blocks.field_190983_dr, Blocks.field_190984_ds, Blocks.field_190985_dt, Blocks.field_190986_du, Blocks.field_190987_dv, Blocks.field_190988_dw, Blocks.field_190989_dx, Blocks.field_190990_dy, Blocks.field_190991_dz, Blocks.field_190975_dA);
-        mc = Minecraft.func_71410_x();
+        mc = Minecraft.getMinecraft();
+        blackList = Arrays.asList(Blocks.ENDER_CHEST, Blocks.CHEST, Blocks.TRAPPED_CHEST, Blocks.CRAFTING_TABLE, Blocks.ANVIL, Blocks.BREWING_STAND, Blocks.HOPPER, Blocks.DROPPER, Blocks.DISPENSER);
+        shulkerList = Arrays.asList(Blocks.WHITE_SHULKER_BOX, Blocks.ORANGE_SHULKER_BOX, Blocks.MAGENTA_SHULKER_BOX, Blocks.LIGHT_BLUE_SHULKER_BOX, Blocks.YELLOW_SHULKER_BOX, Blocks.LIME_SHULKER_BOX, Blocks.PINK_SHULKER_BOX, Blocks.GRAY_SHULKER_BOX, Blocks.SILVER_SHULKER_BOX, Blocks.CYAN_SHULKER_BOX, Blocks.PURPLE_SHULKER_BOX, Blocks.BLUE_SHULKER_BOX, Blocks.BROWN_SHULKER_BOX, Blocks.GREEN_SHULKER_BOX, Blocks.RED_SHULKER_BOX, Blocks.BLACK_SHULKER_BOX);
+        mc = Minecraft.getMinecraft();
     }
 }
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -67,21 +69,21 @@ extends Module {
 
     public static boolean createPath(PathPoint end) {
         to = end;
-        AnchoredWalkNodeProcessor walkNodeProcessor = new AnchoredWalkNodeProcessor(new PathPoint((int)Pathfind.mc.field_71439_g.field_70165_t, (int)Pathfind.mc.field_71439_g.field_70163_u, (int)Pathfind.mc.field_71439_g.field_70161_v));
-        EntityZombie zombie = new EntityZombie((World)Pathfind.mc.field_71441_e);
-        zombie.func_184644_a(PathNodeType.WATER, 16.0f);
-        zombie.field_70165_t = Pathfind.mc.field_71439_g.field_70165_t;
-        zombie.field_70163_u = Pathfind.mc.field_71439_g.field_70163_u;
-        zombie.field_70161_v = Pathfind.mc.field_71439_g.field_70161_v;
+        AnchoredWalkNodeProcessor walkNodeProcessor = new AnchoredWalkNodeProcessor(new PathPoint((int)Pathfind.mc.player.posX, (int)Pathfind.mc.player.posY, (int)Pathfind.mc.player.posZ));
+        EntityZombie zombie = new EntityZombie((World)Pathfind.mc.world);
+        zombie.setPathPriority(PathNodeType.WATER, 16.0f);
+        zombie.posX = Pathfind.mc.player.posX;
+        zombie.posY = Pathfind.mc.player.posY;
+        zombie.posZ = Pathfind.mc.player.posZ;
         PathFinder finder = new PathFinder((NodeProcessor)walkNodeProcessor);
-        Path path = finder.func_186336_a((IBlockAccess)Pathfind.mc.field_71441_e, (EntityLiving)zombie, new BlockPos(end.field_75839_a, end.field_75837_b, end.field_75838_c), Float.MAX_VALUE);
-        zombie.func_184644_a(PathNodeType.WATER, 0.0f);
+        Path path = finder.findPath((IBlockAccess)Pathfind.mc.world, (EntityLiving)zombie, new BlockPos(end.x, end.y, end.z), Float.MAX_VALUE);
+        zombie.setPathPriority(PathNodeType.WATER, 0.0f);
         if (path == null) {
             Command.sendChatMessage("Failed to create path!");
             return false;
         }
-        points = new ArrayList<PathPoint>(Arrays.asList(path.field_75884_a));
-        return points.get(points.size() - 1).func_75829_a(end) <= 1.0f;
+        points = new ArrayList<PathPoint>(Arrays.asList(path.points));
+        return points.get(points.size() - 1).distanceTo(end) <= 1.0f;
     }
 
     @Override
@@ -94,27 +96,27 @@ extends Module {
         GL11.glDisable((int)2896);
         GL11.glLineWidth((float)1.5f);
         GL11.glColor3f((float)1.0f, (float)1.0f, (float)1.0f);
-        GlStateManager.func_179097_i();
+        GlStateManager.disableDepth();
         GL11.glBegin((int)1);
         PathPoint first = points.get(0);
-        GL11.glVertex3d((double)((double)first.field_75839_a - Pathfind.mc.func_175598_ae().field_78725_b + 0.5), (double)((double)first.field_75837_b - Pathfind.mc.func_175598_ae().field_78726_c), (double)((double)first.field_75838_c - Pathfind.mc.func_175598_ae().field_78723_d + 0.5));
+        GL11.glVertex3d((double)((double)first.x - Pathfind.mc.getRenderManager().renderPosX + 0.5), (double)((double)first.y - Pathfind.mc.getRenderManager().renderPosY), (double)((double)first.z - Pathfind.mc.getRenderManager().renderPosZ + 0.5));
         for (int i = 0; i < points.size() - 1; ++i) {
             PathPoint pathPoint = points.get(i);
-            GL11.glVertex3d((double)((double)pathPoint.field_75839_a - Pathfind.mc.func_175598_ae().field_78725_b + 0.5), (double)((double)pathPoint.field_75837_b - Pathfind.mc.func_175598_ae().field_78726_c), (double)((double)pathPoint.field_75838_c - Pathfind.mc.func_175598_ae().field_78723_d + 0.5));
+            GL11.glVertex3d((double)((double)pathPoint.x - Pathfind.mc.getRenderManager().renderPosX + 0.5), (double)((double)pathPoint.y - Pathfind.mc.getRenderManager().renderPosY), (double)((double)pathPoint.z - Pathfind.mc.getRenderManager().renderPosZ + 0.5));
             if (i == points.size() - 1) continue;
-            GL11.glVertex3d((double)((double)pathPoint.field_75839_a - Pathfind.mc.func_175598_ae().field_78725_b + 0.5), (double)((double)pathPoint.field_75837_b - Pathfind.mc.func_175598_ae().field_78726_c), (double)((double)pathPoint.field_75838_c - Pathfind.mc.func_175598_ae().field_78723_d + 0.5));
+            GL11.glVertex3d((double)((double)pathPoint.x - Pathfind.mc.getRenderManager().renderPosX + 0.5), (double)((double)pathPoint.y - Pathfind.mc.getRenderManager().renderPosY), (double)((double)pathPoint.z - Pathfind.mc.getRenderManager().renderPosZ + 0.5));
         }
         GL11.glEnd();
-        GlStateManager.func_179126_j();
+        GlStateManager.enableDepth();
     }
 
     @Override
     public void onUpdate() {
-        PathPoint closest = points.stream().min(Comparator.comparing(pathPoint -> Pathfind.mc.field_71439_g.func_70011_f((double)pathPoint.field_75839_a, (double)pathPoint.field_75837_b, (double)pathPoint.field_75838_c))).orElse(null);
+        PathPoint closest = points.stream().min(Comparator.comparing(pathPoint -> Pathfind.mc.player.getDistance((double)pathPoint.x, (double)pathPoint.y, (double)pathPoint.z))).orElse(null);
         if (closest == null) {
             return;
         }
-        if (Pathfind.mc.field_71439_g.func_70011_f((double)closest.field_75839_a, (double)closest.field_75837_b, (double)closest.field_75838_c) > 0.8) {
+        if (Pathfind.mc.player.getDistance((double)closest.x, (double)closest.y, (double)closest.z) > 0.8) {
             return;
         }
         Iterator<PathPoint> iterator = points.iterator();
@@ -149,74 +151,74 @@ extends Module {
             this.from = from;
         }
 
-        public PathPoint func_186318_b() {
+        public PathPoint getStart() {
             return this.from;
         }
 
-        public boolean func_186323_c() {
+        public boolean getCanEnterDoors() {
             return true;
         }
 
-        public boolean func_186322_e() {
+        public boolean getCanSwim() {
             return true;
         }
 
-        public PathNodeType func_186330_a(IBlockAccess blockaccessIn, int x, int y, int z) {
-            PathNodeType pathnodetype = this.func_189553_b(blockaccessIn, x, y, z);
+        public PathNodeType getPathNodeType(IBlockAccess blockaccessIn, int x, int y, int z) {
+            PathNodeType pathnodetype = this.getPathNodeTypeRaw(blockaccessIn, x, y, z);
             if (pathnodetype == PathNodeType.OPEN && y >= 1) {
-                Block block = blockaccessIn.func_180495_p(new BlockPos(x, y - 1, z)).func_177230_c();
-                PathNodeType pathnodetype1 = this.func_189553_b(blockaccessIn, x, y - 1, z);
+                Block block = blockaccessIn.getBlockState(new BlockPos(x, y - 1, z)).getBlock();
+                PathNodeType pathnodetype1 = this.getPathNodeTypeRaw(blockaccessIn, x, y - 1, z);
                 PathNodeType pathNodeType = pathnodetype = pathnodetype1 != PathNodeType.WALKABLE && pathnodetype1 != PathNodeType.OPEN && pathnodetype1 != PathNodeType.LAVA ? PathNodeType.WALKABLE : PathNodeType.OPEN;
-                if (pathnodetype1 == PathNodeType.DAMAGE_FIRE || block == Blocks.field_189877_df) {
+                if (pathnodetype1 == PathNodeType.DAMAGE_FIRE || block == Blocks.MAGMA) {
                     pathnodetype = PathNodeType.DAMAGE_FIRE;
                 }
                 if (pathnodetype1 == PathNodeType.DAMAGE_CACTUS) {
                     pathnodetype = PathNodeType.DAMAGE_CACTUS;
                 }
             }
-            pathnodetype = this.func_193578_a(blockaccessIn, x, y, z, pathnodetype);
+            pathnodetype = this.checkNeighborBlocks(blockaccessIn, x, y, z, pathnodetype);
             return pathnodetype;
         }
 
-        protected PathNodeType func_189553_b(IBlockAccess p_189553_1_, int p_189553_2_, int p_189553_3_, int p_189553_4_) {
+        protected PathNodeType getPathNodeTypeRaw(IBlockAccess p_189553_1_, int p_189553_2_, int p_189553_3_, int p_189553_4_) {
             BlockPos blockpos = new BlockPos(p_189553_2_, p_189553_3_, p_189553_4_);
-            IBlockState iblockstate = p_189553_1_.func_180495_p(blockpos);
-            Block block = iblockstate.func_177230_c();
-            Material material = iblockstate.func_185904_a();
+            IBlockState iblockstate = p_189553_1_.getBlockState(blockpos);
+            Block block = iblockstate.getBlock();
+            Material material = iblockstate.getMaterial();
             PathNodeType type2 = block.getAiPathNodeType(iblockstate, p_189553_1_, blockpos);
             if (type2 != null) {
                 return type2;
             }
-            if (material == Material.field_151579_a) {
+            if (material == Material.AIR) {
                 return PathNodeType.OPEN;
             }
-            if (block != Blocks.field_150415_aT && block != Blocks.field_180400_cw && block != Blocks.field_150392_bi) {
-                if (block == Blocks.field_150480_ab) {
+            if (block != Blocks.TRAPDOOR && block != Blocks.IRON_TRAPDOOR && block != Blocks.WATERLILY) {
+                if (block == Blocks.FIRE) {
                     return PathNodeType.DAMAGE_FIRE;
                 }
-                if (block == Blocks.field_150434_aF) {
+                if (block == Blocks.CACTUS) {
                     return PathNodeType.DAMAGE_CACTUS;
                 }
-                if (block instanceof BlockDoor && material == Material.field_151575_d && !((Boolean)iblockstate.func_177229_b((IProperty)BlockDoor.field_176519_b)).booleanValue()) {
+                if (block instanceof BlockDoor && material == Material.WOOD && !((Boolean)iblockstate.getValue((IProperty)BlockDoor.OPEN)).booleanValue()) {
                     return PathNodeType.DOOR_WOOD_CLOSED;
                 }
-                if (block instanceof BlockDoor && material == Material.field_151573_f && !((Boolean)iblockstate.func_177229_b((IProperty)BlockDoor.field_176519_b)).booleanValue()) {
+                if (block instanceof BlockDoor && material == Material.IRON && !((Boolean)iblockstate.getValue((IProperty)BlockDoor.OPEN)).booleanValue()) {
                     return PathNodeType.DOOR_IRON_CLOSED;
                 }
-                if (block instanceof BlockDoor && ((Boolean)iblockstate.func_177229_b((IProperty)BlockDoor.field_176519_b)).booleanValue()) {
+                if (block instanceof BlockDoor && ((Boolean)iblockstate.getValue((IProperty)BlockDoor.OPEN)).booleanValue()) {
                     return PathNodeType.DOOR_OPEN;
                 }
                 if (block instanceof BlockRailBase) {
                     return PathNodeType.RAIL;
                 }
-                if (!(block instanceof BlockFence || block instanceof BlockWall || block instanceof BlockFenceGate && !((Boolean)iblockstate.func_177229_b((IProperty)BlockFenceGate.field_176466_a)).booleanValue())) {
-                    if (material == Material.field_151586_h) {
+                if (!(block instanceof BlockFence || block instanceof BlockWall || block instanceof BlockFenceGate && !((Boolean)iblockstate.getValue((IProperty)BlockFenceGate.OPEN)).booleanValue())) {
+                    if (material == Material.WATER) {
                         return PathNodeType.WALKABLE;
                     }
-                    if (material == Material.field_151587_i) {
+                    if (material == Material.LAVA) {
                         return PathNodeType.LAVA;
                     }
-                    return block.func_176205_b(p_189553_1_, blockpos) ? PathNodeType.OPEN : PathNodeType.BLOCKED;
+                    return block.isPassable(p_189553_1_, blockpos) ? PathNodeType.OPEN : PathNodeType.BLOCKED;
                 }
                 return PathNodeType.FENCE;
             }

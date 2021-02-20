@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -28,9 +30,9 @@ extends Module {
 
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
-        if (Mouse.getEventButtonState() && MultiTask.mc.field_71439_g != null && MultiTask.mc.field_71476_x.field_72313_a.equals((Object)RayTraceResult.Type.ENTITY) && MultiTask.mc.field_71439_g.func_184587_cr() && (MultiTask.mc.field_71474_y.field_74312_F.func_151468_f() || Mouse.getEventButton() == MultiTask.mc.field_71474_y.field_74312_F.func_151463_i())) {
-            MultiTask.mc.field_71442_b.func_78764_a((EntityPlayer)MultiTask.mc.field_71439_g, MultiTask.mc.field_71476_x.field_72308_g);
-            MultiTask.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+        if (Mouse.getEventButtonState() && MultiTask.mc.player != null && MultiTask.mc.objectMouseOver.typeOfHit.equals((Object)RayTraceResult.Type.ENTITY) && MultiTask.mc.player.isHandActive() && (MultiTask.mc.gameSettings.keyBindAttack.isPressed() || Mouse.getEventButton() == MultiTask.mc.gameSettings.keyBindAttack.getKeyCode())) {
+            MultiTask.mc.playerController.attackEntity((EntityPlayer)MultiTask.mc.player, MultiTask.mc.objectMouseOver.entityHit);
+            MultiTask.mc.player.swingArm(EnumHand.MAIN_HAND);
         }
     }
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -22,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value={RenderGlobal.class})
 public class MixinRenderGlobal {
     @Shadow
-    Minecraft field_72777_q;
+    Minecraft mc;
     @Shadow
-    public ChunkRenderContainer field_174996_N;
+    public ChunkRenderContainer renderContainer;
 
     @Inject(method={"renderBlockLayer(Lnet/minecraft/util/BlockRenderLayer;)V"}, at={@At(value="HEAD")}, cancellable=true)
     public void renderBlockLayer(BlockRenderLayer blockLayerIn, CallbackInfo callbackInfo) {

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -32,7 +34,7 @@ extends Module {
     @Override
     protected void onDisable() {
         while (!this.packets.isEmpty()) {
-            Blink.mc.field_71439_g.field_71174_a.func_147297_a((Packet)this.packets.poll());
+            Blink.mc.player.connection.sendPacket((Packet)this.packets.poll());
         }
     }
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -43,7 +45,7 @@ extends Module {
     private Setting<Integer> timeoutTicks = this.register(Settings.i("TimeoutTicks", 20));
     @EventHandler
     public Listener<PacketEvent.Send> sendListener = new Listener<PacketEvent.Send>(event -> {
-        if (AutoGG.mc.field_71439_g == null) {
+        if (AutoGG.mc.player == null) {
             return;
         }
         if (this.targetedPlayers == null) {
@@ -53,37 +55,37 @@ extends Module {
             return;
         }
         CPacketUseEntity cPacketUseEntity = (CPacketUseEntity)event.getPacket();
-        if (!cPacketUseEntity.func_149565_c().equals((Object)CPacketUseEntity.Action.ATTACK)) {
+        if (!cPacketUseEntity.getAction().equals((Object)CPacketUseEntity.Action.ATTACK)) {
             return;
         }
-        Entity targetEntity = cPacketUseEntity.func_149564_a((World)AutoGG.mc.field_71441_e);
+        Entity targetEntity = cPacketUseEntity.getEntityFromWorld((World)AutoGG.mc.world);
         if (!EntityUtil.isPlayer(targetEntity)) {
             return;
         }
-        this.addTargetedPlayer(targetEntity.func_70005_c_());
+        this.addTargetedPlayer(targetEntity.getName());
     }, new Predicate[0]);
     @EventHandler
     public Listener<LivingDeathEvent> livingDeathEventListener = new Listener<LivingDeathEvent>(event -> {
         String name;
         EntityPlayer player;
         EntityLivingBase entity;
-        if (AutoGG.mc.field_71439_g == null) {
+        if (AutoGG.mc.player == null) {
             return;
         }
         if (this.targetedPlayers == null) {
             this.targetedPlayers = new ConcurrentHashMap();
         }
-        if ((entity = event.getEntityLiving()) != null && entity instanceof EntityPlayer && (player = (EntityPlayer)entity).func_110143_aJ() <= 0.0f && this.shouldAnnounce(name = player.func_70005_c_())) {
+        if ((entity = event.getEntityLiving()) != null && entity instanceof EntityPlayer && (player = (EntityPlayer)entity).getHealth() <= 0.0f && this.shouldAnnounce(name = player.getName())) {
             this.doAnnounce(name);
         }
         if (!EntityUtil.isPlayer((Entity)entity)) {
             return;
         }
         player = (EntityPlayer)entity;
-        if (player.func_110143_aJ() > 0.0f) {
+        if (player.getHealth() > 0.0f) {
             return;
         }
-        name = player.func_70005_c_();
+        name = player.getName();
         if (this.shouldAnnounce(name)) {
             this.doAnnounce(name);
         }
@@ -105,16 +107,16 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (this.isDisabled() || AutoGG.mc.field_71439_g == null) {
+        if (this.isDisabled() || AutoGG.mc.player == null) {
             return;
         }
         if (this.targetedPlayers == null) {
             this.targetedPlayers = new ConcurrentHashMap();
         }
-        for (Entity entity : AutoGG.mc.field_71441_e.func_72910_y()) {
+        for (Entity entity : AutoGG.mc.world.getLoadedEntityList()) {
             String name2;
             EntityPlayer player;
-            if (!EntityUtil.isPlayer(entity) || (player = (EntityPlayer)entity).func_110143_aJ() > 0.0f || !this.shouldAnnounce(name2 = player.func_70005_c_())) continue;
+            if (!EntityUtil.isPlayer(entity) || (player = (EntityPlayer)entity).getHealth() > 0.0f || !this.shouldAnnounce(name2 = player.getName())) continue;
             this.doAnnounce(name2);
             break;
         }
@@ -160,11 +162,11 @@ extends Module {
         if (messageSanitized.length() > 255) {
             messageSanitized = messageSanitized.substring(0, 255);
         }
-        AutoGG.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketChatMessage(messageSanitized));
+        AutoGG.mc.player.connection.sendPacket((Packet)new CPacketChatMessage(messageSanitized));
     }
 
     public void addTargetedPlayer(String name) {
-        if (Objects.equals(name, AutoGG.mc.field_71439_g.func_70005_c_())) {
+        if (Objects.equals(name, AutoGG.mc.player.getName())) {
             return;
         }
         if (this.targetedPlayers == null) {

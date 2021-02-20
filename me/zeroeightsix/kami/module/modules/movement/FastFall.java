@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -44,39 +46,39 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (FastFall.mc.field_71441_e == null) {
+        if (FastFall.mc.world == null) {
             return;
         }
-        if (FastFall.mc.field_71474_y.field_74314_A.func_151470_d()) {
+        if (FastFall.mc.gameSettings.keyBindJump.isKeyDown()) {
             this.jumping = true;
         }
-        if (this.jumping && FastFall.mc.field_71439_g.field_70122_E) {
+        if (this.jumping && FastFall.mc.player.onGround) {
             this.jumping = false;
         }
         if (this.jumping) {
             return;
         }
-        boolean hullCollidesWithBlock = this.hullCollidesWithBlock((Entity)FastFall.mc.field_71439_g, FastFall.mc.field_71439_g.func_174791_d().func_72441_c(0.0, -1.0, 0.0));
-        boolean hullCollidesWithBlockHalf = this.hullCollidesWithBlock((Entity)FastFall.mc.field_71439_g, FastFall.mc.field_71439_g.func_174791_d().func_72441_c(0.0, -0.5, 0.0));
+        boolean hullCollidesWithBlock = this.hullCollidesWithBlock((Entity)FastFall.mc.player, FastFall.mc.player.getPositionVector().add(0.0, -1.0, 0.0));
+        boolean hullCollidesWithBlockHalf = this.hullCollidesWithBlock((Entity)FastFall.mc.player, FastFall.mc.player.getPositionVector().add(0.0, -0.5, 0.0));
         if (hullCollidesWithBlockHalf) {
             return;
         }
         if (this.twoBlock.getValue().booleanValue() && !hullCollidesWithBlock) {
-            hullCollidesWithBlock = this.hullCollidesWithBlock((Entity)FastFall.mc.field_71439_g, FastFall.mc.field_71439_g.func_174791_d().func_72441_c(0.0, -2.0, 0.0));
+            hullCollidesWithBlock = this.hullCollidesWithBlock((Entity)FastFall.mc.player, FastFall.mc.player.getPositionVector().add(0.0, -2.0, 0.0));
         }
-        if (!hullCollidesWithBlock && !FastFall.mc.field_71439_g.field_70122_E) {
+        if (!hullCollidesWithBlock && !FastFall.mc.player.onGround) {
             this.falling = true;
         }
-        if (this.falling && FastFall.mc.field_71439_g.field_70122_E) {
+        if (this.falling && FastFall.mc.player.onGround) {
             this.falling = false;
         }
         if (this.falling) {
             return;
         }
-        AxisAlignedBB bb = FastFall.mc.field_71439_g.func_174813_aQ();
-        for (int x = MathHelper.func_76128_c((double)bb.field_72340_a); x < MathHelper.func_76128_c((double)(bb.field_72336_d + 1.0)); ++x) {
-            for (int z = MathHelper.func_76128_c((double)bb.field_72339_c); z < MathHelper.func_76128_c((double)(bb.field_72334_f + 1.0)); ++z) {
-                Block block = FastFall.mc.field_71441_e.func_180495_p(new BlockPos((double)x, bb.field_72337_e - 2.0, (double)z)).func_177230_c();
+        AxisAlignedBB bb = FastFall.mc.player.getEntityBoundingBox();
+        for (int x = MathHelper.floor((double)bb.minX); x < MathHelper.floor((double)(bb.maxX + 1.0)); ++x) {
+            for (int z = MathHelper.floor((double)bb.minZ); z < MathHelper.floor((double)(bb.maxZ + 1.0)); ++z) {
+                Block block = FastFall.mc.world.getBlockState(new BlockPos((double)x, bb.maxY - 2.0, (double)z)).getBlock();
                 if (block instanceof BlockAir) continue;
                 return;
             }
@@ -84,38 +86,38 @@ extends Module {
         if (!hullCollidesWithBlock) {
             return;
         }
-        if (FastFall.mc.field_71439_g.field_70122_E || FastFall.mc.field_71439_g.field_70134_J || FastFall.mc.field_71439_g.func_70617_f_() || FastFall.mc.field_71439_g.func_184613_cA() || FastFall.mc.field_71439_g.field_71075_bZ.field_75100_b || !FastFall.mc.field_71439_g.func_70055_a(Material.field_151579_a)) {
+        if (FastFall.mc.player.onGround || FastFall.mc.player.isInWeb || FastFall.mc.player.isOnLadder() || FastFall.mc.player.isElytraFlying() || FastFall.mc.player.capabilities.isFlying || !FastFall.mc.player.isInsideOfMaterial(Material.AIR)) {
             return;
         }
-        FastFall.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Position(FastFall.mc.field_71439_g.field_70165_t, FastFall.mc.field_71439_g.field_70163_u - 0.92, FastFall.mc.field_71439_g.field_70161_v, true));
-        FastFall.mc.field_71439_g.func_70107_b(FastFall.mc.field_71439_g.field_70165_t, FastFall.mc.field_71439_g.field_70163_u - 0.92, FastFall.mc.field_71439_g.field_70161_v);
+        FastFall.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Position(FastFall.mc.player.posX, FastFall.mc.player.posY - 0.92, FastFall.mc.player.posZ, true));
+        FastFall.mc.player.setPosition(FastFall.mc.player.posX, FastFall.mc.player.posY - 0.92, FastFall.mc.player.posZ);
     }
 
     private boolean hullCollidesWithBlock(Entity entity, Vec3d nextPosition) {
         boolean atleastOne = false;
-        AxisAlignedBB boundingBox = entity.func_174813_aQ();
-        Vec3d[] boundingBoxCorners = new Vec3d[]{new Vec3d(boundingBox.field_72340_a, boundingBox.field_72338_b, boundingBox.field_72339_c), new Vec3d(boundingBox.field_72340_a, boundingBox.field_72338_b, boundingBox.field_72334_f), new Vec3d(boundingBox.field_72336_d, boundingBox.field_72338_b, boundingBox.field_72339_c), new Vec3d(boundingBox.field_72336_d, boundingBox.field_72338_b, boundingBox.field_72334_f)};
-        Vec3d entityPosition = entity.func_174791_d();
+        AxisAlignedBB boundingBox = entity.getEntityBoundingBox();
+        Vec3d[] boundingBoxCorners = new Vec3d[]{new Vec3d(boundingBox.minX, boundingBox.minY, boundingBox.minZ), new Vec3d(boundingBox.minX, boundingBox.minY, boundingBox.maxZ), new Vec3d(boundingBox.maxX, boundingBox.minY, boundingBox.minZ), new Vec3d(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ)};
+        Vec3d entityPosition = entity.getPositionVector();
         for (Vec3d entityBoxCorner : boundingBoxCorners) {
-            Vec3d nextBoxCorner = entityBoxCorner.func_178788_d(entityPosition).func_178787_e(nextPosition);
-            RayTraceResult rayTraceResult = entity.field_70170_p.func_147447_a(entityBoxCorner, nextBoxCorner, true, false, true);
+            Vec3d nextBoxCorner = entityBoxCorner.subtract(entityPosition).add(nextPosition);
+            RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(entityBoxCorner, nextBoxCorner, true, false, true);
             if (rayTraceResult == null) continue;
-            if (!this.isAHole(new BlockPos(nextBoxCorner).func_177982_a(0, 1, 0)) && this.onlyIntoHoles.getValue().booleanValue()) {
+            if (!this.isAHole(new BlockPos(nextBoxCorner).add(0, 1, 0)) && this.onlyIntoHoles.getValue().booleanValue()) {
                 return false;
             }
-            if (rayTraceResult.field_72313_a != RayTraceResult.Type.BLOCK) continue;
+            if (rayTraceResult.typeOfHit != RayTraceResult.Type.BLOCK) continue;
             atleastOne = true;
         }
         return atleastOne;
     }
 
     private boolean isAHole(BlockPos pos) {
-        BlockPos bottom = pos.func_177982_a(0, -1, 0);
-        BlockPos side1 = pos.func_177982_a(1, 0, 0);
-        BlockPos side2 = pos.func_177982_a(-1, 0, 0);
-        BlockPos side3 = pos.func_177982_a(0, 0, 1);
-        BlockPos side4 = pos.func_177982_a(0, 0, -1);
-        return !(FastFall.mc.field_71441_e.func_180495_p(pos).func_177230_c() != Blocks.field_150350_a || FastFall.mc.field_71441_e.func_180495_p(bottom).func_177230_c() != Blocks.field_150357_h && FastFall.mc.field_71441_e.func_180495_p(side1).func_177230_c() != Blocks.field_150343_Z || FastFall.mc.field_71441_e.func_180495_p(side1).func_177230_c() != Blocks.field_150357_h && FastFall.mc.field_71441_e.func_180495_p(side1).func_177230_c() != Blocks.field_150343_Z || FastFall.mc.field_71441_e.func_180495_p(side2).func_177230_c() != Blocks.field_150357_h && FastFall.mc.field_71441_e.func_180495_p(side2).func_177230_c() != Blocks.field_150343_Z || FastFall.mc.field_71441_e.func_180495_p(side3).func_177230_c() != Blocks.field_150357_h && FastFall.mc.field_71441_e.func_180495_p(side3).func_177230_c() != Blocks.field_150343_Z || FastFall.mc.field_71441_e.func_180495_p(side4).func_177230_c() != Blocks.field_150357_h && FastFall.mc.field_71441_e.func_180495_p(side4).func_177230_c() != Blocks.field_150343_Z);
+        BlockPos bottom = pos.add(0, -1, 0);
+        BlockPos side1 = pos.add(1, 0, 0);
+        BlockPos side2 = pos.add(-1, 0, 0);
+        BlockPos side3 = pos.add(0, 0, 1);
+        BlockPos side4 = pos.add(0, 0, -1);
+        return !(FastFall.mc.world.getBlockState(pos).getBlock() != Blocks.AIR || FastFall.mc.world.getBlockState(bottom).getBlock() != Blocks.BEDROCK && FastFall.mc.world.getBlockState(side1).getBlock() != Blocks.OBSIDIAN || FastFall.mc.world.getBlockState(side1).getBlock() != Blocks.BEDROCK && FastFall.mc.world.getBlockState(side1).getBlock() != Blocks.OBSIDIAN || FastFall.mc.world.getBlockState(side2).getBlock() != Blocks.BEDROCK && FastFall.mc.world.getBlockState(side2).getBlock() != Blocks.OBSIDIAN || FastFall.mc.world.getBlockState(side3).getBlock() != Blocks.BEDROCK && FastFall.mc.world.getBlockState(side3).getBlock() != Blocks.OBSIDIAN || FastFall.mc.world.getBlockState(side4).getBlock() != Blocks.BEDROCK && FastFall.mc.world.getBlockState(side4).getBlock() != Blocks.OBSIDIAN);
     }
 }
 

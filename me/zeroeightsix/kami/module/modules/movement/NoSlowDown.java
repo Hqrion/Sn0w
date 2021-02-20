@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -17,9 +19,9 @@ public class NoSlowDown
 extends Module {
     @EventHandler
     private Listener<InputUpdateEvent> eventListener = new Listener<InputUpdateEvent>(event -> {
-        if (NoSlowDown.mc.field_71439_g.func_184587_cr() && !NoSlowDown.mc.field_71439_g.func_184218_aH()) {
-            event.getMovementInput().field_78902_a *= 5.0f;
-            event.getMovementInput().field_192832_b *= 5.0f;
+        if (NoSlowDown.mc.player.isHandActive() && !NoSlowDown.mc.player.isRiding()) {
+            event.getMovementInput().moveStrafe *= 5.0f;
+            event.getMovementInput().moveForward *= 5.0f;
         }
     }, new Predicate[0]);
 }

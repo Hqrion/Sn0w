@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -36,7 +38,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 public class AutoTool
 extends Module {
     @EventHandler
-    private Listener<PlayerInteractEvent.LeftClickBlock> leftClickListener = new Listener<PlayerInteractEvent.LeftClickBlock>(event -> this.equipBestTool(AutoTool.mc.field_71441_e.func_180495_p(event.getPos())), new Predicate[0]);
+    private Listener<PlayerInteractEvent.LeftClickBlock> leftClickListener = new Listener<PlayerInteractEvent.LeftClickBlock>(event -> this.equipBestTool(AutoTool.mc.world.getBlockState(event.getPos())), new Predicate[0]);
     @EventHandler
     private Listener<AttackEntityEvent> attackListener = new Listener<AttackEntityEvent>(event -> {
         if (event.getTarget() instanceof EntityEnderCrystal) {
@@ -51,8 +53,8 @@ extends Module {
         for (int i = 0; i < 9; ++i) {
             int eff;
             float speed;
-            ItemStack stack = AutoTool.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack.field_190928_g || !((speed = stack.func_150997_a(blockState)) > 1.0f) || !((double)(speed = (float)((double)speed + ((eff = EnchantmentHelper.func_77506_a((Enchantment)Enchantments.field_185305_q, (ItemStack)stack)) > 0 ? Math.pow(eff, 2.0) + 1.0 : 0.0))) > max)) continue;
+            ItemStack stack = AutoTool.mc.player.inventory.getStackInSlot(i);
+            if (stack.isEmpty || !((speed = stack.getDestroySpeed(blockState)) > 1.0f) || !((double)(speed = (float)((double)speed + ((eff = EnchantmentHelper.getEnchantmentLevel((Enchantment)Enchantments.EFFICIENCY, (ItemStack)stack)) > 0 ? Math.pow(eff, 2.0) + 1.0 : 0.0))) > max)) continue;
             max = speed;
             bestSlot = i;
         }
@@ -66,16 +68,16 @@ extends Module {
         double maxDamage = 0.0;
         for (int i = 0; i < 9; ++i) {
             double damage;
-            ItemStack stack = AutoTool.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack.field_190928_g) continue;
-            if (stack.func_77973_b() instanceof ItemTool) {
-                damage = (double)((ItemTool)stack.func_77973_b()).field_77865_bY + (double)EnchantmentHelper.func_152377_a((ItemStack)stack, (EnumCreatureAttribute)EnumCreatureAttribute.UNDEFINED);
+            ItemStack stack = AutoTool.mc.player.inventory.getStackInSlot(i);
+            if (stack.isEmpty) continue;
+            if (stack.getItem() instanceof ItemTool) {
+                damage = (double)((ItemTool)stack.getItem()).attackDamage + (double)EnchantmentHelper.getModifierForCreature((ItemStack)stack, (EnumCreatureAttribute)EnumCreatureAttribute.UNDEFINED);
                 if (!(damage > maxDamage)) continue;
                 maxDamage = damage;
                 bestSlot = i;
                 continue;
             }
-            if (!(stack.func_77973_b() instanceof ItemSword) || !((damage = (double)((ItemSword)stack.func_77973_b()).func_150931_i() + (double)EnchantmentHelper.func_152377_a((ItemStack)stack, (EnumCreatureAttribute)EnumCreatureAttribute.UNDEFINED)) > maxDamage)) continue;
+            if (!(stack.getItem() instanceof ItemSword) || !((damage = (double)((ItemSword)stack.getItem()).getAttackDamage() + (double)EnchantmentHelper.getModifierForCreature((ItemStack)stack, (EnumCreatureAttribute)EnumCreatureAttribute.UNDEFINED)) > maxDamage)) continue;
             maxDamage = damage;
             bestSlot = i;
         }
@@ -85,8 +87,8 @@ extends Module {
     }
 
     private static void equip(int slot) {
-        AutoTool.mc.field_71439_g.field_71071_by.field_70461_c = slot;
-        AutoTool.mc.field_71442_b.func_78750_j();
+        AutoTool.mc.player.inventory.currentItem = slot;
+        AutoTool.mc.playerController.syncCurrentPlayItem();
     }
 }
 

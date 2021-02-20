@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -34,35 +36,35 @@ public class Scaffold
 extends Module {
     @Override
     public void onUpdate() {
-        if (this.isDisabled() || Scaffold.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || Scaffold.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
-        int oldSlot = Wrapper.getPlayer().field_71071_by.field_70461_c;
-        Vec3d interpol1 = EntityUtil.getInterpolatedPos((Entity)Scaffold.mc.field_71439_g, 2.0f);
-        Vec3d interpol2 = EntityUtil.getInterpolatedPos((Entity)Scaffold.mc.field_71439_g, 4.0f);
+        int oldSlot = Wrapper.getPlayer().inventory.currentItem;
+        Vec3d interpol1 = EntityUtil.getInterpolatedPos((Entity)Scaffold.mc.player, 2.0f);
+        Vec3d interpol2 = EntityUtil.getInterpolatedPos((Entity)Scaffold.mc.player, 4.0f);
         this.doBlockScaffold(interpol1);
         this.doBlockScaffold(interpol2);
-        Wrapper.getPlayer().field_71071_by.field_70461_c = oldSlot;
+        Wrapper.getPlayer().inventory.currentItem = oldSlot;
     }
 
     private void doBlockScaffold(Vec3d vec) {
-        BlockPos blockPos = new BlockPos(vec).func_177977_b();
-        BlockPos belowBlockPos = blockPos.func_177977_b();
-        if (!Wrapper.getWorld().func_180495_p(blockPos).func_185904_a().func_76222_j()) {
+        BlockPos blockPos = new BlockPos(vec).down();
+        BlockPos belowBlockPos = blockPos.down();
+        if (!Wrapper.getWorld().getBlockState(blockPos).getMaterial().isReplaceable()) {
             return;
         }
         int newSlot = -1;
         for (int i = 0; i < 9; ++i) {
             Block block;
-            ItemStack stack = Wrapper.getPlayer().field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || !(stack.func_77973_b() instanceof ItemBlock) || BlockInteractionHelper.blackList.contains(block = ((ItemBlock)stack.func_77973_b()).func_179223_d()) || block instanceof BlockContainer || !Block.func_149634_a((Item)stack.func_77973_b()).func_176223_P().func_185913_b() || ((ItemBlock)stack.func_77973_b()).func_179223_d() instanceof BlockFalling && Wrapper.getWorld().func_180495_p(belowBlockPos).func_185904_a().func_76222_j()) continue;
+            ItemStack stack = Wrapper.getPlayer().inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock) || BlockInteractionHelper.blackList.contains(block = ((ItemBlock)stack.getItem()).getBlock()) || block instanceof BlockContainer || !Block.getBlockFromItem((Item)stack.getItem()).getDefaultState().isFullBlock() || ((ItemBlock)stack.getItem()).getBlock() instanceof BlockFalling && Wrapper.getWorld().getBlockState(belowBlockPos).getMaterial().isReplaceable()) continue;
             newSlot = i;
             break;
         }
         if (newSlot == -1) {
             return;
         }
-        Wrapper.getPlayer().field_71071_by.field_70461_c = newSlot;
+        Wrapper.getPlayer().inventory.currentItem = newSlot;
         if (!BlockInteractionHelper.checkForNeighbours(blockPos)) {
             return;
         }

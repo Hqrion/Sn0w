@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -27,12 +29,12 @@ extends Module {
         if (!(event.getScreen() instanceof GuiGameOver)) {
             return;
         }
-        if (this.deathCoords.getValue().booleanValue() && AutoRespawn.mc.field_71439_g.func_110143_aJ() <= 0.0f) {
-            Command.sendChatMessage(String.format("You died at x %d y %d z %d", (int)AutoRespawn.mc.field_71439_g.field_70165_t, (int)AutoRespawn.mc.field_71439_g.field_70163_u, (int)AutoRespawn.mc.field_71439_g.field_70161_v));
+        if (this.deathCoords.getValue().booleanValue() && AutoRespawn.mc.player.getHealth() <= 0.0f) {
+            Command.sendChatMessage(String.format("You died at x %d y %d z %d", (int)AutoRespawn.mc.player.posX, (int)AutoRespawn.mc.player.posY, (int)AutoRespawn.mc.player.posZ));
         }
-        if (this.autoRespawn.getValue().booleanValue() || this.antiBug.getValue().booleanValue() && AutoRespawn.mc.field_71439_g.func_110143_aJ() > 0.0f) {
-            AutoRespawn.mc.field_71439_g.func_71004_bE();
-            mc.func_147108_a(null);
+        if (this.autoRespawn.getValue().booleanValue() || this.antiBug.getValue().booleanValue() && AutoRespawn.mc.player.getHealth() > 0.0f) {
+            AutoRespawn.mc.player.respawnPlayer();
+            mc.displayGuiScreen(null);
         }
     }, new Predicate[0]);
 }

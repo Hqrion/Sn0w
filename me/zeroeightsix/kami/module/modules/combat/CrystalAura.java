@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -168,17 +170,17 @@ extends Module {
     private Listener<PacketEvent.Send> packetSendListener = new Listener<PacketEvent.Send>(event -> {
         Packet packet = event.getPacket();
         if (packet instanceof CPacketPlayer && this.spoofRotations.getValue().booleanValue() && isSpoofingAngles) {
-            ((CPacketPlayer)packet).field_149476_e = (float)yaw;
-            ((CPacketPlayer)packet).field_149473_f = (float)pitch;
+            ((CPacketPlayer)packet).yaw = (float)yaw;
+            ((CPacketPlayer)packet).pitch = (float)pitch;
         }
     }, new Predicate[0]);
     @EventHandler
     private Listener<PacketEvent.Receive> packetReceiveListener = new Listener<PacketEvent.Receive>(event -> {
         SPacketSoundEffect packet;
-        if (event.getPacket() instanceof SPacketSoundEffect && this.nodesync.getValue().booleanValue() && (packet = (SPacketSoundEffect)event.getPacket()).func_186977_b() == SoundCategory.BLOCKS && packet.func_186978_a() == SoundEvents.field_187539_bB) {
-            for (Entity e : Minecraft.func_71410_x().field_71441_e.field_72996_f) {
-                if (!(e instanceof EntityEnderCrystal) || !(e.func_70011_f(packet.func_149207_d(), packet.func_149211_e(), packet.func_149210_f()) <= 6.0)) continue;
-                e.func_70106_y();
+        if (event.getPacket() instanceof SPacketSoundEffect && this.nodesync.getValue().booleanValue() && (packet = (SPacketSoundEffect)event.getPacket()).getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+            for (Entity e : Minecraft.getMinecraft().world.loadedEntityList) {
+                if (!(e instanceof EntityEnderCrystal) || !(e.getDistance(packet.getX(), packet.getY(), packet.getZ()) <= 6.0)) continue;
+                e.setDead();
             }
         }
     }, new Predicate[0]);
@@ -186,17 +188,17 @@ extends Module {
     @Override
     public void onUpdate() {
         int crystalSlot;
-        if (this.AntiSuicide.getValue().booleanValue() && (double)(CrystalAura.mc.field_71439_g.func_110143_aJ() + CrystalAura.mc.field_71439_g.func_110139_bj()) <= this.AntiSuicideValue.getValue()) {
+        if (this.AntiSuicide.getValue().booleanValue() && (double)(CrystalAura.mc.player.getHealth() + CrystalAura.mc.player.getAbsorptionAmount()) <= this.AntiSuicideValue.getValue()) {
             return;
         }
-        this.crystals = CrystalAura.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == this.item).mapToInt(ItemStack::func_190916_E).sum();
+        this.crystals = CrystalAura.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == this.item).mapToInt(ItemStack::getCount).sum();
         this.isActive = false;
-        if (CrystalAura.mc.field_71439_g == null || CrystalAura.mc.field_71439_g.field_70128_L) {
+        if (CrystalAura.mc.player == null || CrystalAura.mc.player.isDead) {
             return;
         }
-        EntityEnderCrystal crystal = CrystalAura.mc.field_71441_e.field_72996_f.stream().filter(entity -> entity instanceof EntityEnderCrystal).filter(e -> (double)CrystalAura.mc.field_71439_g.func_70032_d(e) <= this.range.getValue()).filter(e -> this.breakModeCheck((Entity)e)).map(entity -> (EntityEnderCrystal)entity).min(Comparator.comparing(c -> Float.valueOf(CrystalAura.mc.field_71439_g.func_70032_d((Entity)c)))).orElse(null);
+        EntityEnderCrystal crystal = CrystalAura.mc.world.loadedEntityList.stream().filter(entity -> entity instanceof EntityEnderCrystal).filter(e -> (double)CrystalAura.mc.player.getDistance(e) <= this.range.getValue()).filter(e -> this.breakModeCheck((Entity)e)).map(entity -> (EntityEnderCrystal)entity).min(Comparator.comparing(c -> Float.valueOf(CrystalAura.mc.player.getDistance((Entity)c)))).orElse(null);
         if (this.explode.getValue().booleanValue() && crystal != null) {
-            if (!CrystalAura.mc.field_71439_g.func_70685_l((Entity)crystal) && (double)CrystalAura.mc.field_71439_g.func_70032_d((Entity)crystal) > this.walls.getValue()) {
+            if (!CrystalAura.mc.player.canEntityBeSeen((Entity)crystal) && (double)CrystalAura.mc.player.getDistance((Entity)crystal) > this.walls.getValue()) {
                 return;
             }
             if (this.waitTick.getValue() > 0) {
@@ -206,81 +208,81 @@ extends Module {
                 }
                 this.waitCounter = 0;
             }
-            if (this.antiWeakness.getValue().booleanValue() && CrystalAura.mc.field_71439_g.func_70644_a(MobEffects.field_76437_t)) {
+            if (this.antiWeakness.getValue().booleanValue() && CrystalAura.mc.player.isPotionActive(MobEffects.WEAKNESS)) {
                 if (!this.isAttacking) {
-                    this.oldSlot = CrystalAura.mc.field_71439_g.field_71071_by.field_70461_c;
+                    this.oldSlot = CrystalAura.mc.player.inventory.currentItem;
                     this.isAttacking = true;
                 }
                 this.newSlot = -1;
                 for (int i = 0; i < 9; ++i) {
-                    ItemStack stack = CrystalAura.mc.field_71439_g.field_71071_by.func_70301_a(i);
-                    if (stack == ItemStack.field_190927_a) continue;
-                    if (stack.func_77973_b() instanceof ItemSword) {
+                    ItemStack stack = CrystalAura.mc.player.inventory.getStackInSlot(i);
+                    if (stack == ItemStack.EMPTY) continue;
+                    if (stack.getItem() instanceof ItemSword) {
                         this.newSlot = i;
                         break;
                     }
-                    if (!(stack.func_77973_b() instanceof ItemTool)) continue;
+                    if (!(stack.getItem() instanceof ItemTool)) continue;
                     this.newSlot = i;
                     break;
                 }
                 if (this.newSlot != -1) {
-                    CrystalAura.mc.field_71439_g.field_71071_by.field_70461_c = this.newSlot;
+                    CrystalAura.mc.player.inventory.currentItem = this.newSlot;
                     this.switchCooldown = true;
                 }
             }
             this.isActive = true;
             if (this.rotate.getValue().booleanValue()) {
-                this.lookAtPacket(crystal.field_70165_t, crystal.field_70163_u, crystal.field_70161_v, (EntityPlayer)CrystalAura.mc.field_71439_g);
+                this.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, (EntityPlayer)CrystalAura.mc.player);
             }
-            CrystalAura.mc.field_71442_b.func_78764_a((EntityPlayer)CrystalAura.mc.field_71439_g, (Entity)crystal);
+            CrystalAura.mc.playerController.attackEntity((EntityPlayer)CrystalAura.mc.player, (Entity)crystal);
             this.isPlacing = "Exploding";
             if (this.OffhandBreak.getValue().booleanValue()) {
-                CrystalAura.mc.field_71439_g.func_184609_a(EnumHand.OFF_HAND);
+                CrystalAura.mc.player.swingArm(EnumHand.OFF_HAND);
             } else {
-                CrystalAura.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+                CrystalAura.mc.player.swingArm(EnumHand.MAIN_HAND);
             }
             if (this.CancelCrystallol.getValue().booleanValue()) {
-                crystal.func_70106_y();
-                CrystalAura.mc.field_71441_e.func_73022_a();
-                CrystalAura.mc.field_71441_e.func_72910_y();
+                crystal.setDead();
+                CrystalAura.mc.world.removeAllEntities();
+                CrystalAura.mc.world.getLoadedEntityList();
             }
             this.isActive = false;
             return;
         }
         CrystalAura.resetRotation();
         if (this.oldSlot != -1) {
-            CrystalAura.mc.field_71439_g.field_71071_by.field_70461_c = this.oldSlot;
+            CrystalAura.mc.player.inventory.currentItem = this.oldSlot;
             this.oldSlot = -1;
         }
         this.isAttacking = false;
         this.isActive = false;
-        int n = crystalSlot = CrystalAura.mc.field_71439_g.func_184614_ca().func_77973_b() == Items.field_185158_cP ? CrystalAura.mc.field_71439_g.field_71071_by.field_70461_c : -1;
+        int n = crystalSlot = CrystalAura.mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL ? CrystalAura.mc.player.inventory.currentItem : -1;
         if (crystalSlot == -1) {
             for (int l = 0; l < 9; ++l) {
-                if (CrystalAura.mc.field_71439_g.field_71071_by.func_70301_a(l).func_77973_b() != Items.field_185158_cP) continue;
+                if (CrystalAura.mc.player.inventory.getStackInSlot(l).getItem() != Items.END_CRYSTAL) continue;
                 crystalSlot = l;
                 break;
             }
         }
         boolean offhand = false;
-        if (CrystalAura.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_185158_cP) {
+        if (CrystalAura.mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
             offhand = true;
         } else if (crystalSlot == -1) {
             return;
         }
         List<BlockPos> blocks = this.findCrystalBlocks();
         ArrayList entities = new ArrayList();
-        entities.addAll(CrystalAura.mc.field_71441_e.field_73010_i.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.func_70005_c_())).sorted(Comparator.comparing(e -> Float.valueOf(CrystalAura.mc.field_71439_g.func_70032_d((Entity)e)))).collect(Collectors.toList()));
+        entities.addAll(CrystalAura.mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).sorted(Comparator.comparing(e -> Float.valueOf(CrystalAura.mc.player.getDistance((Entity)e)))).collect(Collectors.toList()));
         BlockPos q = null;
         double damage = 0.5;
         for (Entity entity2 : entities) {
-            if (entity2 == CrystalAura.mc.field_71439_g || ((EntityLivingBase)entity2).func_110143_aJ() <= 0.0f || entity2.field_70128_L || CrystalAura.mc.field_71439_g == null) continue;
+            if (entity2 == CrystalAura.mc.player || ((EntityLivingBase)entity2).getHealth() <= 0.0f || entity2.isDead || CrystalAura.mc.player == null) continue;
             for (BlockPos blockPos : blocks) {
                 double self;
-                double b = entity2.func_174818_b(blockPos);
+                double b = entity2.getDistanceSq(blockPos);
                 if (b >= this.endtocrystalrange.getValue() * Math.pow(3.6, 2.0)) continue;
-                double d = CrystalAura.calculateDamage((double)blockPos.func_177958_n() + 0.5, blockPos.func_177956_o() + 1, (double)blockPos.func_177952_p() + 0.5, entity2);
-                if (HoleUtils.isInHole((Entity)((EntityLivingBase)entity2)) && (double)(((EntityLivingBase)entity2).func_110143_aJ() + ((EntityLivingBase)entity2).func_110139_bj()) > this.facePlace.getValue() || !(d > damage) || !(d > this.minDmg.getValue()) || (self = (double)CrystalAura.calculateDamage((double)blockPos.func_177958_n() + 0.5, blockPos.func_177956_o() + 1, (double)blockPos.func_177952_p() + 0.5, (Entity)CrystalAura.mc.field_71439_g)) > d && !(d < (double)((EntityLivingBase)entity2).func_110143_aJ()) || self - 0.5 > (double)CrystalAura.mc.field_71439_g.func_110143_aJ() || self > this.maxSelfDmg.getValue()) continue;
+                double d = CrystalAura.calculateDamage((double)blockPos.getX() + 0.5, blockPos.getY() + 1, (double)blockPos.getZ() + 0.5, entity2);
+                if (HoleUtils.isInHole((Entity)((EntityLivingBase)entity2)) && (double)(((EntityLivingBase)entity2).getHealth() + ((EntityLivingBase)entity2).getAbsorptionAmount()) > this.facePlace.getValue() || !(d > damage) || !(d > this.minDmg.getValue()) || (self = (double)CrystalAura.calculateDamage((double)blockPos.getX() + 0.5, blockPos.getY() + 1, (double)blockPos.getZ() + 0.5, (Entity)CrystalAura.mc.player)) > d && !(d < (double)((EntityLivingBase)entity2).getHealth()) || self - 0.5 > (double)CrystalAura.mc.player.getHealth() || self > this.maxSelfDmg.getValue()) continue;
                 damage = d;
                 q = blockPos;
                 this.renderEnt = entity2;
@@ -296,16 +298,16 @@ extends Module {
         }
         this.render = q;
         if (this.place.getValue().booleanValue()) {
-            if (CrystalAura.mc.field_71439_g == null) {
+            if (CrystalAura.mc.player == null) {
                 return;
             }
             this.isActive = true;
             if (this.rotate.getValue().booleanValue()) {
-                this.lookAtPacket((double)q.func_177958_n() + 0.5, (double)q.func_177956_o() - 0.5, (double)q.func_177952_p() + 0.5, (EntityPlayer)CrystalAura.mc.field_71439_g);
+                this.lookAtPacket((double)q.getX() + 0.5, (double)q.getY() - 0.5, (double)q.getZ() + 0.5, (EntityPlayer)CrystalAura.mc.player);
             }
-            RayTraceResult result = CrystalAura.mc.field_71441_e.func_72933_a(new Vec3d(CrystalAura.mc.field_71439_g.field_70165_t, CrystalAura.mc.field_71439_g.field_70163_u + (double)CrystalAura.mc.field_71439_g.func_70047_e(), CrystalAura.mc.field_71439_g.field_70161_v), new Vec3d((double)q.func_177958_n() + 0.5, (double)q.func_177956_o() - 0.5, (double)q.func_177952_p() + 0.5));
+            RayTraceResult result = CrystalAura.mc.world.rayTraceBlocks(new Vec3d(CrystalAura.mc.player.posX, CrystalAura.mc.player.posY + (double)CrystalAura.mc.player.getEyeHeight(), CrystalAura.mc.player.posZ), new Vec3d((double)q.getX() + 0.5, (double)q.getY() - 0.5, (double)q.getZ() + 0.5));
             if (this.raytrace.getValue().booleanValue()) {
-                if (result == null || result.field_178784_b == null) {
+                if (result == null || result.sideHit == null) {
                     q = null;
                     this.f = null;
                     this.render = null;
@@ -313,9 +315,9 @@ extends Module {
                     this.isActive = false;
                     return;
                 }
-                this.f = result.field_178784_b;
+                this.f = result.sideHit;
             }
-            if (!offhand && CrystalAura.mc.field_71439_g.field_71071_by.field_70461_c != crystalSlot) {
+            if (!offhand && CrystalAura.mc.player.inventory.currentItem != crystalSlot) {
                 if (this.autoSwitch.getValue().booleanValue()) {
                     if (this.noGappleSwitch.getValue().booleanValue() && this.isEatingGap()) {
                         this.isActive = false;
@@ -323,7 +325,7 @@ extends Module {
                         return;
                     }
                     this.isActive = true;
-                    CrystalAura.mc.field_71439_g.field_71071_by.field_70461_c = crystalSlot;
+                    CrystalAura.mc.player.inventory.currentItem = crystalSlot;
                     CrystalAura.resetRotation();
                     this.switchCooldown = true;
                 }
@@ -333,19 +335,19 @@ extends Module {
                 this.switchCooldown = false;
                 return;
             }
-            if (q != null && CrystalAura.mc.field_71439_g != null) {
+            if (q != null && CrystalAura.mc.player != null) {
                 this.isActive = true;
                 if (this.raytrace.getValue().booleanValue() && this.f != null) {
-                    CrystalAura.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(q, this.f, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+                    CrystalAura.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(q, this.f, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
                     this.isPlacing = "Placing";
                     this.PlacedCrystals.add(q);
                 } else {
-                    CrystalAura.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+                    CrystalAura.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
                     this.isPlacing = "Placing";
                     this.PlacedCrystals.add(q);
                 }
                 if (ModuleManager.isModuleEnabled("AutoEZ")) {
-                    AutoGG.INSTANCE.addTargetedPlayer(this.renderEnt.func_70005_c_());
+                    AutoGG.INSTANCE.addTargetedPlayer(this.renderEnt.getName());
                 }
             }
         }
@@ -379,7 +381,7 @@ extends Module {
     }
 
     private boolean isEatingGap() {
-        return CrystalAura.mc.field_71439_g.func_184614_ca().func_77973_b() instanceof ItemAppleGold && CrystalAura.mc.field_71439_g.func_184587_cr();
+        return CrystalAura.mc.player.getHeldItemMainhand().getItem() instanceof ItemAppleGold && CrystalAura.mc.player.isHandActive();
     }
 
     private void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
@@ -388,29 +390,29 @@ extends Module {
     }
 
     private boolean canPlaceCrystal(BlockPos blockPos) {
-        BlockPos boost = blockPos.func_177982_a(0, 1, 0);
-        BlockPos boost2 = blockPos.func_177982_a(0, 2, 0);
+        BlockPos boost = blockPos.add(0, 1, 0);
+        BlockPos boost2 = blockPos.add(0, 2, 0);
         if (!this.thirteenmode.getValue().booleanValue()) {
-            return (CrystalAura.mc.field_71441_e.func_180495_p(blockPos).func_177230_c() == Blocks.field_150357_h || CrystalAura.mc.field_71441_e.func_180495_p(blockPos).func_177230_c() == Blocks.field_150343_Z) && CrystalAura.mc.field_71441_e.func_180495_p(boost).func_177230_c() == Blocks.field_150350_a && CrystalAura.mc.field_71441_e.func_180495_p(boost2).func_177230_c() == Blocks.field_150350_a && CrystalAura.mc.field_71441_e.func_72872_a(Entity.class, new AxisAlignedBB(boost)).isEmpty() && CrystalAura.mc.field_71441_e.func_72872_a(Entity.class, new AxisAlignedBB(boost2)).isEmpty();
+            return (CrystalAura.mc.world.getBlockState(blockPos).getBlock() == Blocks.BEDROCK || CrystalAura.mc.world.getBlockState(blockPos).getBlock() == Blocks.OBSIDIAN) && CrystalAura.mc.world.getBlockState(boost).getBlock() == Blocks.AIR && CrystalAura.mc.world.getBlockState(boost2).getBlock() == Blocks.AIR && CrystalAura.mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost)).isEmpty() && CrystalAura.mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost2)).isEmpty();
         }
-        return (CrystalAura.mc.field_71441_e.func_180495_p(blockPos).func_177230_c() == Blocks.field_150357_h || CrystalAura.mc.field_71441_e.func_180495_p(blockPos).func_177230_c() == Blocks.field_150343_Z) && CrystalAura.mc.field_71441_e.func_180495_p(boost).func_177230_c() == Blocks.field_150350_a && CrystalAura.mc.field_71441_e.func_72872_a(Entity.class, new AxisAlignedBB(boost2)).isEmpty();
+        return (CrystalAura.mc.world.getBlockState(blockPos).getBlock() == Blocks.BEDROCK || CrystalAura.mc.world.getBlockState(blockPos).getBlock() == Blocks.OBSIDIAN) && CrystalAura.mc.world.getBlockState(boost).getBlock() == Blocks.AIR && CrystalAura.mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost2)).isEmpty();
     }
 
     public static BlockPos getPlayerPos() {
-        return new BlockPos(Math.floor(CrystalAura.mc.field_71439_g.field_70165_t), Math.floor(CrystalAura.mc.field_71439_g.field_70163_u), Math.floor(CrystalAura.mc.field_71439_g.field_70161_v));
+        return new BlockPos(Math.floor(CrystalAura.mc.player.posX), Math.floor(CrystalAura.mc.player.posY), Math.floor(CrystalAura.mc.player.posZ));
     }
 
     private List<BlockPos> findCrystalBlocks() {
-        NonNullList positions = NonNullList.func_191196_a();
+        NonNullList positions = NonNullList.create();
         positions.addAll((Collection)this.getSphere(CrystalAura.getPlayerPos(), this.placeRange.getValue().floatValue(), this.placeRange.getValue().intValue(), false, true, 0).stream().filter(this::canPlaceCrystal).collect(Collectors.toList()));
         return positions;
     }
 
     public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
         ArrayList<BlockPos> circleblocks = new ArrayList<BlockPos>();
-        int cx = loc.func_177958_n();
-        int cy = loc.func_177956_o();
-        int cz = loc.func_177952_p();
+        int cx = loc.getX();
+        int cy = loc.getY();
+        int cz = loc.getZ();
         int x = cx - (int)r;
         while ((float)x <= (float)cx + r) {
             int z = cz - (int)r;
@@ -436,21 +438,21 @@ extends Module {
 
     public static void glBillboard(float x, float y, float z) {
         float scale = 0.048f;
-        GlStateManager.func_179137_b((double)((double)x - CrystalAura.mc.func_175598_ae().field_78725_b), (double)((double)y - CrystalAura.mc.func_175598_ae().field_78726_c), (double)((double)z - CrystalAura.mc.func_175598_ae().field_78723_d));
-        GlStateManager.func_187432_a((float)0.0f, (float)1.0f, (float)0.0f);
-        GlStateManager.func_179114_b((float)(-CrystalAura.mc.field_71439_g.field_70177_z), (float)0.0f, (float)1.0f, (float)0.0f);
-        GlStateManager.func_179114_b((float)CrystalAura.mc.field_71439_g.field_70125_A, (float)(CrystalAura.mc.field_71474_y.field_74320_O == 2 ? -1.0f : 1.0f), (float)0.0f, (float)0.0f);
-        GlStateManager.func_179152_a((float)(-scale), (float)(-scale), (float)scale);
+        GlStateManager.translate((double)((double)x - CrystalAura.mc.getRenderManager().renderPosX), (double)((double)y - CrystalAura.mc.getRenderManager().renderPosY), (double)((double)z - CrystalAura.mc.getRenderManager().renderPosZ));
+        GlStateManager.glNormal3f((float)0.0f, (float)1.0f, (float)0.0f);
+        GlStateManager.rotate((float)(-CrystalAura.mc.player.rotationYaw), (float)0.0f, (float)1.0f, (float)0.0f);
+        GlStateManager.rotate((float)CrystalAura.mc.player.rotationPitch, (float)(CrystalAura.mc.gameSettings.thirdPersonView == 2 ? -1.0f : 1.0f), (float)0.0f, (float)0.0f);
+        GlStateManager.scale((float)(-scale), (float)(-scale), (float)scale);
     }
 
     public static void glBillboardDistanceScaled(float x, float y, float z, EntityPlayer player, float scale) {
         CrystalAura.glBillboard(x, y, z);
-        int distance = (int)player.func_70011_f((double)x, (double)y, (double)z);
+        int distance = (int)player.getDistance((double)x, (double)y, (double)z);
         float scaleDistance = (float)distance / 2.0f / (2.0f + (2.0f - scale));
         if (scaleDistance < 1.0f) {
             scaleDistance = 1.0f;
         }
-        GlStateManager.func_179152_a((float)scaleDistance, (float)scaleDistance, (float)scaleDistance);
+        GlStateManager.scale((float)scaleDistance, (float)scaleDistance, (float)scaleDistance);
     }
 
     private void drawString(BlockPos blockPos, String str) {
@@ -467,38 +469,38 @@ extends Module {
             int blue = rgb & 0xFF;
             int n = hacker11 = ColourUtils.toRGBA(red, green, blue, 255);
         }
-        GlStateManager.func_179094_E();
-        CrystalAura.glBillboardDistanceScaled((float)blockPos.field_177962_a + 0.5f, (float)blockPos.field_177960_b + 0.5f, (float)blockPos.field_177961_c + 0.5f, (EntityPlayer)CrystalAura.mc.field_71439_g, 1.5f);
-        GlStateManager.func_179097_i();
-        GlStateManager.func_179137_b((double)(-((double)CrystalAura.mc.field_71466_p.func_78256_a(str) / 2.0)), (double)0.0, (double)0.0);
+        GlStateManager.pushMatrix();
+        CrystalAura.glBillboardDistanceScaled((float)blockPos.x + 0.5f, (float)blockPos.y + 0.5f, (float)blockPos.z + 0.5f, (EntityPlayer)CrystalAura.mc.player, 1.5f);
+        GlStateManager.disableDepth();
+        GlStateManager.translate((double)(-((double)CrystalAura.mc.fontRenderer.getStringWidth(str) / 2.0)), (double)0.0, (double)0.0);
         if (this.RenderDamage.getValue().booleanValue()) {
             if (this.DynamicColor.getValue().booleanValue()) {
                 if (this.hacker > 15) {
-                    CrystalAura.mc.field_71466_p.func_175063_a(str, 0.0f, -1.0f, 16515843);
+                    CrystalAura.mc.fontRenderer.drawStringWithShadow(str, 0.0f, -1.0f, 16515843);
                 }
                 if (this.hacker > 10 && this.hacker < 15) {
-                    CrystalAura.mc.field_71466_p.func_175063_a(str, 0.0f, -1.0f, 0xFFFF55);
+                    CrystalAura.mc.fontRenderer.drawStringWithShadow(str, 0.0f, -1.0f, 0xFFFF55);
                 }
                 if (this.hacker < 10) {
-                    CrystalAura.mc.field_71466_p.func_175063_a(str, 0.0f, -1.0f, 4586499);
+                    CrystalAura.mc.fontRenderer.drawStringWithShadow(str, 0.0f, -1.0f, 4586499);
                 }
             } else {
-                CrystalAura.mc.field_71466_p.func_175063_a(str, 0.0f, -1.0f, hacker11);
+                CrystalAura.mc.fontRenderer.drawStringWithShadow(str, 0.0f, -1.0f, hacker11);
             }
         }
-        GlStateManager.func_179121_F();
+        GlStateManager.popMatrix();
     }
 
     public static float calculateDamage(double posX, double posY, double posZ, Entity entity) {
         float doubleExplosionSize = 12.0f;
-        double distancedsize = entity.func_70011_f(posX, posY, posZ) / (double)doubleExplosionSize;
+        double distancedsize = entity.getDistance(posX, posY, posZ) / (double)doubleExplosionSize;
         Vec3d vec3d = new Vec3d(posX, posY, posZ);
-        double blockDensity = entity.field_70170_p.func_72842_a(vec3d, entity.func_174813_aQ());
+        double blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
         double v = (1.0 - distancedsize) * blockDensity;
         float damage = (int)((v * v + v) / 2.0 * 7.0 * (double)doubleExplosionSize + 1.0);
         double finald = 1.0;
         if (entity instanceof EntityLivingBase) {
-            finald = CrystalAura.getBlastReduction((EntityLivingBase)entity, CrystalAura.getDamageMultiplied(damage), new Explosion((World)CrystalAura.mc.field_71441_e, null, posX, posY, posZ, 6.0f, false, true));
+            finald = CrystalAura.getBlastReduction((EntityLivingBase)entity, CrystalAura.getDamageMultiplied(damage), new Explosion((World)CrystalAura.mc.world, null, posX, posY, posZ, 6.0f, false, true));
         }
         return (float)finald;
     }
@@ -506,27 +508,27 @@ extends Module {
     public static float getBlastReduction(EntityLivingBase entity, float damage, Explosion explosion) {
         if (entity instanceof EntityPlayer) {
             EntityPlayer ep = (EntityPlayer)entity;
-            DamageSource ds = DamageSource.func_94539_a((Explosion)explosion);
-            damage = CombatRules.func_189427_a((float)damage, (float)ep.func_70658_aO(), (float)((float)ep.func_110148_a(SharedMonsterAttributes.field_189429_h).func_111126_e()));
-            int k = EnchantmentHelper.func_77508_a((Iterable)ep.func_184193_aE(), (DamageSource)ds);
-            float f = MathHelper.func_76131_a((float)k, (float)0.0f, (float)20.0f);
+            DamageSource ds = DamageSource.causeExplosionDamage((Explosion)explosion);
+            damage = CombatRules.getDamageAfterAbsorb((float)damage, (float)ep.getTotalArmorValue(), (float)((float)ep.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue()));
+            int k = EnchantmentHelper.getEnchantmentModifierDamage((Iterable)ep.getArmorInventoryList(), (DamageSource)ds);
+            float f = MathHelper.clamp((float)k, (float)0.0f, (float)20.0f);
             damage *= 1.0f - f / 25.0f;
-            if (entity.func_70644_a(Potion.func_188412_a((int)11))) {
+            if (entity.isPotionActive(Potion.getPotionById((int)11))) {
                 damage -= damage / 4.0f;
             }
             return damage;
         }
-        damage = CombatRules.func_189427_a((float)damage, (float)entity.func_70658_aO(), (float)((float)entity.func_110148_a(SharedMonsterAttributes.field_189429_h).func_111126_e()));
+        damage = CombatRules.getDamageAfterAbsorb((float)damage, (float)entity.getTotalArmorValue(), (float)((float)entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue()));
         return damage;
     }
 
     private static float getDamageMultiplied(float damage) {
-        int diff = CrystalAura.mc.field_71441_e.func_175659_aa().func_151525_a();
+        int diff = CrystalAura.mc.world.getDifficulty().getId();
         return damage * (diff == 0 ? 0.0f : (diff == 2 ? 1.0f : (diff == 1 ? 0.5f : 1.5f)));
     }
 
     public static float calculateDamage(EntityEnderCrystal crystal, Entity entity) {
-        return CrystalAura.calculateDamage(crystal.field_70165_t, crystal.field_70163_u, crystal.field_70161_v, entity);
+        return CrystalAura.calculateDamage(crystal.posX, crystal.posY, crystal.posZ, entity);
     }
 
     private static void setYawAndPitch(float yaw1, float pitch1) {
@@ -537,16 +539,16 @@ extends Module {
 
     private static void resetRotation() {
         if (isSpoofingAngles) {
-            yaw = CrystalAura.mc.field_71439_g.field_70177_z;
-            pitch = CrystalAura.mc.field_71439_g.field_70125_A;
+            yaw = CrystalAura.mc.player.rotationYaw;
+            pitch = CrystalAura.mc.player.rotationPitch;
             isSpoofingAngles = false;
         }
     }
 
     public static double[] calculateLookAt(double px, double py, double pz, EntityPlayer me) {
-        double dirx = me.field_70165_t - px;
-        double diry = me.field_70163_u - py;
-        double dirz = me.field_70161_v - pz;
+        double dirx = me.posX - px;
+        double diry = me.posY - py;
+        double dirz = me.posZ - pz;
         double len = Math.sqrt(dirx * dirx + diry * diry + dirz * dirz);
         double pitch = Math.asin(diry /= len);
         double yaw = Math.atan2(dirz /= len, dirx /= len);
@@ -559,7 +561,7 @@ extends Module {
     public void onEnable() {
         KamiMod.EVENT_BUS.subscribe((Object)this);
         this.isActive = false;
-        if (this.chat.getValue().booleanValue() && CrystalAura.mc.field_71439_g != null) {
+        if (this.chat.getValue().booleanValue() && CrystalAura.mc.player != null) {
             Command.toggle_message(this);
         }
         this.PlacedCrystals.clear();
@@ -584,7 +586,7 @@ extends Module {
             if (this.renderEnt == null) {
                 return null;
             }
-            return this.renderEnt.func_70005_c_();
+            return this.renderEnt.getName();
         }
         if (this.renderEnt == null) {
             return null;
@@ -601,7 +603,7 @@ extends Module {
         }
         if (this.breakmode.getValue().equals((Object)BreakModes.OnlyOwn)) {
             for (BlockPos pos : new ArrayList<BlockPos>(this.PlacedCrystals)) {
-                if (pos == null || !(pos.func_185332_f((int)crystal.field_70165_t, (int)crystal.field_70163_u, (int)crystal.field_70161_v) <= 3.0)) continue;
+                if (pos == null || !(pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 3.0)) continue;
                 return true;
             }
         }

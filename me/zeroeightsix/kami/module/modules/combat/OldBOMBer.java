@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -61,7 +63,7 @@ extends Module {
 
     @Override
     protected void onEnable() {
-        if (OldBOMBer.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (OldBOMBer.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             this.disable();
             return;
         }
@@ -71,19 +73,19 @@ extends Module {
         this.bedSlot = -1;
         this.isSneaking = false;
         for (int i = 0; i < 9 && this.bedSlot == -1; ++i) {
-            ItemStack stack = OldBOMBer.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (!(stack.func_77973_b() instanceof ItemBed)) continue;
+            ItemStack stack = OldBOMBer.mc.player.inventory.getStackInSlot(i);
+            if (!(stack.getItem() instanceof ItemBed)) continue;
             this.bedSlot = i;
             break;
         }
-        if (OldBOMBer.mc.field_71476_x == null || OldBOMBer.mc.field_71476_x.func_178782_a() == null || OldBOMBer.mc.field_71476_x.func_178782_a().func_177984_a() == null) {
+        if (OldBOMBer.mc.objectMouseOver == null || OldBOMBer.mc.objectMouseOver.getBlockPos() == null || OldBOMBer.mc.objectMouseOver.getBlockPos().up() == null) {
             if (this.debugMessages.getValue().booleanValue()) {
                 Command.sendChatMessage("[AutoBedBomb] Not a valid place target, disabling.");
             }
             this.disable();
             return;
         }
-        this.placeTarget = OldBOMBer.mc.field_71476_x.func_178782_a().func_177984_a();
+        this.placeTarget = OldBOMBer.mc.objectMouseOver.getBlockPos().up();
         if (this.debugMessages.getValue().booleanValue()) {
             // empty if block
         }
@@ -91,7 +93,7 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (OldBOMBer.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (OldBOMBer.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (this.stage == 0 && !this.chainBed.getValue().booleanValue()) {
@@ -102,21 +104,21 @@ extends Module {
                 this.disable();
                 return;
             }
-            OldBOMBer.mc.field_71439_g.field_71071_by.field_70461_c = this.bedSlot;
+            OldBOMBer.mc.player.inventory.currentItem = this.bedSlot;
             this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
-            OldBOMBer.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)OldBOMBer.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            OldBOMBer.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)OldBOMBer.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             this.isSneaking = false;
             this.stage = 1;
         }
         if (this.stage == 1) {
-            OldBOMBer.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget, EnumFacing.UP, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+            OldBOMBer.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget, EnumFacing.UP, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
             this.disable();
         }
         if (this.stage == 0 && this.chainBed.getValue().booleanValue()) {
-            if (!(OldBOMBer.mc.field_71462_r != null && OldBOMBer.mc.field_71462_r instanceof GuiContainer || OldBOMBer.mc.field_71439_g.field_71071_by.func_70301_a(0).func_77973_b() == Items.field_151104_aV)) {
+            if (!(OldBOMBer.mc.currentScreen != null && OldBOMBer.mc.currentScreen instanceof GuiContainer || OldBOMBer.mc.player.inventory.getStackInSlot(0).getItem() == Items.BED)) {
                 for (int i = 9; i < 35; ++i) {
-                    if (OldBOMBer.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_151104_aV) continue;
-                    OldBOMBer.mc.field_71442_b.func_187098_a(OldBOMBer.mc.field_71439_g.field_71069_bz.field_75152_c, i, 0, ClickType.SWAP, (EntityPlayer)OldBOMBer.mc.field_71439_g);
+                    if (OldBOMBer.mc.player.inventory.getStackInSlot(i).getItem() != Items.BED) continue;
+                    OldBOMBer.mc.playerController.windowClick(OldBOMBer.mc.player.inventoryContainer.windowId, i, 0, ClickType.SWAP, (EntityPlayer)OldBOMBer.mc.player);
                     break;
                 }
             }
@@ -127,29 +129,29 @@ extends Module {
                 this.disable();
                 return;
             }
-            OldBOMBer.mc.field_71439_g.field_71071_by.field_70461_c = this.bedSlot;
+            OldBOMBer.mc.player.inventory.currentItem = this.bedSlot;
             this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
-            OldBOMBer.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)OldBOMBer.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            OldBOMBer.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)OldBOMBer.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             this.isSneaking = false;
-            OldBOMBer.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget, EnumFacing.UP, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+            OldBOMBer.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget, EnumFacing.UP, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
             this.disable();
             this.enable();
         }
     }
 
     private void placeBlock(BlockPos pos, EnumFacing side) {
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
         if (!this.isSneaking) {
-            OldBOMBer.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)OldBOMBer.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            OldBOMBer.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)OldBOMBer.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             this.isSneaking = true;
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         if (this.rotate.getValue().booleanValue()) {
             BlockInteractionHelper.faceVectorPacketInstant(hitVec);
         }
-        OldBOMBer.mc.field_71442_b.func_187099_a(OldBOMBer.mc.field_71439_g, OldBOMBer.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        OldBOMBer.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+        OldBOMBer.mc.playerController.processRightClickBlock(OldBOMBer.mc.player, OldBOMBer.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        OldBOMBer.mc.player.swingArm(EnumHand.MAIN_HAND);
     }
 }
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -14,19 +16,19 @@ public class FakeCreative
 extends Module {
     @Override
     public void onEnable() {
-        if (FakeCreative.mc.field_71439_g == null) {
+        if (FakeCreative.mc.player == null) {
             this.disable();
             return;
         }
-        FakeCreative.mc.field_71442_b.func_78746_a(GameType.CREATIVE);
+        FakeCreative.mc.playerController.setGameType(GameType.CREATIVE);
     }
 
     @Override
     public void onDisable() {
-        if (FakeCreative.mc.field_71439_g == null) {
+        if (FakeCreative.mc.player == null) {
             return;
         }
-        FakeCreative.mc.field_71442_b.func_78746_a(GameType.SURVIVAL);
+        FakeCreative.mc.playerController.setGameType(GameType.SURVIVAL);
     }
 }
 

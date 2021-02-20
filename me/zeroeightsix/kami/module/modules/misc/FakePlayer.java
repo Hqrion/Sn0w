@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -29,7 +31,7 @@ extends Module {
 
     @Override
     protected void onEnable() {
-        if (FakePlayer.mc.field_71439_g == null || FakePlayer.mc.field_71441_e == null) {
+        if (FakePlayer.mc.player == null || FakePlayer.mc.world == null) {
             this.disable();
             return;
         }
@@ -46,11 +48,11 @@ extends Module {
     }
 
     private void addFakePlayer(String uuid, String name, int entityId, int offsetX, int offsetZ) {
-        EntityOtherPlayerMP fakePlayer = new EntityOtherPlayerMP((World)FakePlayer.mc.field_71441_e, new GameProfile(UUID.fromString(uuid), name));
-        fakePlayer.func_82149_j((Entity)FakePlayer.mc.field_71439_g);
-        fakePlayer.field_70165_t += (double)offsetX;
-        fakePlayer.field_70161_v += (double)offsetZ;
-        FakePlayer.mc.field_71441_e.func_73027_a(entityId, (Entity)fakePlayer);
+        EntityOtherPlayerMP fakePlayer = new EntityOtherPlayerMP((World)FakePlayer.mc.world, new GameProfile(UUID.fromString(uuid), name));
+        fakePlayer.copyLocationAndAnglesFrom((Entity)FakePlayer.mc.player);
+        fakePlayer.posX += (double)offsetX;
+        fakePlayer.posZ += (double)offsetZ;
+        FakePlayer.mc.world.addEntityToWorld(entityId, (Entity)fakePlayer);
         this.fakePlayerIdList.add(entityId);
     }
 
@@ -63,12 +65,12 @@ extends Module {
 
     @Override
     protected void onDisable() {
-        if (FakePlayer.mc.field_71439_g == null || FakePlayer.mc.field_71441_e == null) {
+        if (FakePlayer.mc.player == null || FakePlayer.mc.world == null) {
             return;
         }
         if (this.fakePlayerIdList != null) {
             for (int id : this.fakePlayerIdList) {
-                FakePlayer.mc.field_71441_e.func_73028_b(id);
+                FakePlayer.mc.world.removeEntityFromWorld(id);
             }
         }
     }

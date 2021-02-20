@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -42,15 +44,15 @@ extends AbstractComponentUI<Radar> {
     public void renderComponent(Radar component, FontRenderer fontRenderer) {
         this.scale = 2.0f;
         GL11.glTranslated((double)(component.getWidth() / 2), (double)(component.getHeight() / 2), (double)0.0);
-        GlStateManager.func_179090_x();
-        GlStateManager.func_179140_f();
-        GlStateManager.func_179147_l();
-        GlStateManager.func_179129_p();
-        GlStateManager.func_179094_E();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.enableBlend();
+        GlStateManager.disableCull();
+        GlStateManager.pushMatrix();
         GL11.glColor4f((float)0.11f, (float)0.11f, (float)0.11f, (float)0.6f);
         RenderHelper.drawCircle(0.0f, 0.0f, 45.0f);
-        GL11.glRotatef((float)(Wrapper.getPlayer().field_70177_z + 180.0f), (float)0.0f, (float)0.0f, (float)-1.0f);
-        for (Entity e : Wrapper.getWorld().field_72996_f) {
+        GL11.glRotatef((float)(Wrapper.getPlayer().rotationYaw + 180.0f), (float)0.0f, (float)0.0f, (float)-1.0f);
+        for (Entity e : Wrapper.getWorld().loadedEntityList) {
             if (!(e instanceof EntityLiving)) continue;
             float red = 1.0f;
             float green = 1.0f;
@@ -59,10 +61,10 @@ extends AbstractComponentUI<Radar> {
             } else {
                 green = 0.0f;
             }
-            double dX = e.field_70165_t - Wrapper.getPlayer().field_70165_t;
-            double dZ = e.field_70161_v - Wrapper.getPlayer().field_70161_v;
+            double dX = e.posX - Wrapper.getPlayer().posX;
+            double dZ = e.posZ - Wrapper.getPlayer().posZ;
             double distance = Math.sqrt(Math.pow(dX, 2.0) + Math.pow(dZ, 2.0));
-            if (distance > (double)(45.0f * this.scale) || Math.abs(Wrapper.getPlayer().field_70163_u - e.field_70163_u) > 30.0) continue;
+            if (distance > (double)(45.0f * this.scale) || Math.abs(Wrapper.getPlayer().posY - e.posY) > 30.0) continue;
             GL11.glColor4f((float)red, (float)green, (float)0.0f, (float)0.5f);
             RenderHelper.drawCircle((float)((int)dX) / this.scale, (float)((int)dZ) / this.scale, 2.5f / this.scale);
         }
@@ -80,8 +82,8 @@ extends AbstractComponentUI<Radar> {
         component.getTheme().getFontRenderer().drawString(-component.getTheme().getFontRenderer().getStringWidth("-z") / 2, 45 - component.getTheme().getFontRenderer().getFontHeight(), "\u00a77z-");
         GL11.glRotatef((float)90.0f, (float)0.0f, (float)0.0f, (float)1.0f);
         component.getTheme().getFontRenderer().drawString(-component.getTheme().getFontRenderer().getStringWidth("+x") / 2, 45 - component.getTheme().getFontRenderer().getFontHeight(), "\u00a77x+");
-        GlStateManager.func_179121_F();
-        GlStateManager.func_179098_w();
+        GlStateManager.popMatrix();
+        GlStateManager.enableTexture2D();
         GL11.glTranslated((double)(-component.getWidth() / 2), (double)(-component.getHeight() / 2), (double)0.0);
     }
 }

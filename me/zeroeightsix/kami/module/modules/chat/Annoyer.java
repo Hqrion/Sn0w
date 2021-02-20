@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -94,7 +96,7 @@ extends Module {
     private Setting<Boolean> clearqueue = this.register(Settings.b("Clear Queue", false));
     @EventHandler
     public Listener<GuiScreenEvent.Displayed> guiScreenEventDisplayedlistener = new Listener<GuiScreenEvent.Displayed>(event -> {
-        if (this.isDisabled() || Annoyer.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || Annoyer.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (lastGuiScreenDisplayedEvent != null && lastGuiScreenDisplayedEvent.equals(event)) {
@@ -109,7 +111,7 @@ extends Module {
     }, new Predicate[0]);
     @EventHandler
     private Listener<PacketEvent.Receive> packetEventReceiveListener = new Listener<PacketEvent.Receive>(event -> {
-        if (this.isDisabled() || Annoyer.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || Annoyer.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (lastEventReceive != null && lastEventReceive.equals(event)) {
@@ -124,7 +126,7 @@ extends Module {
     }, new Predicate[0]);
     @EventHandler
     private Listener<PacketEvent.Send> packetEventSendListener = new Listener<PacketEvent.Send>(event -> {
-        if (this.isDisabled() || Annoyer.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || Annoyer.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (lastEventSend != null && lastEventSend.equals(event)) {
@@ -132,8 +134,8 @@ extends Module {
         }
         if ((this.items.getValue().booleanValue() || this.blocks.getValue().booleanValue()) && event.getPacket() instanceof CPacketPlayerDigging) {
             CPacketPlayerDigging p = (CPacketPlayerDigging)event.getPacket();
-            if (this.items.getValue().booleanValue() && Annoyer.mc.field_71439_g.func_184614_ca().func_77973_b() != Items.field_190931_a && (p.func_180762_c().equals((Object)CPacketPlayerDigging.Action.DROP_ITEM) || p.func_180762_c().equals((Object)CPacketPlayerDigging.Action.DROP_ALL_ITEMS))) {
-                String name = Annoyer.mc.field_71439_g.field_71071_by.func_70448_g().func_82833_r();
+            if (this.items.getValue().booleanValue() && Annoyer.mc.player.getHeldItemMainhand().getItem() != Items.AIR && (p.getAction().equals((Object)CPacketPlayerDigging.Action.DROP_ITEM) || p.getAction().equals((Object)CPacketPlayerDigging.Action.DROP_ALL_ITEMS))) {
+                String name = Annoyer.mc.player.inventory.getCurrentItem().getDisplayName();
                 if (droppedItems.containsKey(name)) {
                     droppedItems.put(name, droppedItems.get(name) + 1);
                 } else {
@@ -142,8 +144,8 @@ extends Module {
                 lastEventSend = event;
                 return;
             }
-            if (this.blocks.getValue().booleanValue() && p.func_180762_c().equals((Object)CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK)) {
-                String name = Annoyer.mc.field_71441_e.func_180495_p(p.func_179715_a()).func_177230_c().func_149732_F();
+            if (this.blocks.getValue().booleanValue() && p.getAction().equals((Object)CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK)) {
+                String name = Annoyer.mc.world.getBlockState(p.getPosition()).getBlock().getLocalizedName();
                 if (minedBlocks.containsKey(name)) {
                     minedBlocks.put(name, minedBlocks.get(name) + 1);
                 } else {
@@ -160,13 +162,13 @@ extends Module {
                 return;
             }
             if (this.blocks.getValue().booleanValue() && event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock) {
-                ItemStack itemStack = Annoyer.mc.field_71439_g.field_71071_by.func_70448_g();
-                if (itemStack.field_190928_g) {
+                ItemStack itemStack = Annoyer.mc.player.inventory.getCurrentItem();
+                if (itemStack.isEmpty) {
                     lastEventSend = event;
                     return;
                 }
-                if (itemStack.func_77973_b() instanceof ItemBlock) {
-                    String name = Annoyer.mc.field_71439_g.field_71071_by.func_70448_g().func_82833_r();
+                if (itemStack.getItem() instanceof ItemBlock) {
+                    String name = Annoyer.mc.player.inventory.getCurrentItem().getDisplayName();
                     if (placedBlocks.containsKey(name)) {
                         placedBlocks.put(name, placedBlocks.get(name) + 1);
                     } else {
@@ -180,8 +182,8 @@ extends Module {
     }, new Predicate[0]);
     @EventHandler
     public Listener<LivingEntityUseItemEvent.Finish> listener = new Listener<LivingEntityUseItemEvent.Finish>(event -> {
-        if (event.getEntity().equals((Object)Annoyer.mc.field_71439_g) && event.getItem().func_77973_b() instanceof ItemFood) {
-            String name = event.getItem().func_82833_r();
+        if (event.getEntity().equals((Object)Annoyer.mc.player) && event.getItem().getItem() instanceof ItemFood) {
+            String name = event.getItem().getDisplayName();
             if (consumedItems.containsKey(name)) {
                 consumedItems.put(name, consumedItems.get(name) + 1);
             } else {
@@ -195,7 +197,7 @@ extends Module {
     @Override
     public void onEnable() {
         timer = new Timer();
-        if (Annoyer.mc.field_71439_g == null) {
+        if (Annoyer.mc.player == null) {
             this.disable();
             return;
         }
@@ -220,7 +222,7 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (this.isDisabled() || Annoyer.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || Annoyer.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (this.clearqueue.getValue().booleanValue()) {
@@ -233,12 +235,12 @@ extends Module {
     private void getGameTickData() {
         if (this.distance.getValue().booleanValue()) {
             lastTickPos = thisTickPos;
-            thisTickPos = Annoyer.mc.field_71439_g.func_174791_d();
-            distanceTraveled += thisTickPos.func_72438_d(lastTickPos);
+            thisTickPos = Annoyer.mc.player.getPositionVector();
+            distanceTraveled += thisTickPos.distanceTo(lastTickPos);
         }
         if (this.playerheal.getValue().booleanValue() || this.playerdamage.getValue().booleanValue()) {
             lastTickHealth = thisTickHealth;
-            thisTickHealth = Annoyer.mc.field_71439_g.func_110143_aJ() + Annoyer.mc.field_71439_g.func_110139_bj();
+            thisTickHealth = Annoyer.mc.player.getHealth() + Annoyer.mc.player.getAbsorptionAmount();
             float healthDiff = thisTickHealth - lastTickHealth;
             if (healthDiff < 0.0f) {
                 lostHealth += healthDiff * -1.0f;
@@ -305,7 +307,7 @@ extends Module {
     }
 
     private void sendMessageCycle() {
-        if (this.isDisabled() || Annoyer.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (this.isDisabled() || Annoyer.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         this.composeGameTickData();
@@ -325,23 +327,23 @@ extends Module {
             sb.append("> ");
         }
         sb.append(s);
-        Annoyer.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketChatMessage(sb.toString().replaceAll("\u00a7", "")));
+        Annoyer.mc.player.connection.sendPacket((Packet)new CPacketChatMessage(sb.toString().replaceAll("\u00a7", "")));
     }
 
     private void clearTickData() {
         float health;
         Vec3d pos;
-        lastTickPos = pos = Annoyer.mc.field_71439_g.func_174791_d();
+        lastTickPos = pos = Annoyer.mc.player.getPositionVector();
         thisTickPos = pos;
         distanceTraveled = 0.0;
-        lastTickHealth = health = Annoyer.mc.field_71439_g.func_110143_aJ() + Annoyer.mc.field_71439_g.func_110139_bj();
+        lastTickHealth = health = Annoyer.mc.player.getHealth() + Annoyer.mc.player.getAbsorptionAmount();
         thisTickHealth = health;
         lostHealth = 0.0f;
         gainedHealth = 0.0f;
     }
 
     private Block getBlock(BlockPos pos) {
-        return Annoyer.mc.field_71441_e.func_180495_p(pos).func_177230_c();
+        return Annoyer.mc.world.getBlockState(pos).getBlock();
     }
 
     private void queueMessage(String message) {

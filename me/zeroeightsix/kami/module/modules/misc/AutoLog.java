@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -40,21 +42,21 @@ extends Module {
     long lastLog = System.currentTimeMillis();
     @EventHandler
     private Listener<LivingDamageEvent> livingDamageEventListener = new Listener<LivingDamageEvent>(event -> {
-        if (AutoLog.mc.field_71439_g == null) {
+        if (AutoLog.mc.player == null) {
             return;
         }
-        if (event.getEntity() == AutoLog.mc.field_71439_g && AutoLog.mc.field_71439_g.func_110143_aJ() - event.getAmount() < (float)this.health.getValue().intValue()) {
+        if (event.getEntity() == AutoLog.mc.player && AutoLog.mc.player.getHealth() - event.getAmount() < (float)this.health.getValue().intValue()) {
             this.log();
         }
     }, new Predicate[0]);
     @EventHandler
     private Listener<EntityJoinWorldEvent> entityJoinWorldEventListener = new Listener<EntityJoinWorldEvent>(event -> {
-        if (AutoLog.mc.field_71439_g == null) {
+        if (AutoLog.mc.player == null) {
             return;
         }
         if (event.getEntity() instanceof EntityEnderCrystal) {
-            Vec3d crystalPos = event.getEntity().func_174791_d();
-            if (AutoLog.mc.field_71439_g.func_110143_aJ() - CrystalAura.calculateDamage(crystalPos.field_72450_a, crystalPos.field_72448_b, crystalPos.field_72449_c, (Entity)AutoLog.mc.field_71439_g) < (float)this.health.getValue().intValue()) {
+            Vec3d crystalPos = event.getEntity().getPositionVector();
+            if (AutoLog.mc.player.getHealth() - CrystalAura.calculateDamage(crystalPos.x, crystalPos.y, crystalPos.z, (Entity)AutoLog.mc.player) < (float)this.health.getValue().intValue()) {
                 this.log();
             }
         }
@@ -67,7 +69,7 @@ extends Module {
             if (System.currentTimeMillis() - this.lastLog < 2000L) {
                 return;
             }
-            Minecraft.func_71410_x().func_147114_u().func_147253_a(new SPacketDisconnect((ITextComponent)new TextComponentString("AutoLogged")));
+            Minecraft.getMinecraft().getConnection().handleDisconnect(new SPacketDisconnect((ITextComponent)new TextComponentString("AutoLogged")));
         }
     }
 

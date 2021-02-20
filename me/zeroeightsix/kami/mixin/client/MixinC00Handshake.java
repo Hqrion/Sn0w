@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -21,22 +23,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value={C00Handshake.class})
 public class MixinC00Handshake {
     @Shadow
-    int field_149600_a;
+    int protocolVersion;
     @Shadow
-    String field_149598_b;
+    String ip;
     @Shadow
-    int field_149599_c;
+    int port;
     @Shadow
-    EnumConnectionState field_149597_d;
+    EnumConnectionState requestedState;
 
     @Inject(method={"writePacketData"}, at={@At(value="HEAD")}, cancellable=true)
     public void writePacketData(PacketBuffer buf, CallbackInfo info) {
         if (ModuleManager.isModuleEnabled("FakeVanilla")) {
             info.cancel();
-            buf.func_150787_b(this.field_149600_a);
-            buf.func_180714_a(this.field_149598_b);
-            buf.writeShort(this.field_149599_c);
-            buf.func_150787_b(this.field_149597_d.func_150759_c());
+            buf.writeVarInt(this.protocolVersion);
+            buf.writeString(this.ip);
+            buf.writeShort(this.port);
+            buf.writeVarInt(this.requestedState.getId());
         }
     }
 }

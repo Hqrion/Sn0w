@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -39,14 +41,14 @@ extends Module {
     private ConcurrentHashMap<String, Long> messageHistory;
     @EventHandler
     public Listener<PacketEvent.Receive> listener = new Listener<PacketEvent.Receive>(event -> {
-        if (AntiSpam.mc.field_71439_g == null || this.isDisabled()) {
+        if (AntiSpam.mc.player == null || this.isDisabled()) {
             return;
         }
         if (!(event.getPacket() instanceof SPacketChat)) {
             return;
         }
         SPacketChat sPacketChat = (SPacketChat)event.getPacket();
-        if (this.detectSpam(sPacketChat.func_148915_c().func_150260_c())) {
+        if (this.detectSpam(sPacketChat.getChatComponent().getUnformattedText())) {
             event.cancel();
         }
     }, new Predicate[0]);
@@ -160,7 +162,7 @@ extends Module {
         private static final String[] GREEN_TEXT = new String[]{"^<.+> >"};
         private static final String[] TRADE_CHAT = new String[]{"buy", "sell"};
         private static final String[] WEB_LINK = new String[]{"http:\\/\\/", "https:\\/\\/"};
-        private static final String[] OWN_MESSAGE = new String[]{"^<" + AntiSpam.access$1000().field_71439_g.func_70005_c_() + "> ", "^To .+: "};
+        private static final String[] OWN_MESSAGE = new String[]{"^<" + AntiSpam.access$1000().player.getName() + "> ", "^To .+: "};
 
         private FilterPatterns() {
         }

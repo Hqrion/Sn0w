@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -49,42 +51,42 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 public class BlockInteractHelperNew {
-    public static final List<Block> blackList = Arrays.asList(Blocks.field_150477_bB, Blocks.field_150486_ae, Blocks.field_150447_bR, Blocks.field_150462_ai, Blocks.field_150467_bQ, Blocks.field_150382_bo, Blocks.field_150438_bZ, Blocks.field_150409_cd, Blocks.field_150367_z);
-    public static final List<Block> shulkerList = Arrays.asList(Blocks.field_190977_dl, Blocks.field_190978_dm, Blocks.field_190979_dn, Blocks.field_190980_do, Blocks.field_190981_dp, Blocks.field_190982_dq, Blocks.field_190983_dr, Blocks.field_190984_ds, Blocks.field_190985_dt, Blocks.field_190986_du, Blocks.field_190987_dv, Blocks.field_190988_dw, Blocks.field_190989_dx, Blocks.field_190990_dy, Blocks.field_190991_dz, Blocks.field_190975_dA);
-    private static final Minecraft mc = Minecraft.func_71410_x();
+    public static final List<Block> blackList = Arrays.asList(Blocks.ENDER_CHEST, Blocks.CHEST, Blocks.TRAPPED_CHEST, Blocks.CRAFTING_TABLE, Blocks.ANVIL, Blocks.BREWING_STAND, Blocks.HOPPER, Blocks.DROPPER, Blocks.DISPENSER);
+    public static final List<Block> shulkerList = Arrays.asList(Blocks.WHITE_SHULKER_BOX, Blocks.ORANGE_SHULKER_BOX, Blocks.MAGENTA_SHULKER_BOX, Blocks.LIGHT_BLUE_SHULKER_BOX, Blocks.YELLOW_SHULKER_BOX, Blocks.LIME_SHULKER_BOX, Blocks.PINK_SHULKER_BOX, Blocks.GRAY_SHULKER_BOX, Blocks.SILVER_SHULKER_BOX, Blocks.CYAN_SHULKER_BOX, Blocks.PURPLE_SHULKER_BOX, Blocks.BLUE_SHULKER_BOX, Blocks.BROWN_SHULKER_BOX, Blocks.GREEN_SHULKER_BOX, Blocks.RED_SHULKER_BOX, Blocks.BLACK_SHULKER_BOX);
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static PlaceResult place(BlockPos pos, float p_Distance, boolean p_Rotate, boolean p_UseSlabRule) {
-        IBlockState l_State = BlockInteractHelperNew.mc.field_71441_e.func_180495_p(pos);
-        boolean l_Replaceable = l_State.func_185904_a().func_76222_j();
-        boolean l_IsSlabAtBlock = l_State.func_177230_c() instanceof BlockSlab;
+        IBlockState l_State = BlockInteractHelperNew.mc.world.getBlockState(pos);
+        boolean l_Replaceable = l_State.getMaterial().isReplaceable();
+        boolean l_IsSlabAtBlock = l_State.getBlock() instanceof BlockSlab;
         if (!l_Replaceable && !l_IsSlabAtBlock) {
             return PlaceResult.NotReplaceable;
         }
         if (!BlockInteractHelperNew.checkForNeighbours(pos)) {
             return PlaceResult.Neighbors;
         }
-        if (p_UseSlabRule && l_IsSlabAtBlock && !l_State.func_185917_h()) {
+        if (p_UseSlabRule && l_IsSlabAtBlock && !l_State.isFullCube()) {
             return PlaceResult.CantPlace;
         }
-        Vec3d eyesPos = new Vec3d(BlockInteractHelperNew.mc.field_71439_g.field_70165_t, BlockInteractHelperNew.mc.field_71439_g.field_70163_u + (double)BlockInteractHelperNew.mc.field_71439_g.func_70047_e(), BlockInteractHelperNew.mc.field_71439_g.field_70161_v);
+        Vec3d eyesPos = new Vec3d(BlockInteractHelperNew.mc.player.posX, BlockInteractHelperNew.mc.player.posY + (double)BlockInteractHelperNew.mc.player.getEyeHeight(), BlockInteractHelperNew.mc.player.posZ);
         for (EnumFacing side : EnumFacing.values()) {
             EnumActionResult l_Result2;
             Vec3d hitVec;
-            BlockPos neighbor = pos.func_177972_a(side);
-            EnumFacing side2 = side.func_176734_d();
-            if (!BlockInteractHelperNew.mc.field_71441_e.func_180495_p(neighbor).func_177230_c().func_176209_a(BlockInteractHelperNew.mc.field_71441_e.func_180495_p(neighbor), false) || !(eyesPos.func_72438_d(hitVec = new Vec3d((Vec3i)neighbor).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(side2.func_176730_m()).func_186678_a(0.5))) <= (double)p_Distance)) continue;
-            Block neighborPos = BlockInteractHelperNew.mc.field_71441_e.func_180495_p(neighbor).func_177230_c();
-            boolean activated = neighborPos.func_180639_a((World)BlockInteractHelperNew.mc.field_71441_e, pos, BlockInteractHelperNew.mc.field_71441_e.func_180495_p(pos), (EntityPlayer)BlockInteractHelperNew.mc.field_71439_g, EnumHand.MAIN_HAND, side, 0.0f, 0.0f, 0.0f);
+            BlockPos neighbor = pos.offset(side);
+            EnumFacing side2 = side.getOpposite();
+            if (!BlockInteractHelperNew.mc.world.getBlockState(neighbor).getBlock().canCollideCheck(BlockInteractHelperNew.mc.world.getBlockState(neighbor), false) || !(eyesPos.distanceTo(hitVec = new Vec3d((Vec3i)neighbor).add(0.5, 0.5, 0.5).add(new Vec3d(side2.getDirectionVec()).scale(0.5))) <= (double)p_Distance)) continue;
+            Block neighborPos = BlockInteractHelperNew.mc.world.getBlockState(neighbor).getBlock();
+            boolean activated = neighborPos.onBlockActivated((World)BlockInteractHelperNew.mc.world, pos, BlockInteractHelperNew.mc.world.getBlockState(pos), (EntityPlayer)BlockInteractHelperNew.mc.player, EnumHand.MAIN_HAND, side, 0.0f, 0.0f, 0.0f);
             if (blackList.contains(neighborPos) || shulkerList.contains(neighborPos) || activated) {
-                BlockInteractHelperNew.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)BlockInteractHelperNew.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+                BlockInteractHelperNew.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)BlockInteractHelperNew.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             }
             if (p_Rotate) {
                 BlockInteractHelperNew.faceVectorPacketInstant(hitVec);
             }
-            if ((l_Result2 = BlockInteractHelperNew.mc.field_71442_b.func_187099_a(BlockInteractHelperNew.mc.field_71439_g, BlockInteractHelperNew.mc.field_71441_e, neighbor, side2, hitVec, EnumHand.MAIN_HAND)) == EnumActionResult.FAIL) continue;
-            BlockInteractHelperNew.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+            if ((l_Result2 = BlockInteractHelperNew.mc.playerController.processRightClickBlock(BlockInteractHelperNew.mc.player, BlockInteractHelperNew.mc.world, neighbor, side2, hitVec, EnumHand.MAIN_HAND)) == EnumActionResult.FAIL) continue;
+            BlockInteractHelperNew.mc.player.swingArm(EnumHand.MAIN_HAND);
             if (activated) {
-                BlockInteractHelperNew.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)BlockInteractHelperNew.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+                BlockInteractHelperNew.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)BlockInteractHelperNew.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             }
             return PlaceResult.Placed;
         }
@@ -92,21 +94,21 @@ public class BlockInteractHelperNew {
     }
 
     public static ValidResult valid(BlockPos pos) {
-        if (!BlockInteractHelperNew.mc.field_71441_e.func_72855_b(new AxisAlignedBB(pos))) {
+        if (!BlockInteractHelperNew.mc.world.checkNoEntityCollision(new AxisAlignedBB(pos))) {
             return ValidResult.NoEntityCollision;
         }
         if (!BlockInteractHelperNew.checkForNeighbours(pos)) {
             return ValidResult.NoNeighbors;
         }
-        IBlockState l_State = BlockInteractHelperNew.mc.field_71441_e.func_180495_p(pos);
-        if (l_State.func_177230_c() == Blocks.field_150350_a) {
+        IBlockState l_State = BlockInteractHelperNew.mc.world.getBlockState(pos);
+        if (l_State.getBlock() == Blocks.AIR) {
             BlockPos[] l_Blocks;
-            for (BlockPos l_Pos : l_Blocks = new BlockPos[]{pos.func_177978_c(), pos.func_177968_d(), pos.func_177974_f(), pos.func_177976_e(), pos.func_177984_a(), pos.func_177977_b()}) {
-                IBlockState l_State2 = BlockInteractHelperNew.mc.field_71441_e.func_180495_p(l_Pos);
-                if (l_State2.func_177230_c() == Blocks.field_150350_a) continue;
+            for (BlockPos l_Pos : l_Blocks = new BlockPos[]{pos.north(), pos.south(), pos.east(), pos.west(), pos.up(), pos.down()}) {
+                IBlockState l_State2 = BlockInteractHelperNew.mc.world.getBlockState(l_Pos);
+                if (l_State2.getBlock() == Blocks.AIR) continue;
                 for (EnumFacing side : EnumFacing.values()) {
-                    BlockPos neighbor = pos.func_177972_a(side);
-                    if (!BlockInteractHelperNew.mc.field_71441_e.func_180495_p(neighbor).func_177230_c().func_176209_a(BlockInteractHelperNew.mc.field_71441_e.func_180495_p(neighbor), false)) continue;
+                    BlockPos neighbor = pos.offset(side);
+                    if (!BlockInteractHelperNew.mc.world.getBlockState(neighbor).getBlock().canCollideCheck(BlockInteractHelperNew.mc.world.getBlockState(neighbor), false)) continue;
                     return ValidResult.Ok;
                 }
             }
@@ -117,40 +119,40 @@ public class BlockInteractHelperNew {
 
     public static float[] getLegitRotations(Vec3d vec) {
         Vec3d eyesPos = BlockInteractHelperNew.getEyesPos();
-        double diffX = vec.field_72450_a - eyesPos.field_72450_a;
-        double diffY = vec.field_72448_b - eyesPos.field_72448_b;
-        double diffZ = vec.field_72449_c - eyesPos.field_72449_c;
+        double diffX = vec.x - eyesPos.x;
+        double diffY = vec.y - eyesPos.y;
+        double diffZ = vec.z - eyesPos.z;
         double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
         float yaw = (float)Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0f;
         float pitch = (float)(-Math.toDegrees(Math.atan2(diffY, diffXZ)));
-        return new float[]{BlockInteractHelperNew.mc.field_71439_g.field_70177_z + MathHelper.func_76142_g((float)(yaw - BlockInteractHelperNew.mc.field_71439_g.field_70177_z)), BlockInteractHelperNew.mc.field_71439_g.field_70125_A + MathHelper.func_76142_g((float)(pitch - BlockInteractHelperNew.mc.field_71439_g.field_70125_A))};
+        return new float[]{BlockInteractHelperNew.mc.player.rotationYaw + MathHelper.wrapDegrees((float)(yaw - BlockInteractHelperNew.mc.player.rotationYaw)), BlockInteractHelperNew.mc.player.rotationPitch + MathHelper.wrapDegrees((float)(pitch - BlockInteractHelperNew.mc.player.rotationPitch))};
     }
 
     private static Vec3d getEyesPos() {
-        return new Vec3d(BlockInteractHelperNew.mc.field_71439_g.field_70165_t, BlockInteractHelperNew.mc.field_71439_g.field_70163_u + (double)BlockInteractHelperNew.mc.field_71439_g.func_70047_e(), BlockInteractHelperNew.mc.field_71439_g.field_70161_v);
+        return new Vec3d(BlockInteractHelperNew.mc.player.posX, BlockInteractHelperNew.mc.player.posY + (double)BlockInteractHelperNew.mc.player.getEyeHeight(), BlockInteractHelperNew.mc.player.posZ);
     }
 
     public static void faceVectorPacketInstant(Vec3d vec) {
         float[] rotations = BlockInteractHelperNew.getLegitRotations(vec);
-        BlockInteractHelperNew.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], BlockInteractHelperNew.mc.field_71439_g.field_70122_E));
+        BlockInteractHelperNew.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], BlockInteractHelperNew.mc.player.onGround));
     }
 
     public static boolean canBeClicked(BlockPos pos) {
-        return BlockInteractHelperNew.getBlock(pos).func_176209_a(BlockInteractHelperNew.getState(pos), false);
+        return BlockInteractHelperNew.getBlock(pos).canCollideCheck(BlockInteractHelperNew.getState(pos), false);
     }
 
     private static Block getBlock(BlockPos pos) {
-        return BlockInteractHelperNew.getState(pos).func_177230_c();
+        return BlockInteractHelperNew.getState(pos).getBlock();
     }
 
     private static IBlockState getState(BlockPos pos) {
-        return BlockInteractHelperNew.mc.field_71441_e.func_180495_p(pos);
+        return BlockInteractHelperNew.mc.world.getBlockState(pos);
     }
 
     public static boolean checkForNeighbours(BlockPos blockPos) {
         if (!BlockInteractHelperNew.hasNeighbour(blockPos)) {
             for (EnumFacing side : EnumFacing.values()) {
-                BlockPos neighbour = blockPos.func_177972_a(side);
+                BlockPos neighbour = blockPos.offset(side);
                 if (!BlockInteractHelperNew.hasNeighbour(neighbour)) continue;
                 return true;
             }
@@ -161,8 +163,8 @@ public class BlockInteractHelperNew {
 
     private static boolean hasNeighbour(BlockPos blockPos) {
         for (EnumFacing side : EnumFacing.values()) {
-            BlockPos neighbour = blockPos.func_177972_a(side);
-            if (BlockInteractHelperNew.mc.field_71441_e.func_180495_p(neighbour).func_185904_a().func_76222_j()) continue;
+            BlockPos neighbour = blockPos.offset(side);
+            if (BlockInteractHelperNew.mc.world.getBlockState(neighbour).getMaterial().isReplaceable()) continue;
             return true;
         }
         return false;
@@ -170,9 +172,9 @@ public class BlockInteractHelperNew {
 
     public static List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
         ArrayList<BlockPos> circleblocks = new ArrayList<BlockPos>();
-        int cx = loc.func_177958_n();
-        int cy = loc.func_177956_o();
-        int cz = loc.func_177952_p();
+        int cx = loc.getX();
+        int cy = loc.getY();
+        int cz = loc.getZ();
         int x = cx - (int)r;
         while ((float)x <= (float)cx + r) {
             int z = cz - (int)r;

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -25,17 +27,17 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (AntiAFK.mc.field_71442_b.func_181040_m()) {
+        if (AntiAFK.mc.playerController.getIsHittingBlock()) {
             return;
         }
-        if (AntiAFK.mc.field_71439_g.field_70173_aa % 40 == 0 && this.swing.getValue().booleanValue()) {
-            mc.func_147114_u().func_147297_a((Packet)new CPacketAnimation(EnumHand.MAIN_HAND));
+        if (AntiAFK.mc.player.ticksExisted % 40 == 0 && this.swing.getValue().booleanValue()) {
+            mc.getConnection().sendPacket((Packet)new CPacketAnimation(EnumHand.MAIN_HAND));
         }
-        if (AntiAFK.mc.field_71439_g.field_70173_aa % 15 == 0 && this.turn.getValue().booleanValue()) {
-            AntiAFK.mc.field_71439_g.field_70177_z = this.random.nextInt(360) - 180;
+        if (AntiAFK.mc.player.ticksExisted % 15 == 0 && this.turn.getValue().booleanValue()) {
+            AntiAFK.mc.player.rotationYaw = this.random.nextInt(360) - 180;
         }
-        if (!this.swing.getValue().booleanValue() && !this.turn.getValue().booleanValue() && AntiAFK.mc.field_71439_g.field_70173_aa % 80 == 0) {
-            AntiAFK.mc.field_71439_g.func_70664_aZ();
+        if (!this.swing.getValue().booleanValue() && !this.turn.getValue().booleanValue() && AntiAFK.mc.player.ticksExisted % 80 == 0) {
+            AntiAFK.mc.player.jump();
         }
     }
 }

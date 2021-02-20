@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -36,7 +38,7 @@ public class Module {
     private Setting<Boolean> enabled = this.register(Settings.booleanBuilder("Enabled").withVisibility(aBoolean -> false).withValue(false).build());
     private Setting<Boolean> drawn = this.register(Settings.booleanBuilder("Drawn").withVisibility(aBoolean -> false).withValue(true).build());
     public boolean alwaysListening;
-    protected static final Minecraft mc = Minecraft.func_71410_x();
+    protected static final Minecraft mc = Minecraft.getMinecraft();
     public List<Setting> settingList = new ArrayList<Setting>();
 
     public Module() {
@@ -55,11 +57,11 @@ public class Module {
     }
 
     public static boolean nullCheck() {
-        return Module.mc.field_71439_g == null;
+        return Module.mc.player == null;
     }
 
     public static boolean fullNullCheck() {
-        return Module.mc.field_71439_g == null || Module.mc.field_71441_e == null;
+        return Module.mc.player == null || Module.mc.world == null;
     }
 
     public void onRender() {

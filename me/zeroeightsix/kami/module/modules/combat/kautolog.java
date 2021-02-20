@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -39,7 +41,7 @@ public class kautolog
 extends Module {
     private final Setting<Boolean> LogOut;
     private Set<EntityPlayer> sword = Collections.newSetFromMap(new WeakHashMap());
-    public static final Minecraft mc = Minecraft.func_71410_x();
+    public static final Minecraft mc = Minecraft.getMinecraft();
 
     public kautolog() {
         this.LogOut = this.register(Settings.b("Log", true));
@@ -47,9 +49,9 @@ extends Module {
 
     private boolean is32k(EntityPlayer player, ItemStack stack) {
         NBTTagList enchants;
-        if (stack.func_77973_b() instanceof ItemSword && (enchants = stack.func_77986_q()) != null) {
-            for (int i = 0; i < enchants.func_74745_c(); ++i) {
-                if (enchants.func_150305_b(i).func_74765_d("lvl") < Short.MAX_VALUE) continue;
+        if (stack.getItem() instanceof ItemSword && (enchants = stack.getEnchantmentTagList()) != null) {
+            for (int i = 0; i < enchants.tagCount(); ++i) {
+                if (enchants.getCompoundTagAt(i).getShort("lvl") < Short.MAX_VALUE) continue;
                 return true;
             }
         }
@@ -58,24 +60,24 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        for (EntityPlayer player : kautolog.mc.field_71441_e.field_73010_i) {
+        for (EntityPlayer player : kautolog.mc.world.playerEntities) {
             int once = 0;
-            int Distanc = (int)kautolog.mc.field_71439_g.func_70032_d((Entity)player);
-            if (player.equals((Object)kautolog.mc.field_71439_g)) continue;
-            if (this.is32k(player, player.field_184831_bT) && !this.sword.contains(player)) {
+            int Distanc = (int)kautolog.mc.player.getDistance((Entity)player);
+            if (player.equals((Object)kautolog.mc.player)) continue;
+            if (this.is32k(player, player.itemStackMainHand) && !this.sword.contains(player)) {
                 Command.sendChatMessage(ChatFormatting.RED + player.getDisplayNameString() + " has a 32k");
                 this.sword.add(player);
             }
-            if (this.is32k(player, player.field_184831_bT)) {
+            if (this.is32k(player, player.itemStackMainHand)) {
                 if (once > 0) {
                     return;
                 }
                 ++once;
-                if (this.LogOut.getValue().booleanValue() && !Friends.isFriend(player.func_70005_c_()) && Distanc < 15) {
-                    Minecraft.func_71410_x().func_147114_u().func_147253_a(new SPacketDisconnect((ITextComponent)new TextComponentString(ChatFormatting.BLUE + "Logged cuz nn tried to 32k you")));
+                if (this.LogOut.getValue().booleanValue() && !Friends.isFriend(player.getName()) && Distanc < 15) {
+                    Minecraft.getMinecraft().getConnection().handleDisconnect(new SPacketDisconnect((ITextComponent)new TextComponentString(ChatFormatting.BLUE + "Logged cuz nn tried to 32k you")));
                 }
             }
-            if (!this.sword.contains(player) || this.is32k(player, player.field_184831_bT)) continue;
+            if (!this.sword.contains(player) || this.is32k(player, player.itemStackMainHand)) continue;
             Command.sendChatMessage(ChatFormatting.GREEN + player.getDisplayNameString() + " 32k gone");
             this.sword.remove(player);
         }

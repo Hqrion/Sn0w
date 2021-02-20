@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -83,8 +85,8 @@ extends Command {
     }
 
     private Friends.Friend getFriendByName(String input) {
-        ArrayList infoMap = new ArrayList(Minecraft.func_71410_x().func_147114_u().func_175106_d());
-        NetworkPlayerInfo profile = infoMap.stream().filter(networkPlayerInfo -> networkPlayerInfo.func_178845_a().getName().equalsIgnoreCase(input)).findFirst().orElse(null);
+        ArrayList infoMap = new ArrayList(Minecraft.getMinecraft().getConnection().getPlayerInfoMap());
+        NetworkPlayerInfo profile = infoMap.stream().filter(networkPlayerInfo -> networkPlayerInfo.getGameProfile().getName().equalsIgnoreCase(input)).findFirst().orElse(null);
         if (profile == null) {
             Command.sendChatMessage("Player isn't online. Looking up UUID..");
             String s = FriendCommand.requestIDs("[\"" + input + "\"]");
@@ -109,7 +111,7 @@ extends Command {
             }
             return null;
         }
-        Friends.Friend f = new Friends.Friend(profile.func_178845_a().getName(), profile.func_178845_a().getId());
+        Friends.Friend f = new Friends.Friend(profile.getGameProfile().getName(), profile.getGameProfile().getId());
         return f;
     }
 

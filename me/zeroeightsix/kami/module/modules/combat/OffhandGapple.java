@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -45,52 +47,52 @@ extends Module {
     @Override
     public void onEnable() {
         if (ModuleManager.getModuleByName("Offhand Crystal").isEnabled()) {
-            if (Offhandtest.mc.field_71462_r instanceof GuiContainer) {
+            if (Offhandtest.mc.currentScreen instanceof GuiContainer) {
                 return;
             }
-            this.crystals = Offhandtest.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_190929_cY).mapToInt(ItemStack::func_190916_E).sum();
-            if (Offhandtest.mc.field_71439_g.func_184592_cb().func_77973_b() != Items.field_190929_cY) {
+            this.crystals = Offhandtest.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+            if (Offhandtest.mc.player.getHeldItemOffhand().getItem() != Items.TOTEM_OF_UNDYING) {
                 if (this.crystals == 0) {
                     return;
                 }
                 int t = -1;
                 for (int i = 0; i < 45; ++i) {
-                    if (Offhandtest.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_190929_cY) continue;
+                    if (Offhandtest.mc.player.inventory.getStackInSlot(i).getItem() != Items.TOTEM_OF_UNDYING) continue;
                     t = i;
                     break;
                 }
                 if (t == -1) {
                     return;
                 }
-                Offhandtest.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)Offhandtest.mc.field_71439_g);
-                Offhandtest.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)Offhandtest.mc.field_71439_g);
-                Offhandtest.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)Offhandtest.mc.field_71439_g);
+                Offhandtest.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)Offhandtest.mc.player);
+                Offhandtest.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)Offhandtest.mc.player);
+                Offhandtest.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)Offhandtest.mc.player);
             }
         }
     }
 
     @Override
     public void onDisable() {
-        if (OffhandGapple.mc.field_71462_r instanceof GuiContainer) {
+        if (OffhandGapple.mc.currentScreen instanceof GuiContainer) {
             return;
         }
-        this.crystals = OffhandGapple.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_190929_cY).mapToInt(ItemStack::func_190916_E).sum();
-        if (OffhandGapple.mc.field_71439_g.func_184592_cb().func_77973_b() != Items.field_190929_cY) {
+        this.crystals = OffhandGapple.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+        if (OffhandGapple.mc.player.getHeldItemOffhand().getItem() != Items.TOTEM_OF_UNDYING) {
             if (this.crystals == 0) {
                 return;
             }
             int t = -1;
             for (int i = 0; i < 45; ++i) {
-                if (OffhandGapple.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_190929_cY) continue;
+                if (OffhandGapple.mc.player.inventory.getStackInSlot(i).getItem() != Items.TOTEM_OF_UNDYING) continue;
                 t = i;
                 break;
             }
             if (t == -1) {
                 return;
             }
-            OffhandGapple.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
-            OffhandGapple.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
-            OffhandGapple.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
+            OffhandGapple.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
+            OffhandGapple.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
+            OffhandGapple.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
         }
     }
 
@@ -98,41 +100,41 @@ extends Module {
     public void onUpdate() {
         int i;
         int t;
-        this.item = Items.field_151153_ao;
-        if (OffhandGapple.mc.field_71462_r instanceof GuiContainer) {
+        this.item = Items.GOLDEN_APPLE;
+        if (OffhandGapple.mc.currentScreen instanceof GuiContainer) {
             return;
         }
         if (this.returnI) {
             t = -1;
             for (i = 0; i < 45; ++i) {
-                if (!OffhandGapple.mc.field_71439_g.field_71071_by.func_70301_a(i).func_190926_b()) continue;
+                if (!OffhandGapple.mc.player.inventory.getStackInSlot(i).isEmpty()) continue;
                 t = i;
                 break;
             }
             if (t == -1) {
                 return;
             }
-            OffhandGapple.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
+            OffhandGapple.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
             this.returnI = false;
         }
-        this.totems = OffhandGapple.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_190929_cY).mapToInt(ItemStack::func_190916_E).sum();
-        this.crystals = OffhandGapple.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == this.item).mapToInt(ItemStack::func_190916_E).sum();
-        if (this.shouldTotem() && OffhandGapple.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_190929_cY) {
+        this.totems = OffhandGapple.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+        this.crystals = OffhandGapple.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == this.item).mapToInt(ItemStack::getCount).sum();
+        if (this.shouldTotem() && OffhandGapple.mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) {
             ++this.totems;
-        } else if (!this.shouldTotem() && OffhandGapple.mc.field_71439_g.func_184592_cb().func_77973_b() == this.item) {
-            this.crystals += OffhandGapple.mc.field_71439_g.func_184592_cb().func_190916_E();
+        } else if (!this.shouldTotem() && OffhandGapple.mc.player.getHeldItemOffhand().getItem() == this.item) {
+            this.crystals += OffhandGapple.mc.player.getHeldItemOffhand().getCount();
         } else {
             if (this.moving) {
-                OffhandGapple.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
+                OffhandGapple.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
                 this.moving = false;
                 this.returnI = true;
                 return;
             }
-            if (OffhandGapple.mc.field_71439_g.field_71071_by.func_70445_o().func_190926_b()) {
-                if (!this.shouldTotem() && OffhandGapple.mc.field_71439_g.func_184592_cb().func_77973_b() == this.item) {
+            if (OffhandGapple.mc.player.inventory.getItemStack().isEmpty()) {
+                if (!this.shouldTotem() && OffhandGapple.mc.player.getHeldItemOffhand().getItem() == this.item) {
                     return;
                 }
-                if (this.shouldTotem() && OffhandGapple.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_190929_cY) {
+                if (this.shouldTotem() && OffhandGapple.mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) {
                     return;
                 }
                 if (!this.shouldTotem()) {
@@ -141,14 +143,14 @@ extends Module {
                     }
                     t = -1;
                     for (i = 0; i < 45; ++i) {
-                        if (OffhandGapple.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != this.item) continue;
+                        if (OffhandGapple.mc.player.inventory.getStackInSlot(i).getItem() != this.item) continue;
                         t = i;
                         break;
                     }
                     if (t == -1) {
                         return;
                     }
-                    OffhandGapple.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
+                    OffhandGapple.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
                     this.moving = true;
                 } else {
                     if (this.totems == 0) {
@@ -156,44 +158,44 @@ extends Module {
                     }
                     t = -1;
                     for (i = 0; i < 45; ++i) {
-                        if (OffhandGapple.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_190929_cY) continue;
+                        if (OffhandGapple.mc.player.inventory.getStackInSlot(i).getItem() != Items.TOTEM_OF_UNDYING) continue;
                         t = i;
                         break;
                     }
                     if (t == -1) {
                         return;
                     }
-                    OffhandGapple.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
+                    OffhandGapple.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
                     this.moving = true;
                 }
             } else {
                 t = -1;
                 for (i = 0; i < 45; ++i) {
-                    if (!OffhandGapple.mc.field_71439_g.field_71071_by.func_70301_a(i).func_190926_b()) continue;
+                    if (!OffhandGapple.mc.player.inventory.getStackInSlot(i).isEmpty()) continue;
                     t = i;
                     break;
                 }
                 if (t == -1) {
                     return;
                 }
-                OffhandGapple.mc.field_71442_b.func_187098_a(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.field_71439_g);
+                OffhandGapple.mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, (EntityPlayer)OffhandGapple.mc.player);
             }
         }
     }
 
     private boolean shouldTotem() {
-        boolean hp = OffhandGapple.mc.field_71439_g.func_110143_aJ() + OffhandGapple.mc.field_71439_g.func_110139_bj() <= (float)this.health.getValue().intValue();
+        boolean hp = OffhandGapple.mc.player.getHealth() + OffhandGapple.mc.player.getAbsorptionAmount() <= (float)this.health.getValue().intValue();
         boolean endcrystal = !this.isCrystalsAABBEmpty();
         return hp;
     }
 
     private boolean isEmpty(BlockPos pos) {
-        List crystalsInAABB = OffhandGapple.mc.field_71441_e.func_72839_b(null, new AxisAlignedBB(pos)).stream().filter(e -> e instanceof EntityEnderCrystal).collect(Collectors.toList());
+        List crystalsInAABB = OffhandGapple.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos)).stream().filter(e -> e instanceof EntityEnderCrystal).collect(Collectors.toList());
         return crystalsInAABB.isEmpty();
     }
 
     private boolean isCrystalsAABBEmpty() {
-        return this.isEmpty(OffhandGapple.mc.field_71439_g.func_180425_c().func_177982_a(1, 0, 0)) && this.isEmpty(OffhandGapple.mc.field_71439_g.func_180425_c().func_177982_a(-1, 0, 0)) && this.isEmpty(OffhandGapple.mc.field_71439_g.func_180425_c().func_177982_a(0, 0, 1)) && this.isEmpty(OffhandGapple.mc.field_71439_g.func_180425_c().func_177982_a(0, 0, -1)) && this.isEmpty(OffhandGapple.mc.field_71439_g.func_180425_c());
+        return this.isEmpty(OffhandGapple.mc.player.getPosition().add(1, 0, 0)) && this.isEmpty(OffhandGapple.mc.player.getPosition().add(-1, 0, 0)) && this.isEmpty(OffhandGapple.mc.player.getPosition().add(0, 0, 1)) && this.isEmpty(OffhandGapple.mc.player.getPosition().add(0, 0, -1)) && this.isEmpty(OffhandGapple.mc.player.getPosition());
     }
 }
 

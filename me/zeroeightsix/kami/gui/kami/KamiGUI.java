@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -98,7 +100,7 @@ extends GUI {
 
     private static String getEntityName(@Nonnull Entity entity) {
         if (entity instanceof EntityItem) {
-            return TextFormatting.DARK_AQUA + ((EntityItem)entity).func_92059_d().func_77973_b().func_77653_i(((EntityItem)entity).func_92059_d());
+            return TextFormatting.DARK_AQUA + ((EntityItem)entity).getItem().getItem().getItemStackDisplayName(((EntityItem)entity).getItem());
         }
         if (entity instanceof EntityWitherSkull) {
             return witherSkullText;
@@ -121,7 +123,7 @@ extends GUI {
         if (entity instanceof EntitySnowball) {
             return thrownSnowballText;
         }
-        return entity.func_70005_c_();
+        return entity.getName();
     }
 
     private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
@@ -140,19 +142,19 @@ extends GUI {
             component.setY(0);
         }
         if (docking.isBottom()) {
-            component.setY(Wrapper.getMinecraft().field_71440_d / DisplayGuiScreen.getScale() - component.getHeight() - 0);
+            component.setY(Wrapper.getMinecraft().displayHeight / DisplayGuiScreen.getScale() - component.getHeight() - 0);
         }
         if (docking.isLeft()) {
             component.setX(0);
         }
         if (docking.isRight()) {
-            component.setX(Wrapper.getMinecraft().field_71443_c / DisplayGuiScreen.getScale() - component.getWidth() - 0);
+            component.setX(Wrapper.getMinecraft().displayWidth / DisplayGuiScreen.getScale() - component.getWidth() - 0);
         }
         if (docking.isCenterHorizontal()) {
-            component.setX(Wrapper.getMinecraft().field_71443_c / (DisplayGuiScreen.getScale() * 2) - component.getWidth() / 2);
+            component.setX(Wrapper.getMinecraft().displayWidth / (DisplayGuiScreen.getScale() * 2) - component.getWidth() / 2);
         }
         if (docking.isCenterVertical()) {
-            component.setY(Wrapper.getMinecraft().field_71440_d / (DisplayGuiScreen.getScale() * 2) - component.getHeight() / 2);
+            component.setY(Wrapper.getMinecraft().displayHeight / (DisplayGuiScreen.getScale() * 2) - component.getHeight() / 2);
         }
     }
 
@@ -237,7 +239,7 @@ extends GUI {
             frame1.setY(y);
             this.addChild(frame1);
             nexty = Math.max(y + frame1.getHeight() + 10, nexty);
-            if (!((float)(x += frame1.getWidth() + 10) > (float)Wrapper.getMinecraft().field_71443_c / 1.2f)) continue;
+            if (!((float)(x += frame1.getWidth() + 10) > (float)Wrapper.getMinecraft().displayWidth / 1.2f)) continue;
             nexty = y = nexty;
         }
         this.addMouseListener(new MouseListener(){
@@ -289,7 +291,7 @@ extends GUI {
         information.addTickListener(() -> {
             information.setText("");
             Wrapper.getMinecraft();
-            information.addLine(KamiMod.getInstance().guiManager.getTextColor() + Math.round(LagCompensator.INSTANCE.getTickRate()) + ChatFormatting.DARK_GRAY.toString() + " tps  |  " + KamiMod.getInstance().guiManager.getTextColor() + Minecraft.field_71470_ab + ChatFormatting.DARK_GRAY.toString() + " fps");
+            information.addLine(KamiMod.getInstance().guiManager.getTextColor() + Math.round(LagCompensator.INSTANCE.getTickRate()) + ChatFormatting.DARK_GRAY.toString() + " tps  |  " + KamiMod.getInstance().guiManager.getTextColor() + Minecraft.debugFPS + ChatFormatting.DARK_GRAY.toString() + " fps");
         });
         frame.addChild(information);
         information.setFontRenderer(fontRenderer);
@@ -306,18 +308,18 @@ extends GUI {
             }
             list.setText("");
             Minecraft mc = Wrapper.getMinecraft();
-            if (mc.field_71439_g == null) {
+            if (mc.player == null) {
                 return;
             }
-            List entityList = mc.field_71441_e.field_73010_i;
+            List entityList = mc.world.playerEntities;
             Map<String, Integer> players = new HashMap();
             int playerStep = 0;
             for (Entity entity : entityList) {
                 if (playerStep >= KamiMod.getInstance().guiManager.getTextRadarPlayers()) break;
-                if (entity.func_70005_c_().equals(mc.field_71439_g.func_70005_c_())) continue;
+                if (entity.getName().equals(mc.player.getName())) continue;
                 EntityPlayer entityPlayer = (EntityPlayer)entity;
-                String posString = entityPlayer.field_70163_u > mc.field_71439_g.field_70163_u ? ChatFormatting.DARK_GREEN.toString() + "+" : (entityPlayer.field_70163_u == mc.field_71439_g.field_70163_u ? " " : ChatFormatting.DARK_RED.toString() + "-");
-                float hpRaw = entityPlayer.func_110143_aJ() + entityPlayer.func_110139_bj();
+                String posString = entityPlayer.posY > mc.player.posY ? ChatFormatting.DARK_GREEN.toString() + "+" : (entityPlayer.posY == mc.player.posY ? " " : ChatFormatting.DARK_RED.toString() + "-");
+                float hpRaw = entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount();
                 String hp = dfHealth.format(hpRaw);
                 if (hpRaw >= 20.0f) {
                     healthSB.append(ChatFormatting.GREEN.toString());
@@ -334,22 +336,22 @@ extends GUI {
                     int duration;
                     PotionEffect effectweakness;
                     int duration2;
-                    PotionEffect effectStrength = entityPlayer.func_70660_b(MobEffects.field_76420_g);
-                    if (effectStrength != null && entityPlayer.func_70644_a(MobEffects.field_76420_g) && (duration2 = effectStrength.func_76459_b()) > 0) {
+                    PotionEffect effectStrength = entityPlayer.getActivePotionEffect(MobEffects.STRENGTH);
+                    if (effectStrength != null && entityPlayer.isPotionActive(MobEffects.STRENGTH) && (duration2 = effectStrength.getDuration()) > 0) {
                         potsSB.append(ChatFormatting.RED);
                         potsSB.append(" S ");
                         potsSB.append(ChatFormatting.GRAY);
-                        potsSB.append(Potion.func_188410_a((PotionEffect)effectStrength, (float)1.0f));
+                        potsSB.append(Potion.getPotionDurationString((PotionEffect)effectStrength, (float)1.0f));
                     }
-                    if ((effectweakness = entityPlayer.func_70660_b(MobEffects.field_76437_t)) != null && entityPlayer.func_70644_a(MobEffects.field_76437_t) && (duration = effectweakness.func_76459_b()) > 0) {
+                    if ((effectweakness = entityPlayer.getActivePotionEffect(MobEffects.WEAKNESS)) != null && entityPlayer.isPotionActive(MobEffects.WEAKNESS) && (duration = effectweakness.getDuration()) > 0) {
                         potsSB.append(ChatFormatting.GOLD);
                         potsSB.append(" W ");
                         potsSB.append(ChatFormatting.GRAY);
-                        potsSB.append(Potion.func_188410_a((PotionEffect)effectweakness, (float)1.0f));
+                        potsSB.append(Potion.getPotionDurationString((PotionEffect)effectweakness, (float)1.0f));
                     }
                 }
-                String nameColor = Friends.isFriend(entity.func_70005_c_()) ? ChatFormatting.GREEN.toString() : KamiMod.getInstance().guiManager.getTextColor();
-                players.put(ChatFormatting.GRAY.toString() + posString + " " + healthSB.toString() + nameColor + entityPlayer.func_70005_c_() + potsSB.toString(), (int)mc.field_71439_g.func_70032_d((Entity)entityPlayer));
+                String nameColor = Friends.isFriend(entity.getName()) ? ChatFormatting.GREEN.toString() : KamiMod.getInstance().guiManager.getTextColor();
+                players.put(ChatFormatting.GRAY.toString() + posString + " " + healthSB.toString() + nameColor + entityPlayer.getName() + potsSB.toString(), (int)mc.player.getDistance((Entity)entityPlayer));
                 healthSB.setLength(0);
                 potsSB.setLength(0);
                 ++playerStep;
@@ -378,15 +380,15 @@ extends GUI {
 
             @Override
             public void onTick() {
-                if (this.mc.field_71439_g == null || !entityLabel.isVisible()) {
+                if (this.mc.player == null || !entityLabel.isVisible()) {
                     return;
                 }
-                ArrayList entityList = new ArrayList(this.mc.field_71441_e.field_72996_f);
+                ArrayList entityList = new ArrayList(this.mc.world.loadedEntityList);
                 if (entityList.size() <= 1) {
                     entityLabel.setText("");
                     return;
                 }
-                Map<String, Integer> entityCounts = entityList.stream().filter(Objects::nonNull).filter(e -> !(e instanceof EntityPlayer)).collect(Collectors.groupingBy(x$0 -> KamiGUI.getEntityName(x$0), Collectors.reducing(0, ent -> ent instanceof EntityItem ? Integer.valueOf(((EntityItem)ent).func_92059_d().func_190916_E()) : Integer.valueOf(1), Integer::sum)));
+                Map<String, Integer> entityCounts = entityList.stream().filter(Objects::nonNull).filter(e -> !(e instanceof EntityPlayer)).collect(Collectors.groupingBy(x$0 -> KamiGUI.getEntityName(x$0), Collectors.reducing(0, ent -> ent instanceof EntityItem ? Integer.valueOf(((EntityItem)ent).getItem().getCount()) : Integer.valueOf(1), Integer::sum)));
                 entityLabel.setText("");
                 Objects.requireNonNull(entityLabel);
                 entityCounts.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(entry -> TextFormatting.GRAY + (String)entry.getKey() + " " + TextFormatting.DARK_GRAY + "x" + entry.getValue()).forEach(entityLabel::addLine);
@@ -402,17 +404,17 @@ extends GUI {
         frame.setPinneable(true);
         final Label coordsLabel = new Label("");
         coordsLabel.addTickListener(new TickListener(){
-            Minecraft mc = Minecraft.func_71410_x();
+            Minecraft mc = Minecraft.getMinecraft();
 
             @Override
             public void onTick() {
-                boolean inHell = this.mc.field_71441_e.func_180494_b(this.mc.field_71439_g.func_180425_c()).func_185359_l().equals("Hell");
-                int posX = (int)this.mc.field_71439_g.field_70165_t;
-                int posY = (int)this.mc.field_71439_g.field_70163_u;
-                int posZ = (int)this.mc.field_71439_g.field_70161_v;
+                boolean inHell = this.mc.world.getBiome(this.mc.player.getPosition()).getBiomeName().equals("Hell");
+                int posX = (int)this.mc.player.posX;
+                int posY = (int)this.mc.player.posY;
+                int posZ = (int)this.mc.player.posZ;
                 float f = !inHell ? 0.125f : 8.0f;
-                int hposX = (int)(this.mc.field_71439_g.field_70165_t * (double)f);
-                int hposZ = (int)(this.mc.field_71439_g.field_70161_v * (double)f);
+                int hposX = (int)(this.mc.player.posX * (double)f);
+                int hposZ = (int)(this.mc.player.posZ * (double)f);
                 coordsLabel.setText(String.format(" %sf%,d%s7, %sf%,d%s7, %sf%,d %s7(%sf%,d%s7, %sf%,d%s7, %sf%,d%s7)", Character.valueOf(Command.SECTIONSIGN()), posX, Character.valueOf(Command.SECTIONSIGN()), Character.valueOf(Command.SECTIONSIGN()), posY, Character.valueOf(Command.SECTIONSIGN()), Character.valueOf(Command.SECTIONSIGN()), posZ, Character.valueOf(Command.SECTIONSIGN()), Character.valueOf(Command.SECTIONSIGN()), hposX, Character.valueOf(Command.SECTIONSIGN()), Character.valueOf(Command.SECTIONSIGN()), posY, Character.valueOf(Command.SECTIONSIGN()), Character.valueOf(Command.SECTIONSIGN()), hposZ, Character.valueOf(Command.SECTIONSIGN())));
             }
         });
@@ -435,11 +437,11 @@ extends GUI {
         frame.setPinneable(true);
         Label greeter = new Label("");
         greeter.addTickListener(() -> {
-            if (Wrapper.getMinecraft().field_71439_g == null) {
+            if (Wrapper.getMinecraft().player == null) {
                 return;
             }
             greeter.setText("");
-            greeter.addLine(ChatFormatting.DARK_GRAY.toString() + "Welcome " + KamiMod.getInstance().guiManager.getTextColor() + Wrapper.getMinecraft().field_71439_g.getDisplayNameString() + ChatFormatting.DARK_GRAY.toString() + " <3");
+            greeter.addLine(ChatFormatting.DARK_GRAY.toString() + "Welcome " + KamiMod.getInstance().guiManager.getTextColor() + Wrapper.getMinecraft().player.getDisplayNameString() + ChatFormatting.DARK_GRAY.toString() + " <3");
         });
         frame.addChild(greeter);
         greeter.setFontRenderer(fontRenderer);
@@ -451,7 +453,7 @@ extends GUI {
         frame.setPinneable(true);
         Label watermark = new Label("");
         watermark.addTickListener(() -> {
-            if (Wrapper.getMinecraft().field_71439_g == null) {
+            if (Wrapper.getMinecraft().player == null) {
                 return;
             }
             watermark.setText("");
@@ -466,7 +468,7 @@ extends GUI {
             frame1.setY(y);
             nexty = Math.max(y + frame1.getHeight() + 10, nexty);
             x += frame1.getWidth() + 10;
-            if ((float)(x * DisplayGuiScreen.getScale()) > (float)Wrapper.getMinecraft().field_71443_c / 1.2f) {
+            if ((float)(x * DisplayGuiScreen.getScale()) > (float)Wrapper.getMinecraft().displayWidth / 1.2f) {
                 nexty = y = nexty;
                 x = 10;
             }

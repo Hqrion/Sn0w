@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -59,75 +61,75 @@ extends Module {
     private Setting<Double> range = this.register(Settings.d("Range", 200.0));
     private Setting<Float> scale = this.register(Settings.floatBuilder("Scale").withMinimum(Float.valueOf(0.5f)).withMaximum(Float.valueOf(10.0f)).withValue(Float.valueOf(1.0f)).build());
     private Setting<Boolean> health = this.register(Settings.b("Health", true));
-    RenderItem itemRenderer = mc.func_175599_af();
+    RenderItem itemRenderer = mc.getRenderItem();
 
     @Override
     public void onWorldRender(RenderEvent event) {
-        if (Nametags.mc.func_175598_ae().field_78733_k == null) {
+        if (Nametags.mc.getRenderManager().options == null) {
             return;
         }
-        GlStateManager.func_179098_w();
-        GlStateManager.func_179140_f();
-        GlStateManager.func_179097_i();
-        Minecraft.func_71410_x().field_71441_e.field_72996_f.stream().filter(EntityUtil::isLiving).filter(entity -> !EntityUtil.isFakeLocalPlayer(entity)).filter(entity -> entity instanceof EntityPlayer ? this.players.getValue().booleanValue() && Nametags.mc.field_71439_g != entity : (EntityUtil.isPassive(entity) ? this.animals.getValue().booleanValue() : this.mobs.getValue().booleanValue())).filter(entity -> (double)Nametags.mc.field_71439_g.func_70032_d(entity) < this.range.getValue()).sorted(Comparator.comparing(entity -> Float.valueOf(-Nametags.mc.field_71439_g.func_70032_d(entity)))).forEach(this::drawNametag);
-        GlStateManager.func_179090_x();
-        RenderHelper.func_74518_a();
-        GlStateManager.func_179145_e();
-        GlStateManager.func_179126_j();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        Minecraft.getMinecraft().world.loadedEntityList.stream().filter(EntityUtil::isLiving).filter(entity -> !EntityUtil.isFakeLocalPlayer(entity)).filter(entity -> entity instanceof EntityPlayer ? this.players.getValue().booleanValue() && Nametags.mc.player != entity : (EntityUtil.isPassive(entity) ? this.animals.getValue().booleanValue() : this.mobs.getValue().booleanValue())).filter(entity -> (double)Nametags.mc.player.getDistance(entity) < this.range.getValue()).sorted(Comparator.comparing(entity -> Float.valueOf(-Nametags.mc.player.getDistance(entity)))).forEach(this::drawNametag);
+        GlStateManager.disableTexture2D();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
     }
 
     private void drawNametag(Entity entityIn) {
-        GlStateManager.func_179094_E();
-        Vec3d interp = EntityUtil.getInterpolatedRenderPos(entityIn, mc.func_184121_ak());
-        float yAdd = entityIn.field_70131_O + 0.5f - (entityIn.func_70093_af() ? 0.25f : 0.0f);
-        double x = interp.field_72450_a;
-        double y = interp.field_72448_b + (double)yAdd;
-        double z = interp.field_72449_c;
-        float viewerYaw = Nametags.mc.func_175598_ae().field_78735_i;
-        float viewerPitch = Nametags.mc.func_175598_ae().field_78732_j;
-        boolean isThirdPersonFrontal = Nametags.mc.func_175598_ae().field_78733_k.field_74320_O == 2;
-        GlStateManager.func_179137_b((double)x, (double)y, (double)z);
-        GlStateManager.func_179114_b((float)(-viewerYaw), (float)0.0f, (float)1.0f, (float)0.0f);
-        GlStateManager.func_179114_b((float)((float)(isThirdPersonFrontal ? -1 : 1) * viewerPitch), (float)1.0f, (float)0.0f, (float)0.0f);
-        float f = Nametags.mc.field_71439_g.func_70032_d(entityIn);
+        GlStateManager.pushMatrix();
+        Vec3d interp = EntityUtil.getInterpolatedRenderPos(entityIn, mc.getRenderPartialTicks());
+        float yAdd = entityIn.height + 0.5f - (entityIn.isSneaking() ? 0.25f : 0.0f);
+        double x = interp.x;
+        double y = interp.y + (double)yAdd;
+        double z = interp.z;
+        float viewerYaw = Nametags.mc.getRenderManager().playerViewY;
+        float viewerPitch = Nametags.mc.getRenderManager().playerViewX;
+        boolean isThirdPersonFrontal = Nametags.mc.getRenderManager().options.thirdPersonView == 2;
+        GlStateManager.translate((double)x, (double)y, (double)z);
+        GlStateManager.rotate((float)(-viewerYaw), (float)0.0f, (float)1.0f, (float)0.0f);
+        GlStateManager.rotate((float)((float)(isThirdPersonFrontal ? -1 : 1) * viewerPitch), (float)1.0f, (float)0.0f, (float)0.0f);
+        float f = Nametags.mc.player.getDistance(entityIn);
         float m = f / 8.0f * (float)Math.pow(1.258925437927246, this.scale.getValue().floatValue());
-        GlStateManager.func_179152_a((float)m, (float)m, (float)m);
-        FontRenderer fontRendererIn = Nametags.mc.field_71466_p;
-        GlStateManager.func_179152_a((float)-0.025f, (float)-0.025f, (float)0.025f);
-        String str = entityIn.func_70005_c_() + (this.health.getValue() != false ? " " + Command.SECTIONSIGN() + "c" + Math.round(((EntityLivingBase)entityIn).func_110143_aJ() + (entityIn instanceof EntityPlayer ? ((EntityPlayer)entityIn).func_110139_bj() : 0.0f)) : "");
-        int i = fontRendererIn.func_78256_a(str) / 2;
-        GlStateManager.func_179147_l();
-        GlStateManager.func_187428_a((GlStateManager.SourceFactor)GlStateManager.SourceFactor.SRC_ALPHA, (GlStateManager.DestFactor)GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, (GlStateManager.SourceFactor)GlStateManager.SourceFactor.ONE, (GlStateManager.DestFactor)GlStateManager.DestFactor.ZERO);
-        GlStateManager.func_179090_x();
-        Tessellator tessellator = Tessellator.func_178181_a();
-        BufferBuilder bufferbuilder = tessellator.func_178180_c();
+        GlStateManager.scale((float)m, (float)m, (float)m);
+        FontRenderer fontRendererIn = Nametags.mc.fontRenderer;
+        GlStateManager.scale((float)-0.025f, (float)-0.025f, (float)0.025f);
+        String str = entityIn.getName() + (this.health.getValue() != false ? " " + Command.SECTIONSIGN() + "c" + Math.round(((EntityLivingBase)entityIn).getHealth() + (entityIn instanceof EntityPlayer ? ((EntityPlayer)entityIn).getAbsorptionAmount() : 0.0f)) : "");
+        int i = fontRendererIn.getStringWidth(str) / 2;
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate((GlStateManager.SourceFactor)GlStateManager.SourceFactor.SRC_ALPHA, (GlStateManager.DestFactor)GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, (GlStateManager.SourceFactor)GlStateManager.SourceFactor.ONE, (GlStateManager.DestFactor)GlStateManager.DestFactor.ZERO);
+        GlStateManager.disableTexture2D();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
         GL11.glTranslatef((float)0.0f, (float)-20.0f, (float)0.0f);
-        bufferbuilder.func_181668_a(7, DefaultVertexFormats.field_181706_f);
-        bufferbuilder.func_181662_b((double)(-i - 1), 8.0, 0.0).func_181666_a(0.0f, 0.0f, 0.0f, 0.5f).func_181675_d();
-        bufferbuilder.func_181662_b((double)(-i - 1), 19.0, 0.0).func_181666_a(0.0f, 0.0f, 0.0f, 0.5f).func_181675_d();
-        bufferbuilder.func_181662_b((double)(i + 1), 19.0, 0.0).func_181666_a(0.0f, 0.0f, 0.0f, 0.5f).func_181675_d();
-        bufferbuilder.func_181662_b((double)(i + 1), 8.0, 0.0).func_181666_a(0.0f, 0.0f, 0.0f, 0.5f).func_181675_d();
-        tessellator.func_78381_a();
-        bufferbuilder.func_181668_a(2, DefaultVertexFormats.field_181706_f);
-        bufferbuilder.func_181662_b((double)(-i - 1), 8.0, 0.0).func_181666_a(0.1f, 0.1f, 0.1f, 0.1f).func_181675_d();
-        bufferbuilder.func_181662_b((double)(-i - 1), 19.0, 0.0).func_181666_a(0.1f, 0.1f, 0.1f, 0.1f).func_181675_d();
-        bufferbuilder.func_181662_b((double)(i + 1), 19.0, 0.0).func_181666_a(0.1f, 0.1f, 0.1f, 0.1f).func_181675_d();
-        bufferbuilder.func_181662_b((double)(i + 1), 8.0, 0.0).func_181666_a(0.1f, 0.1f, 0.1f, 0.1f).func_181675_d();
-        tessellator.func_78381_a();
-        GlStateManager.func_179098_w();
-        GlStateManager.func_187432_a((float)0.0f, (float)1.0f, (float)0.0f);
-        fontRendererIn.func_78276_b(str, -i, 10, entityIn instanceof EntityPlayer ? (Friends.isFriend(entityIn.func_70005_c_()) ? 0x11EE11 : 0xFFFFFF) : 0xFFFFFF);
-        GlStateManager.func_187432_a((float)0.0f, (float)0.0f, (float)0.0f);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.pos((double)(-i - 1), 8.0, 0.0).color(0.0f, 0.0f, 0.0f, 0.5f).endVertex();
+        bufferbuilder.pos((double)(-i - 1), 19.0, 0.0).color(0.0f, 0.0f, 0.0f, 0.5f).endVertex();
+        bufferbuilder.pos((double)(i + 1), 19.0, 0.0).color(0.0f, 0.0f, 0.0f, 0.5f).endVertex();
+        bufferbuilder.pos((double)(i + 1), 8.0, 0.0).color(0.0f, 0.0f, 0.0f, 0.5f).endVertex();
+        tessellator.draw();
+        bufferbuilder.begin(2, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.pos((double)(-i - 1), 8.0, 0.0).color(0.1f, 0.1f, 0.1f, 0.1f).endVertex();
+        bufferbuilder.pos((double)(-i - 1), 19.0, 0.0).color(0.1f, 0.1f, 0.1f, 0.1f).endVertex();
+        bufferbuilder.pos((double)(i + 1), 19.0, 0.0).color(0.1f, 0.1f, 0.1f, 0.1f).endVertex();
+        bufferbuilder.pos((double)(i + 1), 8.0, 0.0).color(0.1f, 0.1f, 0.1f, 0.1f).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.glNormal3f((float)0.0f, (float)1.0f, (float)0.0f);
+        fontRendererIn.drawString(str, -i, 10, entityIn instanceof EntityPlayer ? (Friends.isFriend(entityIn.getName()) ? 0x11EE11 : 0xFFFFFF) : 0xFFFFFF);
+        GlStateManager.glNormal3f((float)0.0f, (float)0.0f, (float)0.0f);
         GL11.glTranslatef((float)0.0f, (float)20.0f, (float)0.0f);
-        GlStateManager.func_179152_a((float)-40.0f, (float)-40.0f, (float)40.0f);
+        GlStateManager.scale((float)-40.0f, (float)-40.0f, (float)40.0f);
         ArrayList equipment = new ArrayList();
-        entityIn.func_184214_aD().forEach(itemStack -> {
+        entityIn.getHeldEquipment().forEach(itemStack -> {
             if (itemStack != null) {
                 equipment.add(itemStack);
             }
         });
         ArrayList armour = new ArrayList();
-        entityIn.func_184193_aE().forEach(itemStack -> {
+        entityIn.getArmorInventoryList().forEach(itemStack -> {
             if (itemStack != null) {
                 armour.add(itemStack);
             }
@@ -135,24 +137,24 @@ extends Module {
         Collections.reverse(armour);
         equipment.addAll(armour);
         if (equipment.size() == 0) {
-            GlStateManager.func_179121_F();
+            GlStateManager.popMatrix();
             return;
         }
-        Collection a = equipment.stream().filter(itemStack -> !itemStack.func_190926_b()).collect(Collectors.toList());
-        GlStateManager.func_179137_b((double)((float)(a.size() - 1) / 2.0f * 0.5f), (double)0.6, (double)0.0);
+        Collection a = equipment.stream().filter(itemStack -> !itemStack.isEmpty()).collect(Collectors.toList());
+        GlStateManager.translate((double)((float)(a.size() - 1) / 2.0f * 0.5f), (double)0.6, (double)0.0);
         a.forEach(itemStack -> {
-            GlStateManager.func_179123_a();
-            RenderHelper.func_74519_b();
-            GlStateManager.func_179139_a((double)0.5, (double)0.5, (double)0.0);
-            GlStateManager.func_179140_f();
-            this.itemRenderer.field_77023_b = -5.0f;
-            this.itemRenderer.func_181564_a(itemStack, itemStack.func_77973_b() == Items.field_185159_cQ ? ItemCameraTransforms.TransformType.FIXED : ItemCameraTransforms.TransformType.NONE);
-            this.itemRenderer.field_77023_b = 0.0f;
-            GlStateManager.func_179152_a((float)2.0f, (float)2.0f, (float)0.0f);
-            GlStateManager.func_179099_b();
-            GlStateManager.func_179109_b((float)-0.5f, (float)0.0f, (float)0.0f);
+            GlStateManager.pushAttrib();
+            RenderHelper.enableStandardItemLighting();
+            GlStateManager.scale((double)0.5, (double)0.5, (double)0.0);
+            GlStateManager.disableLighting();
+            this.itemRenderer.zLevel = -5.0f;
+            this.itemRenderer.renderItem(itemStack, itemStack.getItem() == Items.SHIELD ? ItemCameraTransforms.TransformType.FIXED : ItemCameraTransforms.TransformType.NONE);
+            this.itemRenderer.zLevel = 0.0f;
+            GlStateManager.scale((float)2.0f, (float)2.0f, (float)0.0f);
+            GlStateManager.popAttrib();
+            GlStateManager.translate((float)-0.5f, (float)0.0f, (float)0.0f);
         });
-        GlStateManager.func_179121_F();
+        GlStateManager.popMatrix();
     }
 }
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -43,29 +45,29 @@ extends Module {
     public void onRender() {
         if (this.getTarget() != null && this.getTarget() instanceof EntityPlayer) {
             EntityLivingBase ent = this.getTarget();
-            Gui.func_73734_a((int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 - 14), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 25 + 50), (int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 + 14), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 - 1 + 50), (int)new Color(2, 2, 2, 255).getRGB());
-            Gui.func_73734_a((int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 - 52), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 23 + 50), (int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 + 52), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 52 + 50), (int)new Color(30, 30, 30, 255).getRGB());
-            Gui.func_73734_a((int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 - 51), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 24 + 50), (int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 + 51), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 51 + 50), (int)new Color(35, 35, 35, 40).getRGB());
-            Gui.func_73734_a((int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 - 50), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 25 + 50), (int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 + 50), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 50 + 50), (int)new Color(14, 14, 14, 255).getRGB());
-            Gui.func_73734_a((int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 - 13), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 24 + 50), (int)(TargetHudTest.getScaledResolution().func_78326_a() / 2 + 13), (int)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 50), (int)new Color(47, 47, 47, 255).getRGB());
-            this.drawAltFace(this.getTarget(), TargetHudTest.getScaledResolution().func_78326_a() / 2 - 12, TargetHudTest.getScaledResolution().func_78328_b() / 2 + 1 + 50, 24, 24);
-            TargetHudTest.mc.field_71466_p.func_175063_a(this.getTarget().func_70005_c_(), (float)(TargetHudTest.getScaledResolution().func_78326_a() / 2 - TargetHudTest.mc.field_71466_p.func_78256_a(this.getTarget().func_70005_c_()) / 2), (float)(TargetHudTest.getScaledResolution().func_78328_b() / 2 + 27 + 50), -1);
-            GlStateManager.func_179094_E();
-            GlStateManager.func_179139_a((double)0.5, (double)0.5, (double)0.5);
-            TargetHudTest.mc.field_71466_p.func_175063_a("hp: " + Math.floor((double)this.getTarget().func_110143_aJ() + Math.floor(this.getTarget().func_110139_bj())), (float)(TargetHudTest.getScaledResolution().func_78326_a() - TargetHudTest.mc.field_71466_p.func_78256_a("hp: " + Math.floor((double)this.getTarget().func_110143_aJ() + Math.floor(this.getTarget().func_110139_bj()))) / 2), (float)(TargetHudTest.getScaledResolution().func_78328_b() + 75 + 100), -1);
-            GlStateManager.func_179152_a((float)1.0f, (float)1.0f, (float)1.0f);
-            GlStateManager.func_179121_F();
-            GlStateManager.func_179152_a((float)1.0f, (float)1.0f, (float)1.0f);
-            GlStateManager.func_179121_F();
-            TargetHudTest.drawRect(TargetHudTest.getScaledResolution().func_78326_a() / 2 - 48, TargetHudTest.getScaledResolution().func_78328_b() / 2 + 45 + 50, (this.getTarget().func_110143_aJ() > 20.0f ? 20.0f : this.getTarget().func_110143_aJ()) / 2.0f * 9.6f, 3.0f, new Color(255, 255, 255, 255).getRGB());
-            TargetHudTest.drawRect(TargetHudTest.getScaledResolution().func_78326_a() / 2 - 47, TargetHudTest.getScaledResolution().func_78328_b() / 2 + 46 + 50, (this.getTarget().func_110143_aJ() > 20.0f ? 20.0f : this.getTarget().func_110143_aJ()) / 2.0f * 9.4f, 1.0f, this.getHealthColor(this.getTarget()));
+            Gui.drawRect((int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 14), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 25 + 50), (int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 + 14), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 - 1 + 50), (int)new Color(2, 2, 2, 255).getRGB());
+            Gui.drawRect((int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 52), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 23 + 50), (int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 + 52), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 52 + 50), (int)new Color(30, 30, 30, 255).getRGB());
+            Gui.drawRect((int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 51), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 24 + 50), (int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 + 51), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 51 + 50), (int)new Color(35, 35, 35, 40).getRGB());
+            Gui.drawRect((int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 50), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 25 + 50), (int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 + 50), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 50 + 50), (int)new Color(14, 14, 14, 255).getRGB());
+            Gui.drawRect((int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 13), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 24 + 50), (int)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 + 13), (int)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 50), (int)new Color(47, 47, 47, 255).getRGB());
+            this.drawAltFace(this.getTarget(), TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 12, TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 1 + 50, 24, 24);
+            TargetHudTest.mc.fontRenderer.drawStringWithShadow(this.getTarget().getName(), (float)(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - TargetHudTest.mc.fontRenderer.getStringWidth(this.getTarget().getName()) / 2), (float)(TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 27 + 50), -1);
+            GlStateManager.pushMatrix();
+            GlStateManager.scale((double)0.5, (double)0.5, (double)0.5);
+            TargetHudTest.mc.fontRenderer.drawStringWithShadow("hp: " + Math.floor((double)this.getTarget().getHealth() + Math.floor(this.getTarget().getAbsorptionAmount())), (float)(TargetHudTest.getScaledResolution().getScaledWidth() - TargetHudTest.mc.fontRenderer.getStringWidth("hp: " + Math.floor((double)this.getTarget().getHealth() + Math.floor(this.getTarget().getAbsorptionAmount()))) / 2), (float)(TargetHudTest.getScaledResolution().getScaledHeight() + 75 + 100), -1);
+            GlStateManager.scale((float)1.0f, (float)1.0f, (float)1.0f);
+            GlStateManager.popMatrix();
+            GlStateManager.scale((float)1.0f, (float)1.0f, (float)1.0f);
+            GlStateManager.popMatrix();
+            TargetHudTest.drawRect(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 48, TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 45 + 50, (this.getTarget().getHealth() > 20.0f ? 20.0f : this.getTarget().getHealth()) / 2.0f * 9.6f, 3.0f, new Color(255, 255, 255, 255).getRGB());
+            TargetHudTest.drawRect(TargetHudTest.getScaledResolution().getScaledWidth() / 2 - 47, TargetHudTest.getScaledResolution().getScaledHeight() / 2 + 46 + 50, (this.getTarget().getHealth() > 20.0f ? 20.0f : this.getTarget().getHealth()) / 2.0f * 9.4f, 1.0f, this.getHealthColor(this.getTarget()));
         }
     }
 
     private EntityLivingBase getTarget() {
         double minVal = Double.POSITIVE_INFINITY;
         Entity bestEntity = null;
-        for (Entity e : TargetHudTest.mc.field_71441_e.field_72996_f) {
+        for (Entity e : TargetHudTest.mc.world.loadedEntityList) {
             double val = this.getSortingWeight(e);
             if (!this.isValidEntity(e) || !(val < minVal)) continue;
             minVal = val;
@@ -75,11 +77,11 @@ extends Module {
     }
 
     private double getSortingWeight(Entity e) {
-        return e instanceof EntityLivingBase ? (double)(((EntityLivingBase)e).func_110143_aJ() + ((EntityLivingBase)e).func_110139_bj()) : Double.POSITIVE_INFINITY;
+        return e instanceof EntityLivingBase ? (double)(((EntityLivingBase)e).getHealth() + ((EntityLivingBase)e).getAbsorptionAmount()) : Double.POSITIVE_INFINITY;
     }
 
     private boolean isValidEntity(Entity entity) {
-        return entity instanceof EntityLivingBase && entity.func_145782_y() != -1488 && entity != TargetHudTest.mc.field_71439_g && entity.func_70089_S() && TargetHudTest.mc.field_71439_g.func_70068_e(entity) <= 2500.0 && entity instanceof EntityPlayer;
+        return entity instanceof EntityLivingBase && entity.getEntityId() != -1488 && entity != TargetHudTest.mc.player && entity.isEntityAlive() && TargetHudTest.mc.player.getDistanceSq(entity) <= 2500.0 && entity instanceof EntityPlayer;
     }
 
     public static ScaledResolution getScaledResolution() {
@@ -87,20 +89,20 @@ extends Module {
     }
 
     private int getHealthColor(EntityLivingBase player) {
-        return Color.HSBtoRGB(Math.max(0.0f, Math.min(player.func_110143_aJ(), player.func_110138_aP()) / player.func_110138_aP()) / 3.0f, 1.0f, 0.8f) | 0xFF000000;
+        return Color.HSBtoRGB(Math.max(0.0f, Math.min(player.getHealth(), player.getMaxHealth()) / player.getMaxHealth()) / 3.0f, 1.0f, 0.8f) | 0xFF000000;
     }
 
     private void drawAltFace(EntityLivingBase target, int x, int y, int w, int h) {
         try {
-            ResourceLocation skin = ((AbstractClientPlayer)target).func_110306_p();
-            mc.func_110434_K().func_110577_a(skin);
+            ResourceLocation skin = ((AbstractClientPlayer)target).getLocationSkin();
+            mc.getTextureManager().bindTexture(skin);
             GL11.glEnable((int)3042);
             GL11.glColor4f((float)1.0f, (float)1.0f, (float)1.0f, (float)1.0f);
             float fw = 192.0f;
             float fh = 192.0f;
             float u = 24.0f;
             float v = 24.0f;
-            Gui.func_146110_a((int)x, (int)y, (float)u, (float)v, (int)w, (int)h, (float)fw, (float)fh);
+            Gui.drawModalRectWithCustomSizedTexture((int)x, (int)y, (float)u, (float)v, (int)w, (int)h, (float)fw, (float)fh);
             GL11.glDisable((int)3042);
         }
         catch (Exception exception) {
@@ -126,20 +128,20 @@ extends Module {
         float lvt_6_1_ = (float)(color >> 16 & 0xFF) / 255.0f;
         float lvt_7_1_ = (float)(color >> 8 & 0xFF) / 255.0f;
         float lvt_8_1_ = (float)(color & 0xFF) / 255.0f;
-        Tessellator lvt_9_1_ = Tessellator.func_178181_a();
-        BufferBuilder lvt_10_1_ = lvt_9_1_.func_178180_c();
-        GlStateManager.func_179147_l();
-        GlStateManager.func_179090_x();
-        GlStateManager.func_187428_a((GlStateManager.SourceFactor)GlStateManager.SourceFactor.SRC_ALPHA, (GlStateManager.DestFactor)GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, (GlStateManager.SourceFactor)GlStateManager.SourceFactor.ONE, (GlStateManager.DestFactor)GlStateManager.DestFactor.ZERO);
-        GlStateManager.func_179131_c((float)lvt_6_1_, (float)lvt_7_1_, (float)lvt_8_1_, (float)lvt_5_3_);
-        lvt_10_1_.func_181668_a(7, DefaultVertexFormats.field_181705_e);
-        lvt_10_1_.func_181662_b((double)x, (double)p_drawRect_3_, 0.0).func_181675_d();
-        lvt_10_1_.func_181662_b((double)p_drawRect_2_, (double)p_drawRect_3_, 0.0).func_181675_d();
-        lvt_10_1_.func_181662_b((double)p_drawRect_2_, (double)y, 0.0).func_181675_d();
-        lvt_10_1_.func_181662_b((double)x, (double)y, 0.0).func_181675_d();
-        lvt_9_1_.func_78381_a();
-        GlStateManager.func_179098_w();
-        GlStateManager.func_179084_k();
+        Tessellator lvt_9_1_ = Tessellator.getInstance();
+        BufferBuilder lvt_10_1_ = lvt_9_1_.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate((GlStateManager.SourceFactor)GlStateManager.SourceFactor.SRC_ALPHA, (GlStateManager.DestFactor)GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, (GlStateManager.SourceFactor)GlStateManager.SourceFactor.ONE, (GlStateManager.DestFactor)GlStateManager.DestFactor.ZERO);
+        GlStateManager.color((float)lvt_6_1_, (float)lvt_7_1_, (float)lvt_8_1_, (float)lvt_5_3_);
+        lvt_10_1_.begin(7, DefaultVertexFormats.POSITION);
+        lvt_10_1_.pos((double)x, (double)p_drawRect_3_, 0.0).endVertex();
+        lvt_10_1_.pos((double)p_drawRect_2_, (double)p_drawRect_3_, 0.0).endVertex();
+        lvt_10_1_.pos((double)p_drawRect_2_, (double)y, 0.0).endVertex();
+        lvt_10_1_.pos((double)x, (double)y, 0.0).endVertex();
+        lvt_9_1_.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 }
 

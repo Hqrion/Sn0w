@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -19,13 +21,13 @@ public class BedAuraUtil {
     double twoB;
     double threeB;
     double fourB;
-    Minecraft mc = Minecraft.func_71410_x();
+    Minecraft mc = Minecraft.getMinecraft();
 
     public BlockPos beddistance(BlockPos one, BlockPos two, BlockPos three, BlockPos four) {
-        this.oneB = this.mc.field_71439_g.func_174831_c(one);
-        this.twoB = this.mc.field_71439_g.func_174831_c(two);
-        this.threeB = this.mc.field_71439_g.func_174831_c(three);
-        this.fourB = this.mc.field_71439_g.func_174831_c(four);
+        this.oneB = this.mc.player.getDistanceSqToCenter(one);
+        this.twoB = this.mc.player.getDistanceSqToCenter(two);
+        this.threeB = this.mc.player.getDistanceSqToCenter(three);
+        this.fourB = this.mc.player.getDistanceSqToCenter(four);
         if (this.oneB < this.twoB && this.oneB < this.threeB && this.oneB < this.fourB && this.hasObsidianAbove(one)) {
             return one;
         }
@@ -42,9 +44,9 @@ public class BedAuraUtil {
     }
 
     public boolean hasObsidianAbove(BlockPos block) {
-        BlockPos above = new BlockPos(block.func_177958_n(), block.func_177956_o() + 1, block.func_177952_p());
-        IBlockState state = this.mc.field_71441_e.func_180495_p(above);
-        return state.func_177230_c() == Blocks.field_150350_a;
+        BlockPos above = new BlockPos(block.getX(), block.getY() + 1, block.getZ());
+        IBlockState state = this.mc.world.getBlockState(above);
+        return state.getBlock() == Blocks.AIR;
     }
 }
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -38,34 +40,34 @@ extends Module {
         if (this.popList == null) {
             this.popList = new HashMap();
         }
-        if (this.popList.get(event.getEntity().func_70005_c_()) == null) {
-            this.popList.put(event.getEntity().func_70005_c_(), 1);
-            Command.sendChatMessage(this.colourchoice() + event.getEntity().func_70005_c_() + " popped " + 1 + " totem!");
-        } else if (this.popList.get(event.getEntity().func_70005_c_()) != null) {
-            int popCounter = this.popList.get(event.getEntity().func_70005_c_());
+        if (this.popList.get(event.getEntity().getName()) == null) {
+            this.popList.put(event.getEntity().getName(), 1);
+            Command.sendChatMessage(this.colourchoice() + event.getEntity().getName() + " popped " + 1 + " totem!");
+        } else if (this.popList.get(event.getEntity().getName()) != null) {
+            int popCounter = this.popList.get(event.getEntity().getName());
             int newPopCounter = ++popCounter;
-            this.popList.put(event.getEntity().func_70005_c_(), newPopCounter);
+            this.popList.put(event.getEntity().getName(), newPopCounter);
             if (this.toxicmode.getValue().booleanValue()) {
                 if (this.announce.getValue().booleanValue()) {
-                    TotemPopCounter.mc.field_71439_g.func_71165_d("/w " + event.getEntity().func_70005_c_() + " you popped " + newPopCounter + " totems! ez");
+                    TotemPopCounter.mc.player.sendChatMessage("/w " + event.getEntity().getName() + " you popped " + newPopCounter + " totems! ez");
                 } else {
-                    Command.sendChatMessage(this.colourchoice() + event.getEntity().func_70005_c_() + " popped " + newPopCounter + " totems! ez");
+                    Command.sendChatMessage(this.colourchoice() + event.getEntity().getName() + " popped " + newPopCounter + " totems! ez");
                 }
             } else if (this.announce.getValue().booleanValue()) {
-                Command.sendChatMessage("/w " + event.getEntity().func_70005_c_() + " you popped " + newPopCounter + " totems!");
+                Command.sendChatMessage("/w " + event.getEntity().getName() + " you popped " + newPopCounter + " totems!");
             } else {
-                Command.sendChatMessage(event.getEntity().func_70005_c_() + " popped " + newPopCounter + " totems!");
+                Command.sendChatMessage(event.getEntity().getName() + " popped " + newPopCounter + " totems!");
             }
         }
     }, new Predicate[0]);
     @EventHandler
     public Listener<PacketEvent.Receive> totemPopListener = new Listener<PacketEvent.Receive>(event -> {
         SPacketEntityStatus packet;
-        if (TotemPopCounter.mc.field_71441_e == null || TotemPopCounter.mc.field_71439_g == null) {
+        if (TotemPopCounter.mc.world == null || TotemPopCounter.mc.player == null) {
             return;
         }
-        if (event.getPacket() instanceof SPacketEntityStatus && (packet = (SPacketEntityStatus)event.getPacket()).func_149160_c() == 35) {
-            Entity entity = packet.func_149161_a((World)TotemPopCounter.mc.field_71441_e);
+        if (event.getPacket() instanceof SPacketEntityStatus && (packet = (SPacketEntityStatus)event.getPacket()).getOpCode() == 35) {
+            Entity entity = packet.getEntity((World)TotemPopCounter.mc.world);
             KamiMod.EVENT_BUS.post(new TotemPopEvent(entity));
         }
     }, new Predicate[0]);
@@ -80,14 +82,14 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        for (EntityPlayer player : TotemPopCounter.mc.field_71441_e.field_73010_i) {
-            if (!(player.func_110143_aJ() <= 0.0f) || !this.popList.containsKey(player.func_70005_c_())) continue;
+        for (EntityPlayer player : TotemPopCounter.mc.world.playerEntities) {
+            if (!(player.getHealth() <= 0.0f) || !this.popList.containsKey(player.getName())) continue;
             if (this.toxicmode.getValue().booleanValue()) {
-                Command.sendChatMessage(this.colourchoice() + player.func_70005_c_() + "\u00a74died after popping\u00a7a " + this.popList.get(player.func_70005_c_()) + " \u00a74EZZZZ!");
+                Command.sendChatMessage(this.colourchoice() + player.getName() + "\u00a74died after popping\u00a7a " + this.popList.get(player.getName()) + " \u00a74EZZZZ!");
             } else {
-                Command.sendChatMessage(this.colourchoice() + player.func_70005_c_() + "\u00a74died after popping\u00a7a " + this.popList.get(player.func_70005_c_()) + " \u00a74!");
+                Command.sendChatMessage(this.colourchoice() + player.getName() + "\u00a74died after popping\u00a7a " + this.popList.get(player.getName()) + " \u00a74!");
             }
-            this.popList.remove(player.func_70005_c_(), this.popList.get(player.func_70005_c_()));
+            this.popList.remove(player.getName(), this.popList.get(player.getName()));
         }
     }
 

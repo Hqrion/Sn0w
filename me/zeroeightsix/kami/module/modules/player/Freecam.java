@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -42,7 +44,7 @@ extends Module {
     private Entity ridingEntity;
     @EventHandler
     private Listener<PlayerMoveEvent> moveListener = new Listener<PlayerMoveEvent>(event -> {
-        Freecam.mc.field_71439_g.field_70145_X = true;
+        Freecam.mc.player.noClip = true;
     }, new Predicate[0]);
     @EventHandler
     private Listener<PlayerSPPushOutOfBlocksEvent> pushListener = new Listener<PlayerSPPushOutOfBlocksEvent>(event -> event.setCanceled(true), new Predicate[0]);
@@ -55,59 +57,59 @@ extends Module {
 
     @Override
     protected void onEnable() {
-        if (Freecam.mc.field_71439_g != null) {
-            boolean bl = this.isRidingEntity = Freecam.mc.field_71439_g.func_184187_bx() != null;
-            if (Freecam.mc.field_71439_g.func_184187_bx() == null) {
-                this.posX = Freecam.mc.field_71439_g.field_70165_t;
-                this.posY = Freecam.mc.field_71439_g.field_70163_u;
-                this.posZ = Freecam.mc.field_71439_g.field_70161_v;
+        if (Freecam.mc.player != null) {
+            boolean bl = this.isRidingEntity = Freecam.mc.player.getRidingEntity() != null;
+            if (Freecam.mc.player.getRidingEntity() == null) {
+                this.posX = Freecam.mc.player.posX;
+                this.posY = Freecam.mc.player.posY;
+                this.posZ = Freecam.mc.player.posZ;
             } else {
-                this.ridingEntity = Freecam.mc.field_71439_g.func_184187_bx();
-                Freecam.mc.field_71439_g.func_184210_p();
+                this.ridingEntity = Freecam.mc.player.getRidingEntity();
+                Freecam.mc.player.dismountRidingEntity();
             }
-            this.pitch = Freecam.mc.field_71439_g.field_70125_A;
-            this.yaw = Freecam.mc.field_71439_g.field_70177_z;
-            this.clonedPlayer = new EntityOtherPlayerMP((World)Freecam.mc.field_71441_e, mc.func_110432_I().func_148256_e());
-            this.clonedPlayer.func_82149_j((Entity)Freecam.mc.field_71439_g);
-            this.clonedPlayer.field_70759_as = Freecam.mc.field_71439_g.field_70759_as;
-            Freecam.mc.field_71441_e.func_73027_a(-100, (Entity)this.clonedPlayer);
-            Freecam.mc.field_71439_g.field_71075_bZ.field_75100_b = true;
-            Freecam.mc.field_71439_g.field_71075_bZ.func_75092_a((float)this.speed.getValue().intValue() / 100.0f);
-            Freecam.mc.field_71439_g.field_70145_X = true;
+            this.pitch = Freecam.mc.player.rotationPitch;
+            this.yaw = Freecam.mc.player.rotationYaw;
+            this.clonedPlayer = new EntityOtherPlayerMP((World)Freecam.mc.world, mc.getSession().getProfile());
+            this.clonedPlayer.copyLocationAndAnglesFrom((Entity)Freecam.mc.player);
+            this.clonedPlayer.rotationYawHead = Freecam.mc.player.rotationYawHead;
+            Freecam.mc.world.addEntityToWorld(-100, (Entity)this.clonedPlayer);
+            Freecam.mc.player.capabilities.isFlying = true;
+            Freecam.mc.player.capabilities.setFlySpeed((float)this.speed.getValue().intValue() / 100.0f);
+            Freecam.mc.player.noClip = true;
         }
     }
 
     @Override
     protected void onDisable() {
-        EntityPlayerSP localPlayer = Freecam.mc.field_71439_g;
+        EntityPlayerSP localPlayer = Freecam.mc.player;
         if (localPlayer != null) {
-            Freecam.mc.field_71439_g.func_70080_a(this.posX, this.posY, this.posZ, this.yaw, this.pitch);
-            Freecam.mc.field_71441_e.func_73028_b(-100);
+            Freecam.mc.player.setPositionAndRotation(this.posX, this.posY, this.posZ, this.yaw, this.pitch);
+            Freecam.mc.world.removeEntityFromWorld(-100);
             this.clonedPlayer = null;
             this.posZ = 0.0;
             this.posY = 0.0;
             this.posX = 0.0;
             this.yaw = 0.0f;
             this.pitch = 0.0f;
-            Freecam.mc.field_71439_g.field_71075_bZ.field_75100_b = false;
-            Freecam.mc.field_71439_g.field_71075_bZ.func_75092_a(0.05f);
-            Freecam.mc.field_71439_g.field_70145_X = false;
-            Freecam.mc.field_71439_g.field_70179_y = 0.0;
-            Freecam.mc.field_71439_g.field_70181_x = 0.0;
-            Freecam.mc.field_71439_g.field_70159_w = 0.0;
+            Freecam.mc.player.capabilities.isFlying = false;
+            Freecam.mc.player.capabilities.setFlySpeed(0.05f);
+            Freecam.mc.player.noClip = false;
+            Freecam.mc.player.motionZ = 0.0;
+            Freecam.mc.player.motionY = 0.0;
+            Freecam.mc.player.motionX = 0.0;
             if (this.isRidingEntity) {
-                Freecam.mc.field_71439_g.func_184205_a(this.ridingEntity, true);
+                Freecam.mc.player.startRiding(this.ridingEntity, true);
             }
         }
     }
 
     @Override
     public void onUpdate() {
-        Freecam.mc.field_71439_g.field_71075_bZ.field_75100_b = true;
-        Freecam.mc.field_71439_g.field_71075_bZ.func_75092_a((float)this.speed.getValue().intValue() / 100.0f);
-        Freecam.mc.field_71439_g.field_70145_X = true;
-        Freecam.mc.field_71439_g.field_70122_E = false;
-        Freecam.mc.field_71439_g.field_70143_R = 0.0f;
+        Freecam.mc.player.capabilities.isFlying = true;
+        Freecam.mc.player.capabilities.setFlySpeed((float)this.speed.getValue().intValue() / 100.0f);
+        Freecam.mc.player.noClip = true;
+        Freecam.mc.player.onGround = false;
+        Freecam.mc.player.fallDistance = 0.0f;
     }
 }
 

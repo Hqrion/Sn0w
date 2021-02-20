@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -67,26 +69,26 @@ extends Module {
 
     @Override
     public void onEnable() {
-        if (Burrow.mc.field_71439_g == null) {
+        if (Burrow.mc.player == null) {
             this.disable();
             return;
         }
-        this.playerHotbarSlot = Burrow.mc.field_71439_g.field_71071_by.field_70461_c;
+        this.playerHotbarSlot = Burrow.mc.player.inventory.currentItem;
         this.lastHotbarSlot = -1;
-        Burrow.mc.field_71439_g.func_70664_aZ();
+        Burrow.mc.player.jump();
         this.timer.reset();
     }
 
     @Override
     public void onDisable() {
-        if (Burrow.mc.field_71439_g == null) {
+        if (Burrow.mc.player == null) {
             return;
         }
         if (this.lastHotbarSlot != this.playerHotbarSlot && this.playerHotbarSlot != -1) {
-            Burrow.mc.field_71439_g.field_71071_by.field_70461_c = this.playerHotbarSlot;
+            Burrow.mc.player.inventory.currentItem = this.playerHotbarSlot;
         }
         if (this.isSneaking) {
-            Burrow.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)Burrow.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            Burrow.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)Burrow.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             this.isSneaking = false;
         }
         this.playerHotbarSlot = -1;
@@ -97,18 +99,18 @@ extends Module {
     public void onUpdate() {
         if (this.timer.hasReached(this.longValue(this.delay.getValue().floatValue()))) {
             BlockPos offsetPos = new BlockPos(0, -1, 0);
-            BlockPos targetPos = new BlockPos(Burrow.mc.field_71439_g.func_174791_d()).func_177982_a(offsetPos.field_177962_a, offsetPos.field_177960_b, offsetPos.field_177961_c);
+            BlockPos targetPos = new BlockPos(Burrow.mc.player.getPositionVector()).add(offsetPos.x, offsetPos.y, offsetPos.z);
             if (this.placeBlock(targetPos)) {
                 if (this.lastHotbarSlot != this.playerHotbarSlot && this.playerHotbarSlot != -1) {
-                    Burrow.mc.field_71439_g.field_71071_by.field_70461_c = this.playerHotbarSlot;
+                    Burrow.mc.player.inventory.currentItem = this.playerHotbarSlot;
                     this.lastHotbarSlot = this.playerHotbarSlot;
                 }
                 if (this.isSneaking) {
-                    Burrow.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)Burrow.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+                    Burrow.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)Burrow.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                     this.isSneaking = false;
                 }
-                Burrow.mc.field_71439_g.field_70122_E = false;
-                Burrow.mc.field_71439_g.field_70181_x = 20.0;
+                Burrow.mc.player.onGround = false;
+                Burrow.mc.player.motionY = 20.0;
             }
             this.disable();
         }
@@ -119,11 +121,11 @@ extends Module {
     }
 
     private boolean placeBlock(BlockPos pos) {
-        Block block = Burrow.mc.field_71441_e.func_180495_p(pos).func_177230_c();
+        Block block = Burrow.mc.world.getBlockState(pos).getBlock();
         if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
             return false;
         }
-        for (Entity entity : Burrow.mc.field_71441_e.func_72839_b((Entity)null, new AxisAlignedBB(pos))) {
+        for (Entity entity : Burrow.mc.world.getEntitiesWithinAABBExcludingEntity((Entity)null, new AxisAlignedBB(pos))) {
             if (entity instanceof EntityItem || entity instanceof EntityXPOrb) continue;
             return false;
         }
@@ -131,33 +133,33 @@ extends Module {
         if (side == null) {
             return false;
         }
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
         if (!BlockInteractionHelper.canBeClicked(neighbour)) {
             return false;
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
-        Block neighbourBlock = Burrow.mc.field_71441_e.func_180495_p(neighbour).func_177230_c();
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Block neighbourBlock = Burrow.mc.world.getBlockState(neighbour).getBlock();
         int obiSlot = this.findObiInHotbar();
         if (obiSlot == -1) {
             this.disable();
         }
         if (this.lastHotbarSlot != obiSlot) {
-            Burrow.mc.field_71439_g.field_71071_by.field_70461_c = obiSlot;
+            Burrow.mc.player.inventory.currentItem = obiSlot;
             this.lastHotbarSlot = obiSlot;
         }
         if (!this.isSneaking && BlockInteractionHelper.blackList.contains(neighbourBlock) || BlockInteractionHelper.shulkerList.contains(neighbourBlock)) {
-            Burrow.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)Burrow.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            Burrow.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)Burrow.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             this.isSneaking = true;
         }
         if (this.rotate.getValue().booleanValue()) {
             BlockInteractionHelper.faceVectorPacketInstant(hitVec);
         }
-        Burrow.mc.field_71442_b.func_187099_a(Burrow.mc.field_71439_g, Burrow.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        Burrow.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
-        Burrow.mc.field_71467_ac = 4;
-        if (this.noGlitchBlocks.getValue().booleanValue() && !Burrow.mc.field_71442_b.func_178889_l().equals((Object)GameType.CREATIVE)) {
-            Burrow.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, neighbour, opposite));
+        Burrow.mc.playerController.processRightClickBlock(Burrow.mc.player, Burrow.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        Burrow.mc.player.swingArm(EnumHand.MAIN_HAND);
+        Burrow.mc.rightClickDelayTimer = 4;
+        if (this.noGlitchBlocks.getValue().booleanValue() && !Burrow.mc.playerController.getCurrentGameType().equals((Object)GameType.CREATIVE)) {
+            Burrow.mc.player.connection.sendPacket((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, neighbour, opposite));
         }
         return true;
     }
@@ -166,8 +168,8 @@ extends Module {
         int slot = -1;
         for (int i = 0; i < 9; ++i) {
             Block block;
-            ItemStack stack = Burrow.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || !(stack.func_77973_b() instanceof ItemBlock) || !((block = ((ItemBlock)stack.func_77973_b()).func_179223_d()) instanceof BlockObsidian)) continue;
+            ItemStack stack = Burrow.mc.player.inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock) || !((block = ((ItemBlock)stack.getItem()).getBlock()) instanceof BlockObsidian)) continue;
             slot = i;
             break;
         }

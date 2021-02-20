@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -22,7 +24,7 @@ public class AutoFish
 extends Module {
     @EventHandler
     private Listener<PacketEvent.Receive> receiveListener = new Listener<PacketEvent.Receive>(event -> {
-        if (AutoFish.mc.field_71439_g != null && (AutoFish.mc.field_71439_g.func_184614_ca().func_77973_b() == Items.field_151112_aM || AutoFish.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_151112_aM) && event.getPacket() instanceof SPacketSoundEffect && SoundEvents.field_187609_F.equals(((SPacketSoundEffect)event.getPacket()).func_186978_a())) {
+        if (AutoFish.mc.player != null && (AutoFish.mc.player.getHeldItemMainhand().getItem() == Items.FISHING_ROD || AutoFish.mc.player.getHeldItemOffhand().getItem() == Items.FISHING_ROD) && event.getPacket() instanceof SPacketSoundEffect && SoundEvents.ENTITY_BOBBER_SPLASH.equals(((SPacketSoundEffect)event.getPacket()).getSound())) {
             new Thread(() -> {
                 try {
                     Thread.sleep(200L);
@@ -30,14 +32,14 @@ extends Module {
                 catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                mc.func_147121_ag();
+                mc.rightClickMouse();
                 try {
                     Thread.sleep(200L);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                mc.func_147121_ag();
+                mc.rightClickMouse();
             }).start();
         }
     }, new Predicate[0]);

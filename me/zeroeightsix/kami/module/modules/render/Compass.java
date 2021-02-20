@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -32,7 +34,7 @@ extends Module {
         int color = drgb = ColourUtils.toRGBA(ared, bgreen, cblue, 255);
         for (Direction dir : Direction.values()) {
             double rad = Compass.getPosOnCompass(dir);
-            Compass.mc.field_71466_p.func_175063_a(dir.name(), (float)((double)this.optionX.getValue().intValue() + this.getX(rad)), (float)((double)this.optionY.getValue().intValue() + this.getY(rad)), dir == Direction.N ? color : ColourUtils.Colors.WHITE);
+            Compass.mc.fontRenderer.drawStringWithShadow(dir.name(), (float)((double)this.optionX.getValue().intValue() + this.getX(rad)), (float)((double)this.optionY.getValue().intValue() + this.getY(rad)), dir == Direction.N ? color : ColourUtils.Colors.WHITE);
         }
     }
 
@@ -41,13 +43,13 @@ extends Module {
     }
 
     private double getY(double rad) {
-        double epicPitch = MathHelper.func_76131_a((float)(Compass.mc.field_71439_g.field_70125_A + 30.0f), (float)-90.0f, (float)90.0f);
+        double epicPitch = MathHelper.clamp((float)(Compass.mc.player.rotationPitch + 30.0f), (float)-90.0f, (float)90.0f);
         double pitchRadians = Math.toRadians(epicPitch);
         return Math.cos(rad) * Math.sin(pitchRadians) * (double)(this.scale.getValue() * 10);
     }
 
     private static double getPosOnCompass(Direction dir) {
-        double yaw = Math.toRadians(MathHelper.func_76142_g((float)Compass.mc.field_71439_g.field_70177_z));
+        double yaw = Math.toRadians(MathHelper.wrapDegrees((float)Compass.mc.player.rotationYaw));
         int index = dir.ordinal();
         return yaw + (double)index * 1.5707963267948966;
     }

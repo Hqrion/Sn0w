@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -23,22 +25,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value={GuiChat.class})
 public abstract class MixinGuiChat {
     @Shadow
-    protected GuiTextField field_146415_a;
+    protected GuiTextField inputField;
     @Shadow
-    public String field_146410_g;
+    public String historyBuffer;
     @Shadow
-    public int field_146416_h;
+    public int sentHistoryCursor;
 
     @Shadow
-    public abstract void func_73866_w_();
+    public abstract void initGui();
 
     @Inject(method={"Lnet/minecraft/client/gui/GuiChat;keyTyped(CI)V"}, at={@At(value="RETURN")})
     public void returnKeyTyped(char typedChar, int keyCode, CallbackInfo info) {
-        if (!(Wrapper.getMinecraft().field_71462_r instanceof GuiChat) || Wrapper.getMinecraft().field_71462_r instanceof KamiGuiChat) {
+        if (!(Wrapper.getMinecraft().currentScreen instanceof GuiChat) || Wrapper.getMinecraft().currentScreen instanceof KamiGuiChat) {
             return;
         }
-        if (this.field_146415_a.func_146179_b().startsWith(Command.getCommandPrefix())) {
-            Wrapper.getMinecraft().func_147108_a((GuiScreen)new KamiGuiChat(this.field_146415_a.func_146179_b(), this.field_146410_g, this.field_146416_h));
+        if (this.inputField.getText().startsWith(Command.getCommandPrefix())) {
+            Wrapper.getMinecraft().displayGuiScreen((GuiScreen)new KamiGuiChat(this.inputField.getText(), this.historyBuffer, this.sentHistoryCursor));
         }
     }
 }

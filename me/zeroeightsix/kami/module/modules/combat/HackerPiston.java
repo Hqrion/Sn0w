@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -78,10 +80,10 @@ extends Module {
             this.timer = 100.0f;
         }
         this.timer -= 1.0f;
-        if (HackerPiston.mc.field_71439_g != null) {
-            for (Entity entity : HackerPiston.mc.field_71441_e.field_72996_f) {
-                if (!(entity instanceof EntityEnderCrystal) || !(entity.func_70032_d((Entity)HackerPiston.mc.field_71439_g) < 4.5f)) continue;
-                HackerPiston.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketUseEntity(entity));
+        if (HackerPiston.mc.player != null) {
+            for (Entity entity : HackerPiston.mc.world.loadedEntityList) {
+                if (!(entity instanceof EntityEnderCrystal) || !(entity.getDistance((Entity)HackerPiston.mc.player) < 4.5f)) continue;
+                HackerPiston.mc.player.connection.sendPacket((Packet)new CPacketUseEntity(entity));
             }
         }
         if (this.timer < 25.0f) {
@@ -100,8 +102,8 @@ extends Module {
         this.placeTarget2 = null;
         this.placeTarget3 = null;
         for (int x = 0; x <= 8; ++x) {
-            Item item = HackerPiston.mc.field_71439_g.field_71071_by.func_70301_a(x).func_77973_b();
-            if (item == Item.func_150898_a((Block)Blocks.field_150451_bX)) {
+            Item item = HackerPiston.mc.player.inventory.getStackInSlot(x).getItem();
+            if (item == Item.getItemFromBlock((Block)Blocks.REDSTONE_BLOCK)) {
                 this.ShulkerSlot = x;
                 continue;
             }
@@ -112,57 +114,57 @@ extends Module {
             if (!(item instanceof ItemEndCrystal)) continue;
             this.EndCrystal = x;
         }
-        for (EntityPlayer player : HackerPiston.mc.field_71441_e.field_73010_i) {
-            targetPos.add(player.func_180425_c());
+        for (EntityPlayer player : HackerPiston.mc.world.playerEntities) {
+            targetPos.add(player.getPosition());
         }
-        RayTraceResult lookingAt = Minecraft.func_71410_x().field_71476_x;
+        RayTraceResult lookingAt = Minecraft.getMinecraft().objectMouseOver;
         if (this.EndCrystal != -1 && this.ShulkerSlot != -1 && this.GamerSLot != -1) {
-            if (lookingAt != null && lookingAt.field_72313_a == RayTraceResult.Type.BLOCK) {
-                this.placeTarget = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a();
-                this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(1, 0, 0);
-                this.placeTarget3 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(2, 0, 0);
-                if (HackerPiston.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.NORTH)) {
-                    this.placeTarget = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(0, 0, 1);
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(1, 0, 0);
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(2, 0, 0);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.GamerSLot;
+            if (lookingAt != null && lookingAt.typeOfHit == RayTraceResult.Type.BLOCK) {
+                this.placeTarget = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up();
+                this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(1, 0, 0);
+                this.placeTarget3 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(2, 0, 0);
+                if (HackerPiston.mc.player.getHorizontalFacing().equals((Object)EnumFacing.NORTH)) {
+                    this.placeTarget = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(0, 0, 1);
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(1, 0, 0);
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(2, 0, 0);
+                    HackerPiston.mc.player.inventory.currentItem = this.GamerSLot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget2), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.ShulkerSlot;
+                    HackerPiston.mc.player.inventory.currentItem = this.ShulkerSlot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget3), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.EndCrystal;
+                    HackerPiston.mc.player.inventory.currentItem = this.EndCrystal;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
                 }
-                if (HackerPiston.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.WEST)) {
-                    this.placeTarget = HackerPiston.mc.field_71476_x.func_178782_a().func_177984_a();
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(0, 0, -1);
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(0, 0, -2);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.GamerSLot;
+                if (HackerPiston.mc.player.getHorizontalFacing().equals((Object)EnumFacing.WEST)) {
+                    this.placeTarget = HackerPiston.mc.objectMouseOver.getBlockPos().up();
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(0, 0, -1);
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(0, 0, -2);
+                    HackerPiston.mc.player.inventory.currentItem = this.GamerSLot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget2), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.ShulkerSlot;
+                    HackerPiston.mc.player.inventory.currentItem = this.ShulkerSlot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget3), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.EndCrystal;
+                    HackerPiston.mc.player.inventory.currentItem = this.EndCrystal;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
                 }
-                if (HackerPiston.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.EAST)) {
-                    this.placeTarget = HackerPiston.mc.field_71476_x.func_178782_a().func_177984_a();
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(0, 0, 1);
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(0, 0, 2);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.GamerSLot;
+                if (HackerPiston.mc.player.getHorizontalFacing().equals((Object)EnumFacing.EAST)) {
+                    this.placeTarget = HackerPiston.mc.objectMouseOver.getBlockPos().up();
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(0, 0, 1);
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(0, 0, 2);
+                    HackerPiston.mc.player.inventory.currentItem = this.GamerSLot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget2), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.ShulkerSlot;
+                    HackerPiston.mc.player.inventory.currentItem = this.ShulkerSlot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget3), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.EndCrystal;
+                    HackerPiston.mc.player.inventory.currentItem = this.EndCrystal;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
                 }
-                if (HackerPiston.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.SOUTH)) {
-                    this.placeTarget = HackerPiston.mc.field_71476_x.func_178782_a().func_177984_a();
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(-1, 0, 0);
-                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).func_177972_a(HackerPiston.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a().func_177982_a(-2, 0, 0);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.GamerSLot;
+                if (HackerPiston.mc.player.getHorizontalFacing().equals((Object)EnumFacing.SOUTH)) {
+                    this.placeTarget = HackerPiston.mc.objectMouseOver.getBlockPos().up();
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(-1, 0, 0);
+                    this.placeTarget2 = ((BlockPos)targetPos.get(0)).offset(HackerPiston.mc.player.getHorizontalFacing().getOpposite()).up().add(-2, 0, 0);
+                    HackerPiston.mc.player.inventory.currentItem = this.GamerSLot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget2), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.ShulkerSlot;
+                    HackerPiston.mc.player.inventory.currentItem = this.ShulkerSlot;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget3), EnumFacing.DOWN);
-                    HackerPiston.mc.field_71439_g.field_71071_by.field_70461_c = this.EndCrystal;
+                    HackerPiston.mc.player.inventory.currentItem = this.EndCrystal;
                     this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
                 }
             }
@@ -174,29 +176,29 @@ extends Module {
 
     @Override
     public void onDisable() {
-        if (!HackerPiston.mc.field_71439_g.func_70093_af()) {
-            HackerPiston.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)HackerPiston.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+        if (!HackerPiston.mc.player.isSneaking()) {
+            HackerPiston.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)HackerPiston.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
         }
     }
 
     private void placeBlock(BlockPos pos, EnumFacing side) {
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
         if (!this.isSneaking) {
-            HackerPiston.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)HackerPiston.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            HackerPiston.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)HackerPiston.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             this.isSneaking = true;
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         if (this.rotate.getValue().booleanValue()) {
-            float[] angle = BlockInteractionHelper.calcAngle(HackerPiston.mc.field_71439_g.func_174824_e(mc.func_184121_ak()), hitVec);
+            float[] angle = BlockInteractionHelper.calcAngle(HackerPiston.mc.player.getPositionEyes(mc.getRenderPartialTicks()), hitVec);
             HackerPiston.setPlayerRotations(angle[0], angle[1]);
         }
-        HackerPiston.mc.field_71442_b.func_187099_a(HackerPiston.mc.field_71439_g, HackerPiston.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        HackerPiston.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+        HackerPiston.mc.playerController.processRightClickBlock(HackerPiston.mc.player, HackerPiston.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        HackerPiston.mc.player.swingArm(EnumHand.MAIN_HAND);
     }
 
     public static void setPlayerRotations(float yaw, float pitch) {
-        HackerPiston.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(yaw, pitch, HackerPiston.mc.field_71439_g.field_70122_E));
+        HackerPiston.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Rotation(yaw, pitch, HackerPiston.mc.player.onGround));
     }
 }
 

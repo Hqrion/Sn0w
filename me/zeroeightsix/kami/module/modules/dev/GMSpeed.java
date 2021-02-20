@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -14,9 +16,9 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if ((GMSpeed.mc.field_71439_g.field_191988_bg != 0.0f || GMSpeed.mc.field_71439_g.field_70702_br != 0.0f) && !GMSpeed.mc.field_71439_g.func_70093_af() && GMSpeed.mc.field_71439_g.field_70122_E) {
-            GMSpeed.mc.field_71439_g.field_70159_w *= this.gmspeed.getValue().doubleValue();
-            GMSpeed.mc.field_71439_g.field_70179_y *= this.gmspeed.getValue().doubleValue();
+        if ((GMSpeed.mc.player.moveForward != 0.0f || GMSpeed.mc.player.moveStrafing != 0.0f) && !GMSpeed.mc.player.isSneaking() && GMSpeed.mc.player.onGround) {
+            GMSpeed.mc.player.motionX *= this.gmspeed.getValue().doubleValue();
+            GMSpeed.mc.player.motionZ *= this.gmspeed.getValue().doubleValue();
         }
     }
 }

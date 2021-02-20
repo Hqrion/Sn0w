@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -43,7 +45,7 @@ extends Module {
     @EventHandler
     private Listener<PacketEvent.Send> sendListener = new Listener<PacketEvent.Send>(event -> {
         if (event.getPacket() instanceof CPacketChatMessage) {
-            String s = ((CPacketChatMessage)event.getPacket()).func_149439_c();
+            String s = ((CPacketChatMessage)event.getPacket()).getMessage();
             if (this.delim.getValue().booleanValue()) {
                 if (!s.startsWith("%")) {
                     return;
@@ -58,7 +60,7 @@ extends Module {
                     break;
                 }
                 case SHIFT: {
-                    s.chars().forEachOrdered(value -> builder.append((char)(value + (ChatAllowedCharacters.func_71566_a((char)((char)(value + this.key.getValue()))) ? this.key.getValue() : 0))));
+                    s.chars().forEachOrdered(value -> builder.append((char)(value + (ChatAllowedCharacters.isAllowedCharacter((char)((char)(value + this.key.getValue()))) ? this.key.getValue() : 0))));
                     builder.append("\ud83d\ude48");
                 }
             }
@@ -68,13 +70,13 @@ extends Module {
                 event.cancel();
                 return;
             }
-            ((CPacketChatMessage)event.getPacket()).field_149440_a = s;
+            ((CPacketChatMessage)event.getPacket()).message = s;
         }
     }, new Predicate[0]);
     @EventHandler
     private Listener<PacketEvent.Receive> receiveListener = new Listener<PacketEvent.Receive>(event -> {
         if (event.getPacket() instanceof SPacketChat) {
-            String s = ((SPacketChat)event.getPacket()).func_148915_c().func_150260_c();
+            String s = ((SPacketChat)event.getPacket()).getChatComponent().getUnformattedText();
             Matcher matcher = this.CHAT_PATTERN.matcher(s);
             String username = "unnamed";
             if (matcher.find()) {
@@ -97,10 +99,10 @@ extends Module {
                         return;
                     }
                     s = s.substring(0, s.length() - 2);
-                    s.chars().forEachOrdered(value -> builder.append((char)(value + (ChatAllowedCharacters.func_71566_a((char)((char)value)) ? -this.key.getValue().intValue() : 0))));
+                    s.chars().forEachOrdered(value -> builder.append((char)(value + (ChatAllowedCharacters.isAllowedCharacter((char)((char)value)) ? -this.key.getValue().intValue() : 0))));
                 }
             }
-            ((SPacketChat)event.getPacket()).field_148919_a = new TextComponentString(Command.SECTIONSIGN() + "b" + username + Command.SECTIONSIGN() + "r: " + builder.toString());
+            ((SPacketChat)event.getPacket()).chatComponent = new TextComponentString(Command.SECTIONSIGN() + "b" + username + Command.SECTIONSIGN() + "r: " + builder.toString());
         }
     }, new Predicate[0]);
 

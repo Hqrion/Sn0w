@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -23,7 +25,7 @@ public class ModuleMan {
 
     public Boolean getPlayerPos() {
         try {
-            this.pos = new BlockPos(Math.floor(Minecraft.func_71410_x().field_71439_g.field_70165_t), Math.floor(Minecraft.func_71410_x().field_71439_g.field_70163_u), Math.floor(Minecraft.func_71410_x().field_71439_g.field_70161_v));
+            this.pos = new BlockPos(Math.floor(Minecraft.getMinecraft().player.posX), Math.floor(Minecraft.getMinecraft().player.posY), Math.floor(Minecraft.getMinecraft().player.posZ));
             return false;
         }
         catch (Exception e) {
@@ -36,11 +38,11 @@ public class ModuleMan {
             return "\u00c2\u00a74 0";
         }
         this.getPlayerPos();
-        if (Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, -1, 0)).func_177230_c() == Blocks.field_150357_h && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(1, 0, 0)).func_177230_c() == Blocks.field_150357_h && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, 0, 1)).func_177230_c() == Blocks.field_150357_h && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(-1, 0, 0)).func_177230_c() == Blocks.field_150357_h && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, 0, -1)).func_177230_c() == Blocks.field_150357_h) {
+        if (Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, -1, 0)).getBlock() == Blocks.BEDROCK && Minecraft.getMinecraft().world.getBlockState(this.pos.add(1, 0, 0)).getBlock() == Blocks.BEDROCK && Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, 0, 1)).getBlock() == Blocks.BEDROCK && Minecraft.getMinecraft().world.getBlockState(this.pos.add(-1, 0, 0)).getBlock() == Blocks.BEDROCK && Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, 0, -1)).getBlock() == Blocks.BEDROCK) {
             this.holeType = "\u00a7a Safe";
             return "\u00a7a Safe";
         }
-        if (Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, -1, 0)).func_177230_c() == Blocks.field_150357_h | Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, -1, 0)).func_177230_c() == Blocks.field_150343_Z && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(1, 0, 0)).func_177230_c() == Blocks.field_150357_h | Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(1, 0, 0)).func_177230_c() == Blocks.field_150343_Z && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, 0, 1)).func_177230_c() == Blocks.field_150357_h | Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, 0, 1)).func_177230_c() == Blocks.field_150343_Z && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(-1, 0, 0)).func_177230_c() == Blocks.field_150357_h | Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(-1, 0, 0)).func_177230_c() == Blocks.field_150343_Z && Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, 0, -1)).func_177230_c() == Blocks.field_150357_h | Minecraft.func_71410_x().field_71441_e.func_180495_p(this.pos.func_177982_a(0, 0, -1)).func_177230_c() == Blocks.field_150343_Z) {
+        if (Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, -1, 0)).getBlock() == Blocks.BEDROCK | Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, -1, 0)).getBlock() == Blocks.OBSIDIAN && Minecraft.getMinecraft().world.getBlockState(this.pos.add(1, 0, 0)).getBlock() == Blocks.BEDROCK | Minecraft.getMinecraft().world.getBlockState(this.pos.add(1, 0, 0)).getBlock() == Blocks.OBSIDIAN && Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, 0, 1)).getBlock() == Blocks.BEDROCK | Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, 0, 1)).getBlock() == Blocks.OBSIDIAN && Minecraft.getMinecraft().world.getBlockState(this.pos.add(-1, 0, 0)).getBlock() == Blocks.BEDROCK | Minecraft.getMinecraft().world.getBlockState(this.pos.add(-1, 0, 0)).getBlock() == Blocks.OBSIDIAN && Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, 0, -1)).getBlock() == Blocks.BEDROCK | Minecraft.getMinecraft().world.getBlockState(this.pos.add(0, 0, -1)).getBlock() == Blocks.OBSIDIAN) {
             this.holeType = "\u00a73 Unsafe";
             return "\u00a73 Unsafe";
         }

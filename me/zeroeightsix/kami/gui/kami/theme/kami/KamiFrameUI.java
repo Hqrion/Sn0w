@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -116,7 +118,7 @@ extends AbstractComponentUI<Frame> {
             GL11.glLineWidth((float)1.0f);
             GL11.glBegin((int)1);
             GL11.glVertex2d((double)this.xLineOffset, (double)(-GUI.calculateRealPosition(component)[1]));
-            GL11.glVertex2d((double)this.xLineOffset, (double)Wrapper.getMinecraft().field_71440_d);
+            GL11.glVertex2d((double)this.xLineOffset, (double)Wrapper.getMinecraft().displayHeight);
             GL11.glEnd();
         }
         if (component == this.centerXComponent && this.centerX) {
@@ -125,7 +127,7 @@ extends AbstractComponentUI<Frame> {
             GL11.glBegin((int)1);
             double x = component.getWidth() / 2;
             GL11.glVertex2d((double)x, (double)(-GUI.calculateRealPosition(component)[1]));
-            GL11.glVertex2d((double)x, (double)Wrapper.getMinecraft().field_71440_d);
+            GL11.glVertex2d((double)x, (double)Wrapper.getMinecraft().displayHeight);
             GL11.glEnd();
         }
         if (component.equals(this.yLineComponent)) {
@@ -133,7 +135,7 @@ extends AbstractComponentUI<Frame> {
             GL11.glLineWidth((float)1.0f);
             GL11.glBegin((int)1);
             GL11.glVertex2d((double)(-GUI.calculateRealPosition(component)[0]), (double)0.0);
-            GL11.glVertex2d((double)Wrapper.getMinecraft().field_71443_c, (double)0.0);
+            GL11.glVertex2d((double)Wrapper.getMinecraft().displayWidth, (double)0.0);
             GL11.glEnd();
         }
         if (component == this.centerYComponent && this.centerY) {
@@ -142,7 +144,7 @@ extends AbstractComponentUI<Frame> {
             GL11.glBegin((int)1);
             double y = component.getHeight() / 2;
             GL11.glVertex2d((double)(-GUI.calculateRealPosition(component)[0]), (double)y);
-            GL11.glVertex2d((double)Wrapper.getMinecraft().field_71443_c, (double)y);
+            GL11.glVertex2d((double)Wrapper.getMinecraft().displayWidth, (double)y);
             GL11.glEnd();
         }
         GL11.glDisable((int)3042);
@@ -270,8 +272,8 @@ extends AbstractComponentUI<Frame> {
                     ContainerHelper.setAlignment(component, AlignedComponent.Alignment.LEFT);
                     component.setDocking(Docking.LEFT);
                 }
-                if (-(diff = (x + component.getWidth()) * DisplayGuiScreen.getScale() - Wrapper.getMinecraft().field_71443_c) < 5) {
-                    x = Wrapper.getMinecraft().field_71443_c / DisplayGuiScreen.getScale() - component.getWidth();
+                if (-(diff = (x + component.getWidth()) * DisplayGuiScreen.getScale() - Wrapper.getMinecraft().displayWidth) < 5) {
+                    x = Wrapper.getMinecraft().displayWidth / DisplayGuiScreen.getScale() - component.getWidth();
                     ContainerHelper.setAlignment(component, AlignedComponent.Alignment.RIGHT);
                     component.setDocking(Docking.RIGHT);
                 }
@@ -285,8 +287,8 @@ extends AbstractComponentUI<Frame> {
                         component.setDocking(Docking.TOP);
                     }
                 }
-                if (-(diff = (y + component.getHeight()) * DisplayGuiScreen.getScale() - Wrapper.getMinecraft().field_71440_d) < 5) {
-                    y = Wrapper.getMinecraft().field_71440_d / DisplayGuiScreen.getScale() - component.getHeight();
+                if (-(diff = (y + component.getHeight()) * DisplayGuiScreen.getScale() - Wrapper.getMinecraft().displayHeight) < 5) {
+                    y = Wrapper.getMinecraft().displayHeight / DisplayGuiScreen.getScale() - component.getHeight();
                     if (component.getDocking().equals((Object)Docking.RIGHT)) {
                         component.setDocking(Docking.BOTTOMRIGHT);
                     } else if (component.getDocking().equals((Object)Docking.LEFT)) {
@@ -295,11 +297,11 @@ extends AbstractComponentUI<Frame> {
                         component.setDocking(Docking.BOTTOM);
                     }
                 }
-                if (Math.abs((x + component.getWidth() / 2) * DisplayGuiScreen.getScale() * 2 - Wrapper.getMinecraft().field_71443_c) < 5) {
+                if (Math.abs((x + component.getWidth() / 2) * DisplayGuiScreen.getScale() * 2 - Wrapper.getMinecraft().displayWidth) < 5) {
                     KamiFrameUI.this.xLineComponent = null;
                     KamiFrameUI.this.centerXComponent = component;
                     KamiFrameUI.this.centerX = true;
-                    x = Wrapper.getMinecraft().field_71443_c / (DisplayGuiScreen.getScale() * 2) - component.getWidth() / 2;
+                    x = Wrapper.getMinecraft().displayWidth / (DisplayGuiScreen.getScale() * 2) - component.getWidth() / 2;
                     if (component.getDocking().isTop()) {
                         component.setDocking(Docking.CENTERTOP);
                     } else if (component.getDocking().isBottom()) {
@@ -311,11 +313,11 @@ extends AbstractComponentUI<Frame> {
                 } else {
                     KamiFrameUI.this.centerX = false;
                 }
-                if (Math.abs((y + component.getHeight() / 2) * DisplayGuiScreen.getScale() * 2 - Wrapper.getMinecraft().field_71440_d) < 5) {
+                if (Math.abs((y + component.getHeight() / 2) * DisplayGuiScreen.getScale() * 2 - Wrapper.getMinecraft().displayHeight) < 5) {
                     KamiFrameUI.this.yLineComponent = null;
                     KamiFrameUI.this.centerYComponent = component;
                     KamiFrameUI.this.centerY = true;
-                    y = Wrapper.getMinecraft().field_71440_d / (DisplayGuiScreen.getScale() * 2) - component.getHeight() / 2;
+                    y = Wrapper.getMinecraft().displayHeight / (DisplayGuiScreen.getScale() * 2) - component.getHeight() / 2;
                     if (component.getDocking().isLeft()) {
                         component.setDocking(Docking.CENTERLEFT);
                     } else if (component.getDocking().isRight()) {

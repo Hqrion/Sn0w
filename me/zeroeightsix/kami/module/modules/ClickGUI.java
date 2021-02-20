@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -19,8 +21,8 @@ extends Module {
 
     @Override
     protected void onEnable() {
-        if (!(ClickGUI.mc.field_71462_r instanceof DisplayGuiScreen)) {
-            mc.func_147108_a((GuiScreen)new DisplayGuiScreen(ClickGUI.mc.field_71462_r));
+        if (!(ClickGUI.mc.currentScreen instanceof DisplayGuiScreen)) {
+            mc.displayGuiScreen((GuiScreen)new DisplayGuiScreen(ClickGUI.mc.currentScreen));
         }
         this.disable();
     }

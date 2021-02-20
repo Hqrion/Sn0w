@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -39,8 +41,8 @@ extends Module {
         int bgreen = this.green.getValue();
         int cblue = this.blue.getValue();
         int drgb = color = ColourUtils.toRGBA(ared, bgreen, cblue, 255);
-        int totems = Totems.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_190929_cY).mapToInt(ItemStack::func_190916_E).sum();
-        if (Totems.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_190929_cY) {
+        int totems = Totems.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+        if (Totems.mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) {
             ++totems;
         }
         if (this.smooth.getValue().booleanValue()) {
@@ -52,7 +54,7 @@ extends Module {
         } else if (this.rainbow.getValue().booleanValue()) {
             RainbowText.renderRainbowWave("Sn0w v1.2 - cyborghack edition", this.x.getValue(), this.y.getValue(), 0.6f, false);
         } else {
-            Wrapper.getMinecraft().field_71466_p.func_175063_a("Sn0w v1.2 - cyborghack edition", this.x.getValue().floatValue(), (yCount += 10.0f) - (float)Wrapper.getMinecraft().field_71466_p.field_78288_b, color);
+            Wrapper.getMinecraft().fontRenderer.drawStringWithShadow("Sn0w v1.2 - cyborghack edition", this.x.getValue().floatValue(), (yCount += 10.0f) - (float)Wrapper.getMinecraft().fontRenderer.FONT_HEIGHT, color);
         }
     }
 }

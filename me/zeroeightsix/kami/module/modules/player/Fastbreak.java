@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -10,7 +12,7 @@ public class Fastbreak
 extends Module {
     @Override
     public void onUpdate() {
-        Fastbreak.mc.field_71442_b.field_78781_i = 0;
+        Fastbreak.mc.playerController.blockHitDelay = 0;
     }
 }
 

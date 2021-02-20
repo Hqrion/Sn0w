@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -83,27 +85,27 @@ extends Module {
         if (side == null) {
             return;
         }
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
-        Block neighbourBlock = AutoSpawner.mc.field_71441_e.func_180495_p(neighbour).func_177230_c();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Block neighbourBlock = AutoSpawner.mc.world.getBlockState(neighbour).getBlock();
         if (!isSneaking && (BlockInteractionHelper.blackList.contains(neighbourBlock) || BlockInteractionHelper.shulkerList.contains(neighbourBlock))) {
-            AutoSpawner.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)AutoSpawner.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            AutoSpawner.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoSpawner.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             isSneaking = true;
         }
         if (rotate) {
             BlockInteractionHelper.faceVectorPacketInstant(hitVec);
         }
-        AutoSpawner.mc.field_71442_b.func_187099_a(AutoSpawner.mc.field_71439_g, AutoSpawner.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        AutoSpawner.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
-        AutoSpawner.mc.field_71467_ac = 4;
+        AutoSpawner.mc.playerController.processRightClickBlock(AutoSpawner.mc.player, AutoSpawner.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        AutoSpawner.mc.player.swingArm(EnumHand.MAIN_HAND);
+        AutoSpawner.mc.rightClickDelayTimer = 4;
     }
 
     private static EnumFacing getPlaceableSide(BlockPos pos) {
         for (EnumFacing side : EnumFacing.values()) {
             IBlockState blockState;
-            BlockPos neighbour = pos.func_177972_a(side);
-            if (!AutoSpawner.mc.field_71441_e.func_180495_p(neighbour).func_177230_c().func_176209_a(AutoSpawner.mc.field_71441_e.func_180495_p(neighbour), false) || (blockState = AutoSpawner.mc.field_71441_e.func_180495_p(neighbour)).func_185904_a().func_76222_j() || blockState.func_177230_c() instanceof BlockTallGrass || blockState.func_177230_c() instanceof BlockDeadBush) continue;
+            BlockPos neighbour = pos.offset(side);
+            if (!AutoSpawner.mc.world.getBlockState(neighbour).getBlock().canCollideCheck(AutoSpawner.mc.world.getBlockState(neighbour), false) || (blockState = AutoSpawner.mc.world.getBlockState(neighbour)).getMaterial().isReplaceable() || blockState.getBlock() instanceof BlockTallGrass || blockState.getBlock() instanceof BlockDeadBush) continue;
             return side;
         }
         return null;
@@ -111,7 +113,7 @@ extends Module {
 
     @Override
     protected void onEnable() {
-        if (AutoSpawner.mc.field_71439_g == null) {
+        if (AutoSpawner.mc.player == null) {
             this.disable();
             return;
         }
@@ -133,36 +135,36 @@ extends Module {
         this.bodySlot = -1;
         for (int i = 0; i < 9; ++i) {
             Block block;
-            ItemStack stack = AutoSpawner.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a) continue;
+            ItemStack stack = AutoSpawner.mc.player.inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY) continue;
             if (this.entityMode.getValue().equals((Object)EntityMode.WITHER)) {
-                if (stack.func_77973_b() == Items.field_151144_bL && stack.func_77952_i() == 1) {
-                    if (AutoSpawner.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_77994_a < 3) continue;
+                if (stack.getItem() == Items.SKULL && stack.getItemDamage() == 1) {
+                    if (AutoSpawner.mc.player.inventory.getStackInSlot((int)i).stackSize < 3) continue;
                     this.headSlot = i;
                     continue;
                 }
-                if (!(stack.func_77973_b() instanceof ItemBlock)) continue;
-                block = ((ItemBlock)stack.func_77973_b()).func_179223_d();
-                if (block instanceof BlockSoulSand && AutoSpawner.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_77994_a >= 4) {
+                if (!(stack.getItem() instanceof ItemBlock)) continue;
+                block = ((ItemBlock)stack.getItem()).getBlock();
+                if (block instanceof BlockSoulSand && AutoSpawner.mc.player.inventory.getStackInSlot((int)i).stackSize >= 4) {
                     this.bodySlot = i;
                 }
             }
             if (this.entityMode.getValue().equals((Object)EntityMode.IRON)) {
-                if (!(stack.func_77973_b() instanceof ItemBlock)) continue;
-                block = ((ItemBlock)stack.func_77973_b()).func_179223_d();
-                if ((block == Blocks.field_150428_aP || block == Blocks.field_150423_aK) && AutoSpawner.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_77994_a >= 1) {
+                if (!(stack.getItem() instanceof ItemBlock)) continue;
+                block = ((ItemBlock)stack.getItem()).getBlock();
+                if ((block == Blocks.LIT_PUMPKIN || block == Blocks.PUMPKIN) && AutoSpawner.mc.player.inventory.getStackInSlot((int)i).stackSize >= 1) {
                     this.headSlot = i;
                 }
-                if (block == Blocks.field_150339_S && AutoSpawner.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_77994_a >= 4) {
+                if (block == Blocks.IRON_BLOCK && AutoSpawner.mc.player.inventory.getStackInSlot((int)i).stackSize >= 4) {
                     this.bodySlot = i;
                 }
             }
-            if (!this.entityMode.getValue().equals((Object)EntityMode.SNOW) || !(stack.func_77973_b() instanceof ItemBlock)) continue;
-            block = ((ItemBlock)stack.func_77973_b()).func_179223_d();
-            if ((block == Blocks.field_150428_aP || block == Blocks.field_150423_aK) && AutoSpawner.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_77994_a >= 1) {
+            if (!this.entityMode.getValue().equals((Object)EntityMode.SNOW) || !(stack.getItem() instanceof ItemBlock)) continue;
+            block = ((ItemBlock)stack.getItem()).getBlock();
+            if ((block == Blocks.LIT_PUMPKIN || block == Blocks.PUMPKIN) && AutoSpawner.mc.player.inventory.getStackInSlot((int)i).stackSize >= 1) {
                 this.headSlot = i;
             }
-            if (block != Blocks.field_150433_aE || AutoSpawner.mc.field_71439_g.field_71071_by.func_70301_a((int)i).field_77994_a < 2) continue;
+            if (block != Blocks.SNOW || AutoSpawner.mc.player.inventory.getStackInSlot((int)i).stackSize < 2) continue;
             this.bodySlot = i;
         }
         return this.bodySlot != -1 && this.headSlot != -1;
@@ -186,34 +188,34 @@ extends Module {
         this.rotationPlaceableX = true;
         this.rotationPlaceableZ = true;
         boolean isShitGrass = false;
-        if (AutoSpawner.mc.field_71441_e.func_180495_p(this.placeTarget) == null) {
+        if (AutoSpawner.mc.world.getBlockState(this.placeTarget) == null) {
             return false;
         }
-        Block block = AutoSpawner.mc.field_71441_e.func_180495_p(this.placeTarget).func_177230_c();
+        Block block = AutoSpawner.mc.world.getBlockState(this.placeTarget).getBlock();
         if (block instanceof BlockTallGrass || block instanceof BlockDeadBush) {
             isShitGrass = true;
         }
-        if (AutoSpawner.getPlaceableSide(this.placeTarget.func_177984_a()) == null) {
+        if (AutoSpawner.getPlaceableSide(this.placeTarget.up()) == null) {
             return false;
         }
         for (BlockPos pos : BodyParts.bodyBase) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos))) continue;
             noRotationPlaceable = false;
         }
         for (BlockPos pos : BodyParts.ArmsX) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos.func_177977_b()))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.add((Vec3i)pos.down()))) continue;
             this.rotationPlaceableX = false;
         }
         for (BlockPos pos : BodyParts.ArmsZ) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos.func_177977_b()))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.add((Vec3i)pos.down()))) continue;
             this.rotationPlaceableZ = false;
         }
         for (BlockPos pos : BodyParts.headsX) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos))) continue;
             this.rotationPlaceableX = false;
         }
         for (BlockPos pos : BodyParts.headsZ) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos))) continue;
             this.rotationPlaceableZ = false;
         }
         return !isShitGrass && noRotationPlaceable && (this.rotationPlaceableX || this.rotationPlaceableZ);
@@ -224,30 +226,30 @@ extends Module {
         this.rotationPlaceableX = true;
         this.rotationPlaceableZ = true;
         boolean isShitGrass = false;
-        if (AutoSpawner.mc.field_71441_e.func_180495_p(this.placeTarget) == null) {
+        if (AutoSpawner.mc.world.getBlockState(this.placeTarget) == null) {
             return false;
         }
-        Block block = AutoSpawner.mc.field_71441_e.func_180495_p(this.placeTarget).func_177230_c();
+        Block block = AutoSpawner.mc.world.getBlockState(this.placeTarget).getBlock();
         if (block instanceof BlockTallGrass || block instanceof BlockDeadBush) {
             isShitGrass = true;
         }
-        if (AutoSpawner.getPlaceableSide(this.placeTarget.func_177984_a()) == null) {
+        if (AutoSpawner.getPlaceableSide(this.placeTarget.up()) == null) {
             return false;
         }
         for (BlockPos pos : BodyParts.bodyBase) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos))) continue;
             noRotationPlaceable = false;
         }
         for (BlockPos pos : BodyParts.ArmsX) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos.func_177977_b()))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.add((Vec3i)pos.down()))) continue;
             this.rotationPlaceableX = false;
         }
         for (BlockPos pos : BodyParts.ArmsZ) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos.func_177977_b()))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos)) && !this.placingIsBlocked(this.placeTarget.add((Vec3i)pos.down()))) continue;
             this.rotationPlaceableZ = false;
         }
         for (BlockPos pos : BodyParts.head) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos))) continue;
             noRotationPlaceable = false;
         }
         return !isShitGrass && noRotationPlaceable && (this.rotationPlaceableX || this.rotationPlaceableZ);
@@ -256,22 +258,22 @@ extends Module {
     private boolean testSnowGolemStructure() {
         boolean noRotationPlaceable = true;
         boolean isShitGrass = false;
-        if (AutoSpawner.mc.field_71441_e.func_180495_p(this.placeTarget) == null) {
+        if (AutoSpawner.mc.world.getBlockState(this.placeTarget) == null) {
             return false;
         }
-        Block block = AutoSpawner.mc.field_71441_e.func_180495_p(this.placeTarget).func_177230_c();
+        Block block = AutoSpawner.mc.world.getBlockState(this.placeTarget).getBlock();
         if (block instanceof BlockTallGrass || block instanceof BlockDeadBush) {
             isShitGrass = true;
         }
-        if (AutoSpawner.getPlaceableSide(this.placeTarget.func_177984_a()) == null) {
+        if (AutoSpawner.getPlaceableSide(this.placeTarget.up()) == null) {
             return false;
         }
         for (BlockPos pos : BodyParts.bodyBase) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos))) continue;
             noRotationPlaceable = false;
         }
         for (BlockPos pos : BodyParts.head) {
-            if (!this.placingIsBlocked(this.placeTarget.func_177971_a((Vec3i)pos))) continue;
+            if (!this.placingIsBlocked(this.placeTarget.add((Vec3i)pos))) continue;
             noRotationPlaceable = false;
         }
         return !isShitGrass && noRotationPlaceable;
@@ -279,7 +281,7 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (AutoSpawner.mc.field_71439_g == null) {
+        if (AutoSpawner.mc.player == null) {
             return;
         }
         if (this.buildStage == 1) {
@@ -306,10 +308,10 @@ extends Module {
                 }
                 return;
             }
-            List<BlockPos> blockPosList = BlockInteractionHelper.getSphere(AutoSpawner.mc.field_71439_g.func_180425_c().func_177977_b(), this.placeRange.getValue().floatValue(), this.placeRange.getValue().intValue(), false, true, 0);
+            List<BlockPos> blockPosList = BlockInteractionHelper.getSphere(AutoSpawner.mc.player.getPosition().down(), this.placeRange.getValue().floatValue(), this.placeRange.getValue().intValue(), false, true, 0);
             boolean noPositionInArea = true;
             for (BlockPos pos : blockPosList) {
-                this.placeTarget = pos.func_177977_b();
+                this.placeTarget = pos.down();
                 if (!this.testStructure()) continue;
                 noPositionInArea = false;
                 break;
@@ -323,42 +325,42 @@ extends Module {
                 }
                 return;
             }
-            AutoSpawner.mc.field_71439_g.field_71071_by.field_70461_c = this.bodySlot;
+            AutoSpawner.mc.player.inventory.currentItem = this.bodySlot;
             for (BlockPos pos : BodyParts.bodyBase) {
-                AutoSpawner.placeBlock(this.placeTarget.func_177971_a((Vec3i)pos), this.rotate.getValue());
+                AutoSpawner.placeBlock(this.placeTarget.add((Vec3i)pos), this.rotate.getValue());
             }
             if (this.entityMode.getValue().equals((Object)EntityMode.WITHER) || this.entityMode.getValue().equals((Object)EntityMode.IRON)) {
                 if (this.rotationPlaceableX) {
                     for (BlockPos pos : BodyParts.ArmsX) {
-                        AutoSpawner.placeBlock(this.placeTarget.func_177971_a((Vec3i)pos), this.rotate.getValue());
+                        AutoSpawner.placeBlock(this.placeTarget.add((Vec3i)pos), this.rotate.getValue());
                     }
                 } else if (this.rotationPlaceableZ) {
                     for (BlockPos pos : BodyParts.ArmsZ) {
-                        AutoSpawner.placeBlock(this.placeTarget.func_177971_a((Vec3i)pos), this.rotate.getValue());
+                        AutoSpawner.placeBlock(this.placeTarget.add((Vec3i)pos), this.rotate.getValue());
                     }
                 }
             }
             this.buildStage = 2;
         } else if (this.buildStage == 2) {
-            AutoSpawner.mc.field_71439_g.field_71071_by.field_70461_c = this.headSlot;
+            AutoSpawner.mc.player.inventory.currentItem = this.headSlot;
             if (this.entityMode.getValue().equals((Object)EntityMode.WITHER)) {
                 if (this.rotationPlaceableX) {
                     for (BlockPos pos : BodyParts.headsX) {
-                        AutoSpawner.placeBlock(this.placeTarget.func_177971_a((Vec3i)pos), this.rotate.getValue());
+                        AutoSpawner.placeBlock(this.placeTarget.add((Vec3i)pos), this.rotate.getValue());
                     }
                 } else if (this.rotationPlaceableZ) {
                     for (BlockPos pos : BodyParts.headsZ) {
-                        AutoSpawner.placeBlock(this.placeTarget.func_177971_a((Vec3i)pos), this.rotate.getValue());
+                        AutoSpawner.placeBlock(this.placeTarget.add((Vec3i)pos), this.rotate.getValue());
                     }
                 }
             }
             if (this.entityMode.getValue().equals((Object)EntityMode.IRON) || this.entityMode.getValue().equals((Object)EntityMode.SNOW)) {
                 for (BlockPos pos : BodyParts.head) {
-                    AutoSpawner.placeBlock(this.placeTarget.func_177971_a((Vec3i)pos), this.rotate.getValue());
+                    AutoSpawner.placeBlock(this.placeTarget.add((Vec3i)pos), this.rotate.getValue());
                 }
             }
             if (isSneaking) {
-                AutoSpawner.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)AutoSpawner.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+                AutoSpawner.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoSpawner.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                 isSneaking = false;
             }
             if (this.useMode.getValue().equals((Object)UseMode.SINGLE)) {
@@ -376,11 +378,11 @@ extends Module {
     }
 
     private boolean placingIsBlocked(BlockPos pos) {
-        Block block = AutoSpawner.mc.field_71441_e.func_180495_p(pos).func_177230_c();
+        Block block = AutoSpawner.mc.world.getBlockState(pos).getBlock();
         if (!(block instanceof BlockAir)) {
             return true;
         }
-        for (Entity entity : AutoSpawner.mc.field_71441_e.func_72839_b(null, new AxisAlignedBB(pos))) {
+        for (Entity entity : AutoSpawner.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))) {
             if (entity instanceof EntityItem || entity instanceof EntityXPOrb) continue;
             return true;
         }

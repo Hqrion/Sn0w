@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -44,17 +46,17 @@ import net.minecraft.util.math.Vec3d;
 
 public class TrajectoryCalculator {
     public static ThrowingType getThrowType(EntityLivingBase entity) {
-        if (entity.func_184586_b(EnumHand.MAIN_HAND).func_190926_b()) {
+        if (entity.getHeldItem(EnumHand.MAIN_HAND).isEmpty()) {
             return ThrowingType.NONE;
         }
-        ItemStack itemStack = entity.func_184586_b(EnumHand.MAIN_HAND);
-        Item item = itemStack.func_77973_b();
+        ItemStack itemStack = entity.getHeldItem(EnumHand.MAIN_HAND);
+        Item item = itemStack.getItem();
         if (item instanceof ItemPotion) {
-            if (itemStack.func_77973_b() instanceof ItemSplashPotion) {
+            if (itemStack.getItem() instanceof ItemSplashPotion) {
                 return ThrowingType.POTION;
             }
         } else {
-            if (item instanceof ItemBow && entity.func_184587_cr()) {
+            if (item instanceof ItemBow && entity.isHandActive()) {
                 return ThrowingType.BOW;
             }
             if (item instanceof ItemExpBottle) {
@@ -68,22 +70,22 @@ public class TrajectoryCalculator {
     }
 
     public static double[] interpolate(Entity entity) {
-        double posX = TrajectoryCalculator.interpolate(entity.field_70165_t, entity.field_70142_S) - Wrapper.getMinecraft().field_175616_W.field_78725_b;
-        double posY = TrajectoryCalculator.interpolate(entity.field_70163_u, entity.field_70137_T) - Wrapper.getMinecraft().field_175616_W.field_78726_c;
-        double posZ = TrajectoryCalculator.interpolate(entity.field_70161_v, entity.field_70136_U) - Wrapper.getMinecraft().field_175616_W.field_78723_d;
+        double posX = TrajectoryCalculator.interpolate(entity.posX, entity.lastTickPosX) - Wrapper.getMinecraft().renderManager.renderPosX;
+        double posY = TrajectoryCalculator.interpolate(entity.posY, entity.lastTickPosY) - Wrapper.getMinecraft().renderManager.renderPosY;
+        double posZ = TrajectoryCalculator.interpolate(entity.posZ, entity.lastTickPosZ) - Wrapper.getMinecraft().renderManager.renderPosZ;
         return new double[]{posX, posY, posZ};
     }
 
     public static double interpolate(double now, double then) {
-        return then + (now - then) * (double)Wrapper.getMinecraft().func_184121_ak();
+        return then + (now - then) * (double)Wrapper.getMinecraft().getRenderPartialTicks();
     }
 
     public static Vec3d mult(Vec3d factor, float multiplier) {
-        return new Vec3d(factor.field_72450_a * (double)multiplier, factor.field_72448_b * (double)multiplier, factor.field_72449_c * (double)multiplier);
+        return new Vec3d(factor.x * (double)multiplier, factor.y * (double)multiplier, factor.z * (double)multiplier);
     }
 
     public static Vec3d div(Vec3d factor, float divisor) {
-        return new Vec3d(factor.field_72450_a / (double)divisor, factor.field_72448_b / (double)divisor, factor.field_72449_c / (double)divisor);
+        return new Vec3d(factor.x / (double)divisor, factor.y / (double)divisor, factor.z / (double)divisor);
     }
 
     public static final class FlightPath {
@@ -101,51 +103,51 @@ public class TrajectoryCalculator {
             this.shooter = entityLivingBase;
             this.throwingType = throwingType;
             double[] ipos = TrajectoryCalculator.interpolate((Entity)this.shooter);
-            this.setLocationAndAngles(ipos[0] + Wrapper.getMinecraft().func_175598_ae().field_78725_b, ipos[1] + (double)this.shooter.func_70047_e() + Wrapper.getMinecraft().func_175598_ae().field_78726_c, ipos[2] + Wrapper.getMinecraft().func_175598_ae().field_78723_d, this.shooter.field_70177_z, this.shooter.field_70125_A);
-            Vec3d startingOffset = new Vec3d((double)(MathHelper.func_76134_b((float)(this.yaw / 180.0f * (float)Math.PI)) * 0.16f), 0.1, (double)(MathHelper.func_76126_a((float)(this.yaw / 180.0f * (float)Math.PI)) * 0.16f));
-            this.position = this.position.func_178788_d(startingOffset);
+            this.setLocationAndAngles(ipos[0] + Wrapper.getMinecraft().getRenderManager().renderPosX, ipos[1] + (double)this.shooter.getEyeHeight() + Wrapper.getMinecraft().getRenderManager().renderPosY, ipos[2] + Wrapper.getMinecraft().getRenderManager().renderPosZ, this.shooter.rotationYaw, this.shooter.rotationPitch);
+            Vec3d startingOffset = new Vec3d((double)(MathHelper.cos((float)(this.yaw / 180.0f * (float)Math.PI)) * 0.16f), 0.1, (double)(MathHelper.sin((float)(this.yaw / 180.0f * (float)Math.PI)) * 0.16f));
+            this.position = this.position.subtract(startingOffset);
             this.setPosition(this.position);
-            this.motion = new Vec3d((double)(-MathHelper.func_76126_a((float)(this.yaw / 180.0f * (float)Math.PI)) * MathHelper.func_76134_b((float)(this.pitch / 180.0f * (float)Math.PI))), (double)(-MathHelper.func_76126_a((float)(this.pitch / 180.0f * (float)Math.PI))), (double)(MathHelper.func_76134_b((float)(this.yaw / 180.0f * (float)Math.PI)) * MathHelper.func_76134_b((float)(this.pitch / 180.0f * (float)Math.PI))));
+            this.motion = new Vec3d((double)(-MathHelper.sin((float)(this.yaw / 180.0f * (float)Math.PI)) * MathHelper.cos((float)(this.pitch / 180.0f * (float)Math.PI))), (double)(-MathHelper.sin((float)(this.pitch / 180.0f * (float)Math.PI))), (double)(MathHelper.cos((float)(this.yaw / 180.0f * (float)Math.PI)) * MathHelper.cos((float)(this.pitch / 180.0f * (float)Math.PI))));
             this.setThrowableHeading(this.motion, this.getInitialVelocity());
         }
 
         public void onUpdate() {
-            Vec3d prediction = this.position.func_178787_e(this.motion);
-            RayTraceResult blockCollision = this.shooter.func_130014_f_().func_147447_a(this.position, prediction, false, true, false);
+            Vec3d prediction = this.position.add(this.motion);
+            RayTraceResult blockCollision = this.shooter.getEntityWorld().rayTraceBlocks(this.position, prediction, false, true, false);
             if (blockCollision != null) {
-                prediction = blockCollision.field_72307_f;
+                prediction = blockCollision.hitVec;
             }
             this.onCollideWithEntity(prediction, blockCollision);
             if (this.target != null) {
                 this.collided = true;
-                this.setPosition(this.target.field_72307_f);
+                this.setPosition(this.target.hitVec);
                 return;
             }
-            if (this.position.field_72448_b <= 0.0) {
+            if (this.position.y <= 0.0) {
                 this.collided = true;
                 return;
             }
-            this.position = this.position.func_178787_e(this.motion);
+            this.position = this.position.add(this.motion);
             float motionModifier = 0.99f;
-            if (this.shooter.func_130014_f_().func_72875_a(this.boundingBox, Material.field_151586_h)) {
+            if (this.shooter.getEntityWorld().isMaterialInBB(this.boundingBox, Material.WATER)) {
                 motionModifier = this.throwingType == ThrowingType.BOW ? 0.6f : 0.8f;
             }
             this.motion = TrajectoryCalculator.mult(this.motion, motionModifier);
-            this.motion = this.motion.func_178786_a(0.0, (double)this.getGravityVelocity(), 0.0);
+            this.motion = this.motion.subtract(0.0, (double)this.getGravityVelocity(), 0.0);
             this.setPosition(this.position);
         }
 
         private void onCollideWithEntity(Vec3d prediction, RayTraceResult blockCollision) {
             Entity collidingEntity = null;
             double currentDistance = 0.0;
-            List collisionEntities = this.shooter.field_70170_p.func_72839_b((Entity)this.shooter, this.boundingBox.func_72321_a(this.motion.field_72450_a, this.motion.field_72448_b, this.motion.field_72449_c).func_72321_a(1.0, 1.0, 1.0));
+            List collisionEntities = this.shooter.world.getEntitiesWithinAABBExcludingEntity((Entity)this.shooter, this.boundingBox.expand(this.motion.x, this.motion.y, this.motion.z).expand(1.0, 1.0, 1.0));
             for (Entity entity : collisionEntities) {
                 double distanceTo;
-                if (!entity.func_70067_L() && entity != this.shooter) continue;
-                float collisionSize = entity.func_70111_Y();
-                AxisAlignedBB expandedBox = entity.func_174813_aQ().func_72321_a((double)collisionSize, (double)collisionSize, (double)collisionSize);
-                RayTraceResult objectPosition = expandedBox.func_72327_a(this.position, prediction);
-                if (objectPosition == null || !((distanceTo = this.position.func_72438_d(objectPosition.field_72307_f)) < currentDistance) && currentDistance != 0.0) continue;
+                if (!entity.canBeCollidedWith() && entity != this.shooter) continue;
+                float collisionSize = entity.getCollisionBorderSize();
+                AxisAlignedBB expandedBox = entity.getEntityBoundingBox().expand((double)collisionSize, (double)collisionSize, (double)collisionSize);
+                RayTraceResult objectPosition = expandedBox.calculateIntercept(this.position, prediction);
+                if (objectPosition == null || !((distanceTo = this.position.distanceTo(objectPosition.hitVec)) < currentDistance) && currentDistance != 0.0) continue;
                 collidingEntity = entity;
                 currentDistance = distanceTo;
             }
@@ -153,11 +155,11 @@ public class TrajectoryCalculator {
         }
 
         private float getInitialVelocity() {
-            Item item = this.shooter.func_184586_b(EnumHand.MAIN_HAND).func_77973_b();
+            Item item = this.shooter.getHeldItem(EnumHand.MAIN_HAND).getItem();
             switch (this.throwingType) {
                 case BOW: {
                     ItemBow bow = (ItemBow)item;
-                    int useDuration = bow.func_77626_a(this.shooter.func_184586_b(EnumHand.MAIN_HAND)) - this.shooter.func_184605_cv();
+                    int useDuration = bow.getMaxItemUseDuration(this.shooter.getHeldItem(EnumHand.MAIN_HAND)) - this.shooter.getItemInUseCount();
                     float velocity = (float)useDuration / 20.0f;
                     velocity = (velocity * velocity + velocity * 2.0f) / 3.0f;
                     if (velocity > 1.0f) {
@@ -201,13 +203,13 @@ public class TrajectoryCalculator {
         }
 
         private void setPosition(Vec3d position) {
-            this.position = new Vec3d(position.field_72450_a, position.field_72448_b, position.field_72449_c);
+            this.position = new Vec3d(position.x, position.y, position.z);
             double entitySize = (this.throwingType == ThrowingType.BOW ? 0.5 : 0.25) / 2.0;
-            this.boundingBox = new AxisAlignedBB(position.field_72450_a - entitySize, position.field_72448_b - entitySize, position.field_72449_c - entitySize, position.field_72450_a + entitySize, position.field_72448_b + entitySize, position.field_72449_c + entitySize);
+            this.boundingBox = new AxisAlignedBB(position.x - entitySize, position.y - entitySize, position.z - entitySize, position.x + entitySize, position.y + entitySize, position.z + entitySize);
         }
 
         private void setThrowableHeading(Vec3d motion, float velocity) {
-            this.motion = TrajectoryCalculator.div(motion, (float)motion.func_72433_c());
+            this.motion = TrajectoryCalculator.div(motion, (float)motion.length());
             this.motion = TrajectoryCalculator.mult(this.motion, velocity);
         }
 

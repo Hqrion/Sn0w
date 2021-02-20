@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -23,24 +25,24 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (!this.shouldSendMessage((EntityPlayer)AutoQueueMain.mc.field_71439_g)) {
+        if (!this.shouldSendMessage((EntityPlayer)AutoQueueMain.mc.player)) {
             return;
         }
         if (this.info.getValue().booleanValue()) {
             Command.sendChatMessage("[AutoQueueMain] Sending message: /queue main");
         }
-        AutoQueueMain.mc.field_71439_g.func_71165_d("/queue main");
+        AutoQueueMain.mc.player.sendChatMessage("/queue main");
         this.timer.reset();
     }
 
     private boolean shouldSendMessage(EntityPlayer player) {
-        if (player.field_71093_bK != 1) {
+        if (player.dimension != 1) {
             return false;
         }
         if (!this.timer.passed(this.delay.getValue() * 1000)) {
             return false;
         }
-        return player.func_180425_c().equals((Object)new Vec3i(0, 240, 0));
+        return player.getPosition().equals((Object)new Vec3i(0, 240, 0));
     }
 
     public static final class Timer {

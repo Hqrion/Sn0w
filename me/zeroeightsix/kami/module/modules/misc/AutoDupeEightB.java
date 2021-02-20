@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -47,28 +49,28 @@ extends Module {
     }
 
     public void OnUpdate(TickEvent.ClientTickEvent event) {
-        if (!AutoDupeEightB.inProgress() || Minecraft.func_71410_x().field_71439_g == null) {
+        if (!AutoDupeEightB.inProgress() || Minecraft.getMinecraft().player == null) {
             return;
         }
         if (System.currentTimeMillis() - startTimeStamp > 5000L) {
             AutoDupeEightB.abort("Dupe failed. Timed out.");
         }
         if (currentWaitPhase == WaitPhase.DROP) {
-            if (AutoDupeEightB.mc.field_71439_g.field_71071_by.func_70448_g().func_190926_b()) {
+            if (AutoDupeEightB.mc.player.inventory.getCurrentItem().isEmpty()) {
                 return;
             }
             if (System.currentTimeMillis() - startTimeStamp < 120L) {
-                if (!AutoDupeEightB.mc.field_71439_g.func_192035_E().func_192812_b()) {
-                    AutoDupeEightB.mc.field_71439_g.func_192035_E().func_192813_a(true);
+                if (!AutoDupeEightB.mc.player.getRecipeBook().isGuiOpen()) {
+                    AutoDupeEightB.mc.player.getRecipeBook().setGuiOpen(true);
                 }
                 return;
             }
-            idBefore = Item.func_150891_b((Item)AutoDupeEightB.mc.field_71439_g.field_71071_by.func_70448_g().func_77973_b());
+            idBefore = Item.getIdFromItem((Item)AutoDupeEightB.mc.player.inventory.getCurrentItem().getItem());
             countBefore = INVENTORY_UTILS.countItem(0, 8, idBefore);
-            slotBefore = AutoDupeEightB.mc.field_71439_g.field_71071_by.field_70461_c;
+            slotBefore = AutoDupeEightB.mc.player.inventory.currentItem;
             INVENTORY_UTILS.throwAllInSlot(slotBefore + 36, 500L);
-            mc.func_147108_a((GuiScreen)new GuiInventory((EntityPlayer)AutoDupeEightB.mc.field_71439_g));
-            if (!AutoDupeEightB.mc.field_71439_g.func_192035_E().func_192812_b()) {
+            mc.displayGuiScreen((GuiScreen)new GuiInventory((EntityPlayer)AutoDupeEightB.mc.player));
+            if (!AutoDupeEightB.mc.player.getRecipeBook().isGuiOpen()) {
                 return;
             }
             currentWaitPhase = WaitPhase.WAIT_PICKUP;
@@ -81,15 +83,15 @@ extends Module {
     }
 
     private static void abort(String msg) {
-        Minecraft mc = Minecraft.func_71410_x();
+        Minecraft mc = Minecraft.getMinecraft();
         Command.sendChatMessage(msg);
         currentWaitPhase = WaitPhase.NONE;
-        mc.field_71439_g.func_192035_E().func_192813_a(false);
-        mc.func_147108_a(null);
+        mc.player.getRecipeBook().setGuiOpen(false);
+        mc.displayGuiScreen(null);
     }
 
     private static void dupeCurrent() {
-        if (Minecraft.func_71410_x().field_71439_g == null) {
+        if (Minecraft.getMinecraft().player == null) {
             return;
         }
         currentWaitPhase = WaitPhase.DROP;

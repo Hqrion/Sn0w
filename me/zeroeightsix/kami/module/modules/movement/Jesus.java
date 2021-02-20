@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -36,9 +38,9 @@ extends Module {
     private static final AxisAlignedBB WATER_WALK_AA = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.99, 1.0);
     @EventHandler
     Listener<AddCollisionBoxToListEvent> addCollisionBoxToListEventListener = new Listener<AddCollisionBoxToListEvent>(event -> {
-        if (Jesus.mc.field_71439_g != null && event.getBlock() instanceof BlockLiquid && (EntityUtil.isDrivenByPlayer(event.getEntity()) || event.getEntity() == Jesus.mc.field_71439_g) && !(event.getEntity() instanceof EntityBoat) && !Jesus.mc.field_71439_g.func_70093_af() && Jesus.mc.field_71439_g.field_70143_R < 3.0f && !EntityUtil.isInWater((Entity)Jesus.mc.field_71439_g) && (EntityUtil.isAboveWater((Entity)Jesus.mc.field_71439_g, false) || EntityUtil.isAboveWater(Jesus.mc.field_71439_g.func_184187_bx(), false)) && Jesus.isAboveBlock((Entity)Jesus.mc.field_71439_g, event.getPos())) {
-            AxisAlignedBB axisalignedbb = WATER_WALK_AA.func_186670_a(event.getPos());
-            if (event.getEntityBox().func_72326_a(axisalignedbb)) {
+        if (Jesus.mc.player != null && event.getBlock() instanceof BlockLiquid && (EntityUtil.isDrivenByPlayer(event.getEntity()) || event.getEntity() == Jesus.mc.player) && !(event.getEntity() instanceof EntityBoat) && !Jesus.mc.player.isSneaking() && Jesus.mc.player.fallDistance < 3.0f && !EntityUtil.isInWater((Entity)Jesus.mc.player) && (EntityUtil.isAboveWater((Entity)Jesus.mc.player, false) || EntityUtil.isAboveWater(Jesus.mc.player.getRidingEntity(), false)) && Jesus.isAboveBlock((Entity)Jesus.mc.player, event.getPos())) {
+            AxisAlignedBB axisalignedbb = WATER_WALK_AA.offset(event.getPos());
+            if (event.getEntityBox().intersects(axisalignedbb)) {
                 event.getCollidingBoxes().add(axisalignedbb);
             }
             event.cancel();
@@ -47,17 +49,17 @@ extends Module {
     @EventHandler
     Listener<PacketEvent.Send> packetEventSendListener = new Listener<PacketEvent.Send>(event -> {
         int ticks;
-        if (event.getEra() == KamiEvent.Era.PRE && event.getPacket() instanceof CPacketPlayer && EntityUtil.isAboveWater((Entity)Jesus.mc.field_71439_g, true) && !EntityUtil.isInWater((Entity)Jesus.mc.field_71439_g) && !Jesus.isAboveLand((Entity)Jesus.mc.field_71439_g) && (ticks = Jesus.mc.field_71439_g.field_70173_aa % 2) == 0) {
-            ((CPacketPlayer)event.getPacket()).field_149477_b += 0.02;
+        if (event.getEra() == KamiEvent.Era.PRE && event.getPacket() instanceof CPacketPlayer && EntityUtil.isAboveWater((Entity)Jesus.mc.player, true) && !EntityUtil.isInWater((Entity)Jesus.mc.player) && !Jesus.isAboveLand((Entity)Jesus.mc.player) && (ticks = Jesus.mc.player.ticksExisted % 2) == 0) {
+            ((CPacketPlayer)event.getPacket()).y += 0.02;
         }
     }, new Predicate[0]);
 
     @Override
     public void onUpdate() {
-        if (!ModuleManager.isModuleEnabled("Freecam") && EntityUtil.isInWater((Entity)Jesus.mc.field_71439_g) && !Jesus.mc.field_71439_g.func_70093_af()) {
-            Jesus.mc.field_71439_g.field_70181_x = 0.1;
-            if (Jesus.mc.field_71439_g.func_184187_bx() != null && !(Jesus.mc.field_71439_g.func_184187_bx() instanceof EntityBoat)) {
-                Jesus.mc.field_71439_g.func_184187_bx().field_70181_x = 0.3;
+        if (!ModuleManager.isModuleEnabled("Freecam") && EntityUtil.isInWater((Entity)Jesus.mc.player) && !Jesus.mc.player.isSneaking()) {
+            Jesus.mc.player.motionY = 0.1;
+            if (Jesus.mc.player.getRidingEntity() != null && !(Jesus.mc.player.getRidingEntity() instanceof EntityBoat)) {
+                Jesus.mc.player.getRidingEntity().motionY = 0.3;
             }
         }
     }
@@ -66,11 +68,11 @@ extends Module {
         if (entity == null) {
             return false;
         }
-        double y = entity.field_70163_u - 0.01;
-        for (int x = MathHelper.func_76128_c((double)entity.field_70165_t); x < MathHelper.func_76143_f((double)entity.field_70165_t); ++x) {
-            for (int z = MathHelper.func_76128_c((double)entity.field_70161_v); z < MathHelper.func_76143_f((double)entity.field_70161_v); ++z) {
-                BlockPos pos = new BlockPos(x, MathHelper.func_76128_c((double)y), z);
-                if (!Wrapper.getWorld().func_180495_p(pos).func_177230_c().func_149730_j(Wrapper.getWorld().func_180495_p(pos))) continue;
+        double y = entity.posY - 0.01;
+        for (int x = MathHelper.floor((double)entity.posX); x < MathHelper.ceil((double)entity.posX); ++x) {
+            for (int z = MathHelper.floor((double)entity.posZ); z < MathHelper.ceil((double)entity.posZ); ++z) {
+                BlockPos pos = new BlockPos(x, MathHelper.floor((double)y), z);
+                if (!Wrapper.getWorld().getBlockState(pos).getBlock().isFullBlock(Wrapper.getWorld().getBlockState(pos))) continue;
                 return true;
             }
         }
@@ -78,7 +80,7 @@ extends Module {
     }
 
     private static boolean isAboveBlock(Entity entity, BlockPos pos) {
-        return entity.field_70163_u >= (double)pos.func_177956_o();
+        return entity.posY >= (double)pos.getY();
     }
 }
 

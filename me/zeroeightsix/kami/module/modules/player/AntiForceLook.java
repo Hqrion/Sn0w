@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -20,8 +22,8 @@ extends Module {
     Listener<PacketEvent.Receive> receiveListener = new Listener<PacketEvent.Receive>(event -> {
         if (event.getPacket() instanceof SPacketPlayerPosLook) {
             SPacketPlayerPosLook packet = (SPacketPlayerPosLook)event.getPacket();
-            packet.field_148936_d = AntiForceLook.mc.field_71439_g.field_70177_z;
-            packet.field_148937_e = AntiForceLook.mc.field_71439_g.field_70125_A;
+            packet.yaw = AntiForceLook.mc.player.rotationYaw;
+            packet.pitch = AntiForceLook.mc.player.rotationPitch;
         }
     }, new Predicate[0]);
 }

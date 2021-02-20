@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -63,7 +65,7 @@ extends AbstractComponent {
         double d1 = x / (double)this.getWidth();
         double d2 = this.maximum - this.minimum;
         double s = d1 * d2 + this.minimum;
-        return MathHelper.func_151237_a((double)(Math.floor((double)Math.round(s / this.step) * this.step * 100.0) / 100.0), (double)this.minimum, (double)this.maximum);
+        return MathHelper.clamp((double)(Math.floor((double)Math.round(s / this.step) * this.step * 100.0) / 100.0), (double)this.minimum, (double)this.maximum);
     }
 
     public static double getDefaultStep(double min, double max) {

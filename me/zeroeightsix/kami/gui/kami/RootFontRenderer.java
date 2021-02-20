@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -19,13 +21,13 @@ implements FontRenderer {
     private final net.minecraft.client.gui.FontRenderer fontRenderer;
 
     public RootFontRenderer(float fontsize) {
-        this.fontRenderer = Minecraft.func_71410_x().field_71466_p;
+        this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
         this.fontsize = fontsize;
     }
 
     @Override
     public int getFontHeight() {
-        return (int)((float)Minecraft.func_71410_x().field_71466_p.field_78288_b * this.fontsize);
+        return (int)((float)Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT * this.fontsize);
     }
 
     @Override
@@ -35,7 +37,7 @@ implements FontRenderer {
 
     @Override
     public int getStringWidth(String text) {
-        return (int)((float)this.fontRenderer.func_78256_a(text) * this.fontsize);
+        return (int)((float)this.fontRenderer.getStringWidth(text) * this.fontsize);
     }
 
     @Override
@@ -60,7 +62,7 @@ implements FontRenderer {
 
     public void drawString(int x, int y, int colour2, String text, boolean shadow) {
         this.prepare(x, y);
-        Minecraft.func_71410_x().field_71466_p.func_175065_a(text, 0.0f, 0.0f, colour2, shadow);
+        Minecraft.getMinecraft().fontRenderer.drawString(text, 0.0f, 0.0f, colour2, shadow);
         this.pop(x, y);
     }
 

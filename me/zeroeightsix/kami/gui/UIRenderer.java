@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -19,14 +21,14 @@ import org.lwjgl.opengl.GL11;
 
 public class UIRenderer {
     public static void renderAndUpdateFrames() {
-        if (Wrapper.getMinecraft().field_71462_r instanceof DisplayGuiScreen || Wrapper.getMinecraft().field_71474_y.field_74330_P) {
+        if (Wrapper.getMinecraft().currentScreen instanceof DisplayGuiScreen || Wrapper.getMinecraft().gameSettings.showDebugInfo) {
             return;
         }
         KamiGUI gui = KamiMod.getInstance().getKamiGUI();
         GL11.glDisable((int)3553);
         for (Component c : gui.getChildren()) {
             if (!(c instanceof Frame)) continue;
-            GlStateManager.func_179094_E();
+            GlStateManager.pushMatrix();
             Frame child = (Frame)c;
             if (child.isPinned() && child.isVisible()) {
                 boolean slide = child.getOpacity() != 0.0f;
@@ -61,11 +63,11 @@ public class UIRenderer {
                 GL11.glTranslated((double)(-translateX), (double)(-translateY), (double)0.0);
                 GL11.glTranslated((double)(-child.getX()), (double)(-child.getY()), (double)0.0);
             }
-            GlStateManager.func_179121_F();
+            GlStateManager.popMatrix();
         }
         GL11.glEnable((int)3553);
         GL11.glEnable((int)3042);
-        GlStateManager.func_179147_l();
+        GlStateManager.enableBlend();
     }
 }
 

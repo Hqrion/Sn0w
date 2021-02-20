@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -28,7 +30,7 @@ extends KamiEvent {
     }
 
     public BufferBuilder getBuffer() {
-        return this.tessellator.func_178180_c();
+        return this.tessellator.getBuffer();
     }
 
     public Vec3d getRenderPos() {
@@ -36,7 +38,7 @@ extends KamiEvent {
     }
 
     public void setTranslation(Vec3d translation) {
-        this.getBuffer().func_178969_c(-translation.field_72450_a, -translation.field_72448_b, -translation.field_72449_c);
+        this.getBuffer().setTranslation(-translation.x, -translation.y, -translation.z);
     }
 
     public void resetTranslation() {

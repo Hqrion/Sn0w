@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -85,19 +87,19 @@ public class ForgeEventProcessor {
         if (event.isCanceled()) {
             return;
         }
-        if (Minecraft.func_71410_x().field_71443_c != this.displayWidth || Minecraft.func_71410_x().field_71440_d != this.displayHeight) {
+        if (Minecraft.getMinecraft().displayWidth != this.displayWidth || Minecraft.getMinecraft().displayHeight != this.displayHeight) {
             KamiMod.EVENT_BUS.post(new DisplaySizeChangedEvent());
-            this.displayWidth = Minecraft.func_71410_x().field_71443_c;
-            this.displayHeight = Minecraft.func_71410_x().field_71440_d;
+            this.displayWidth = Minecraft.getMinecraft().displayWidth;
+            this.displayHeight = Minecraft.getMinecraft().displayHeight;
             KamiMod.getInstance().getKamiGUI().getChildren().stream().filter(component -> component instanceof Frame).forEach(component -> KamiGUI.dock((Frame)component));
         }
         if (PeekCommand.sb != null) {
-            ScaledResolution scaledresolution = new ScaledResolution(Minecraft.func_71410_x());
-            int i = scaledresolution.func_78326_a();
-            int j = scaledresolution.func_78328_b();
-            GuiShulkerBox gui = new GuiShulkerBox(Wrapper.getPlayer().field_71071_by, (IInventory)PeekCommand.sb);
-            gui.func_146280_a(Wrapper.getMinecraft(), i, j);
-            Minecraft.func_71410_x().func_147108_a((GuiScreen)gui);
+            ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+            int i = scaledresolution.getScaledWidth();
+            int j = scaledresolution.getScaledHeight();
+            GuiShulkerBox gui = new GuiShulkerBox(Wrapper.getPlayer().inventory, (IInventory)PeekCommand.sb);
+            gui.setWorldAndResolution(Wrapper.getMinecraft(), i, j);
+            Minecraft.getMinecraft().displayGuiScreen((GuiScreen)gui);
             PeekCommand.sb = null;
         }
     }
@@ -132,7 +134,7 @@ public class ForgeEventProcessor {
             return;
         }
         RenderGameOverlayEvent.ElementType target = RenderGameOverlayEvent.ElementType.EXPERIENCE;
-        if (!Wrapper.getPlayer().func_184812_l_() && Wrapper.getPlayer().func_184187_bx() instanceof AbstractHorse) {
+        if (!Wrapper.getPlayer().isCreative() && Wrapper.getPlayer().getRidingEntity() instanceof AbstractHorse) {
             target = RenderGameOverlayEvent.ElementType.HEALTHMOUNT;
         }
         if (event.getType() == target) {
@@ -158,7 +160,7 @@ public class ForgeEventProcessor {
         if (event.getMessage().startsWith(Command.getCommandPrefix())) {
             event.setCanceled(true);
             try {
-                Wrapper.getMinecraft().field_71456_v.func_146158_b().func_146239_a(event.getMessage());
+                Wrapper.getMinecraft().ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
                 if (event.getMessage().length() > 1) {
                     KamiMod.getInstance().commandManager.callCommand(event.getMessage().substring(Command.getCommandPrefix().length() - 1));
                 } else {

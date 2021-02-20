@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -44,74 +46,74 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 public class BlocksUtils {
-    static Minecraft mc = Minecraft.func_71410_x();
+    static Minecraft mc = Minecraft.getMinecraft();
 
     public static boolean isEntitiesEmpty(BlockPos pos) {
-        List entities = BlocksUtils.mc.field_71441_e.func_72839_b(null, new AxisAlignedBB(pos)).stream().filter(e -> !(e instanceof EntityItem)).filter(e -> !(e instanceof EntityXPOrb)).collect(Collectors.toList());
+        List entities = BlocksUtils.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos)).stream().filter(e -> !(e instanceof EntityItem)).filter(e -> !(e instanceof EntityXPOrb)).collect(Collectors.toList());
         return entities.isEmpty();
     }
 
     public static boolean placeBlockScaffold(BlockPos pos, boolean rotate) {
         for (EnumFacing side : EnumFacing.values()) {
-            BlockPos neighbor = pos.func_177972_a(side);
-            EnumFacing side2 = side.func_176734_d();
+            BlockPos neighbor = pos.offset(side);
+            EnumFacing side2 = side.getOpposite();
             if (!BlocksUtils.canBeClicked(neighbor)) continue;
-            Vec3d hitVec = new Vec3d((Vec3i)neighbor).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(side2.func_176730_m()).func_186678_a(0.5));
+            Vec3d hitVec = new Vec3d((Vec3i)neighbor).add(0.5, 0.5, 0.5).add(new Vec3d(side2.getDirectionVec()).scale(0.5));
             if (rotate) {
                 BlocksUtils.faceVectorPacketInstant(hitVec);
             }
-            BlocksUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)BlocksUtils.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            BlocksUtils.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)BlocksUtils.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             BlocksUtils.processRightClickBlock(neighbor, side2, hitVec);
-            BlocksUtils.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
-            BlocksUtils.mc.field_71467_ac = 0;
-            BlocksUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)BlocksUtils.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            BlocksUtils.mc.player.swingArm(EnumHand.MAIN_HAND);
+            BlocksUtils.mc.rightClickDelayTimer = 0;
+            BlocksUtils.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)BlocksUtils.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             return true;
         }
         return false;
     }
 
     private static PlayerControllerMP getPlayerController() {
-        return BlocksUtils.mc.field_71442_b;
+        return BlocksUtils.mc.playerController;
     }
 
     public static void processRightClickBlock(BlockPos pos, EnumFacing side, Vec3d hitVec) {
-        BlocksUtils.getPlayerController().func_187099_a(BlocksUtils.mc.field_71439_g, BlocksUtils.mc.field_71441_e, pos, side, hitVec, EnumHand.MAIN_HAND);
+        BlocksUtils.getPlayerController().processRightClickBlock(BlocksUtils.mc.player, BlocksUtils.mc.world, pos, side, hitVec, EnumHand.MAIN_HAND);
     }
 
     public static IBlockState getState(BlockPos pos) {
-        return BlocksUtils.mc.field_71441_e.func_180495_p(pos);
+        return BlocksUtils.mc.world.getBlockState(pos);
     }
 
     public static Block getBlock(BlockPos pos) {
-        return BlocksUtils.getState(pos).func_177230_c();
+        return BlocksUtils.getState(pos).getBlock();
     }
 
     public static boolean canBeClicked(BlockPos pos) {
-        return BlocksUtils.getBlock(pos).func_176209_a(BlocksUtils.getState(pos), false);
+        return BlocksUtils.getBlock(pos).canCollideCheck(BlocksUtils.getState(pos), false);
     }
 
     public static void faceVectorPacketInstant(Vec3d vec) {
         float[] rotations = BlocksUtils.getNeededRotations2(vec);
-        BlocksUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], BlocksUtils.mc.field_71439_g.field_70122_E));
+        BlocksUtils.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], BlocksUtils.mc.player.onGround));
     }
 
     private static float[] getNeededRotations2(Vec3d vec) {
         Vec3d eyesPos = BlocksUtils.getEyesPos();
-        double diffX = vec.field_72450_a - eyesPos.field_72450_a;
-        double diffY = vec.field_72448_b - eyesPos.field_72448_b;
-        double diffZ = vec.field_72449_c - eyesPos.field_72449_c;
+        double diffX = vec.x - eyesPos.x;
+        double diffY = vec.y - eyesPos.y;
+        double diffZ = vec.z - eyesPos.z;
         double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
         float yaw = (float)Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0f;
         float pitch = (float)(-Math.toDegrees(Math.atan2(diffY, diffXZ)));
-        return new float[]{BlocksUtils.mc.field_71439_g.field_70177_z + MathHelper.func_76142_g((float)(yaw - BlocksUtils.mc.field_71439_g.field_70177_z)), BlocksUtils.mc.field_71439_g.field_70125_A + MathHelper.func_76142_g((float)(pitch - BlocksUtils.mc.field_71439_g.field_70125_A))};
+        return new float[]{BlocksUtils.mc.player.rotationYaw + MathHelper.wrapDegrees((float)(yaw - BlocksUtils.mc.player.rotationYaw)), BlocksUtils.mc.player.rotationPitch + MathHelper.wrapDegrees((float)(pitch - BlocksUtils.mc.player.rotationPitch))};
     }
 
     public static Vec3d getEyesPos() {
-        return new Vec3d(BlocksUtils.mc.field_71439_g.field_70165_t, BlocksUtils.mc.field_71439_g.field_70163_u + (double)BlocksUtils.mc.field_71439_g.func_70047_e(), BlocksUtils.mc.field_71439_g.field_70161_v);
+        return new Vec3d(BlocksUtils.mc.player.posX, BlocksUtils.mc.player.posY + (double)BlocksUtils.mc.player.getEyeHeight(), BlocksUtils.mc.player.posZ);
     }
 
     public static Vec3d getInterpolatedPos(Entity entity, float ticks) {
-        return new Vec3d(entity.field_70142_S, entity.field_70137_T, entity.field_70136_U).func_178787_e(BlocksUtils.getInterpolatedAmount(entity, ticks));
+        return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(BlocksUtils.getInterpolatedAmount(entity, ticks));
     }
 
     public static Vec3d getInterpolatedAmount(Entity entity, double ticks) {
@@ -119,7 +121,7 @@ public class BlocksUtils {
     }
 
     public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z) {
-        return new Vec3d((entity.field_70165_t - entity.field_70142_S) * x, (entity.field_70163_u - entity.field_70137_T) * y, (entity.field_70161_v - entity.field_70136_U) * z);
+        return new Vec3d((entity.posX - entity.lastTickPosX) * x, (entity.posY - entity.lastTickPosY) * y, (entity.posZ - entity.lastTickPosZ) * z);
     }
 }
 

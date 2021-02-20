@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -41,7 +43,7 @@ extends Module {
     public void onEnable() {
         this.readSpamFile();
         timer = new Timer();
-        if (Spammer.mc.field_71439_g == null) {
+        if (Spammer.mc.player == null) {
             this.disable();
             return;
         }
@@ -63,7 +65,7 @@ extends Module {
     }
 
     private void runCycle() {
-        if (Spammer.mc.field_71439_g == null) {
+        if (Spammer.mc.player == null) {
             return;
         }
         if (this.readfile.getValue().booleanValue()) {
@@ -101,7 +103,7 @@ extends Module {
                 messageOut = ChatTextUtils.cropMaxLengthMessage(messageOut, sb.toString().length() + reserved);
                 messageOut = messageOut + sb.toString();
             }
-            Spammer.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketChatMessage(messageOut.replaceAll("\u00a7", "")));
+            Spammer.mc.player.connection.sendPacket((Packet)new CPacketChatMessage(messageOut.replaceAll("\u00a7", "")));
         }
     }
 

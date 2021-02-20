@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -24,40 +26,40 @@ extends Module {
     private int initHotbarSlot = -1;
     @EventHandler
     private Listener<PacketEvent.Receive> receiveListener = new Listener<PacketEvent.Receive>(event -> {
-        if (FastExp.mc.field_71439_g != null && FastExp.mc.field_71439_g.func_184614_ca().func_77973_b() == Items.field_151062_by) {
-            FastExp.mc.field_71467_ac = 0;
+        if (FastExp.mc.player != null && FastExp.mc.player.getHeldItemMainhand().getItem() == Items.EXPERIENCE_BOTTLE) {
+            FastExp.mc.rightClickDelayTimer = 0;
         }
-        if (FastExp.mc.field_71439_g != null && FastExp.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_151062_by) {
-            FastExp.mc.field_71467_ac = 0;
+        if (FastExp.mc.player != null && FastExp.mc.player.getHeldItemOffhand().getItem() == Items.EXPERIENCE_BOTTLE) {
+            FastExp.mc.rightClickDelayTimer = 0;
         }
     }, new Predicate[0]);
 
     @Override
     protected void onEnable() {
-        if (FastExp.mc.field_71439_g == null) {
+        if (FastExp.mc.player == null) {
             return;
         }
         if (this.autoSwitch.getValue().booleanValue()) {
-            this.initHotbarSlot = FastExp.mc.field_71439_g.field_71071_by.field_70461_c;
+            this.initHotbarSlot = FastExp.mc.player.inventory.currentItem;
         }
     }
 
     @Override
     protected void onDisable() {
-        if (FastExp.mc.field_71439_g == null) {
+        if (FastExp.mc.player == null) {
             return;
         }
-        if (this.autoSwitch.getValue().booleanValue() && this.initHotbarSlot != -1 && this.initHotbarSlot != FastExp.mc.field_71439_g.field_71071_by.field_70461_c) {
-            FastExp.mc.field_71439_g.field_71071_by.field_70461_c = this.initHotbarSlot;
+        if (this.autoSwitch.getValue().booleanValue() && this.initHotbarSlot != -1 && this.initHotbarSlot != FastExp.mc.player.inventory.currentItem) {
+            FastExp.mc.player.inventory.currentItem = this.initHotbarSlot;
         }
     }
 
     @Override
     public void onUpdate() {
-        if (FastExp.mc.field_71439_g == null) {
+        if (FastExp.mc.player == null) {
             return;
         }
-        if (this.autoSwitch.getValue().booleanValue() && FastExp.mc.field_71439_g.func_184614_ca().func_77973_b() != Items.field_151062_by) {
+        if (this.autoSwitch.getValue().booleanValue() && FastExp.mc.player.getHeldItemMainhand().getItem() != Items.EXPERIENCE_BOTTLE) {
             int xpSlot = this.findXpPots();
             if (xpSlot == -1) {
                 if (this.autoDisable.getValue().booleanValue()) {
@@ -65,17 +67,17 @@ extends Module {
                 }
                 return;
             }
-            FastExp.mc.field_71439_g.field_71071_by.field_70461_c = xpSlot;
+            FastExp.mc.player.inventory.currentItem = xpSlot;
         }
-        if (this.autoThrow.getValue().booleanValue() && FastExp.mc.field_71439_g.func_184614_ca().func_77973_b() == Items.field_151062_by) {
-            mc.func_147121_ag();
+        if (this.autoThrow.getValue().booleanValue() && FastExp.mc.player.getHeldItemMainhand().getItem() == Items.EXPERIENCE_BOTTLE) {
+            mc.rightClickMouse();
         }
     }
 
     private int findXpPots() {
         int slot = -1;
         for (int i = 0; i < 9; ++i) {
-            if (FastExp.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_151062_by) continue;
+            if (FastExp.mc.player.inventory.getStackInSlot(i).getItem() != Items.EXPERIENCE_BOTTLE) continue;
             slot = i;
             break;
         }

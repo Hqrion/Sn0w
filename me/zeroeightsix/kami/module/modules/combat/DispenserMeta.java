@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -73,7 +75,7 @@ extends Module {
 
     @Override
     protected void onEnable() {
-        if (DispenserMeta.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (DispenserMeta.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             this.disable();
             return;
         }
@@ -87,10 +89,10 @@ extends Module {
         this.hopperSlot = -1;
         this.isSneaking = false;
         for (int i = 0; i < 9 && (this.obiSlot == -1 || this.dispenserSlot == -1 || this.shulkerSlot == -1 || this.redstoneSlot == -1 || this.hopperSlot == -1); ++i) {
-            ItemStack stack = DispenserMeta.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || !(stack.func_77973_b() instanceof ItemBlock)) continue;
-            Block block = ((ItemBlock)stack.func_77973_b()).func_179223_d();
-            if (block == Blocks.field_150438_bZ) {
+            ItemStack stack = DispenserMeta.mc.player.inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) continue;
+            Block block = ((ItemBlock)stack.getItem()).getBlock();
+            if (block == Blocks.HOPPER) {
                 this.hopperSlot = i;
                 continue;
             }
@@ -98,15 +100,15 @@ extends Module {
                 this.shulkerSlot = i;
                 continue;
             }
-            if (block == Blocks.field_150343_Z) {
+            if (block == Blocks.OBSIDIAN) {
                 this.obiSlot = i;
                 continue;
             }
-            if (block == Blocks.field_150367_z) {
+            if (block == Blocks.DISPENSER) {
                 this.dispenserSlot = i;
                 continue;
             }
-            if (block != Blocks.field_150451_bX) continue;
+            if (block != Blocks.REDSTONE_BLOCK) continue;
             this.redstoneSlot = i;
         }
         if (this.obiSlot == -1 || this.dispenserSlot == -1 || this.shulkerSlot == -1 || this.redstoneSlot == -1 || this.hopperSlot == -1) {
@@ -116,76 +118,76 @@ extends Module {
             this.disable();
             return;
         }
-        if (DispenserMeta.mc.field_71476_x == null || DispenserMeta.mc.field_71476_x.func_178782_a() == null || DispenserMeta.mc.field_71476_x.func_178782_a().func_177984_a() == null) {
+        if (DispenserMeta.mc.objectMouseOver == null || DispenserMeta.mc.objectMouseOver.getBlockPos() == null || DispenserMeta.mc.objectMouseOver.getBlockPos().up() == null) {
             if (this.debugMessages.getValue().booleanValue()) {
                 Command.sendChatMessage("[Auto32k] Not a valid place target, disabling.");
             }
             this.disable();
             return;
         }
-        this.placeTarget = DispenserMeta.mc.field_71476_x.func_178782_a().func_177984_a();
-        if (DispenserMeta.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.NORTH)) {
-            this.redstonetarget = this.placeTarget.func_177984_a().func_177984_a().func_177974_f();
+        this.placeTarget = DispenserMeta.mc.objectMouseOver.getBlockPos().up();
+        if (DispenserMeta.mc.player.getHorizontalFacing().equals((Object)EnumFacing.NORTH)) {
+            this.redstonetarget = this.placeTarget.up().up().east();
         }
-        if (DispenserMeta.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.WEST)) {
-            this.redstonetarget = this.placeTarget.func_177984_a().func_177984_a().func_177978_c();
+        if (DispenserMeta.mc.player.getHorizontalFacing().equals((Object)EnumFacing.WEST)) {
+            this.redstonetarget = this.placeTarget.up().up().north();
         }
-        if (DispenserMeta.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.EAST)) {
-            this.redstonetarget = this.placeTarget.func_177984_a().func_177984_a().func_177968_d();
+        if (DispenserMeta.mc.player.getHorizontalFacing().equals((Object)EnumFacing.EAST)) {
+            this.redstonetarget = this.placeTarget.up().up().south();
         }
-        if (DispenserMeta.mc.field_71439_g.func_174811_aO().equals((Object)EnumFacing.SOUTH)) {
-            this.redstonetarget = this.placeTarget.func_177984_a().func_177984_a().func_177976_e();
+        if (DispenserMeta.mc.player.getHorizontalFacing().equals((Object)EnumFacing.SOUTH)) {
+            this.redstonetarget = this.placeTarget.up().up().west();
         }
         if (this.autoEnableBypass.getValue().booleanValue()) {
             ModuleManager.getModuleByName("Secret Close").enable();
         }
         if (this.debugMessages.getValue().booleanValue()) {
-            Command.sendChatMessage("[Auto32k] Place Target: " + this.placeTarget.field_177962_a + " " + this.placeTarget.field_177960_b + " " + this.placeTarget.field_177961_c + " Distance: " + df.format(DispenserMeta.mc.field_71439_g.func_174791_d().func_72438_d(new Vec3d((Vec3i)this.placeTarget))));
+            Command.sendChatMessage("[Auto32k] Place Target: " + this.placeTarget.x + " " + this.placeTarget.y + " " + this.placeTarget.z + " Distance: " + df.format(DispenserMeta.mc.player.getPositionVector().distanceTo(new Vec3d((Vec3i)this.placeTarget))));
         }
     }
 
     @Override
     public void onUpdate() {
-        if (DispenserMeta.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (DispenserMeta.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (this.stage == 0) {
-            DispenserMeta.mc.field_71439_g.field_71071_by.field_70461_c = this.obiSlot;
+            DispenserMeta.mc.player.inventory.currentItem = this.obiSlot;
             this.placeBlock(new BlockPos((Vec3i)this.placeTarget), EnumFacing.DOWN);
-            DispenserMeta.mc.field_71439_g.field_71071_by.field_70461_c = this.dispenserSlot;
-            this.placeBlock(new BlockPos((Vec3i)this.placeTarget.func_177982_a(0, 1, 0)), EnumFacing.DOWN);
-            DispenserMeta.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)DispenserMeta.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            DispenserMeta.mc.player.inventory.currentItem = this.dispenserSlot;
+            this.placeBlock(new BlockPos((Vec3i)this.placeTarget.add(0, 1, 0)), EnumFacing.DOWN);
+            DispenserMeta.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)DispenserMeta.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             this.isSneaking = false;
-            DispenserMeta.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget.func_177982_a(0, 1, 0), EnumFacing.DOWN, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+            DispenserMeta.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget.add(0, 1, 0), EnumFacing.DOWN, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
             this.stage = 1;
             return;
         }
         if (this.stage == 1) {
-            if (!(DispenserMeta.mc.field_71462_r instanceof GuiContainer)) {
+            if (!(DispenserMeta.mc.currentScreen instanceof GuiContainer)) {
                 return;
             }
-            DispenserMeta.mc.field_71442_b.func_187098_a(DispenserMeta.mc.field_71439_g.field_71070_bA.field_75152_c, 1, this.shulkerSlot, ClickType.SWAP, (EntityPlayer)DispenserMeta.mc.field_71439_g);
-            DispenserMeta.mc.field_71439_g.func_71053_j();
-            DispenserMeta.mc.field_71439_g.field_71071_by.field_70461_c = this.redstoneSlot;
+            DispenserMeta.mc.playerController.windowClick(DispenserMeta.mc.player.openContainer.windowId, 1, this.shulkerSlot, ClickType.SWAP, (EntityPlayer)DispenserMeta.mc.player);
+            DispenserMeta.mc.player.closeScreen();
+            DispenserMeta.mc.player.inventory.currentItem = this.redstoneSlot;
             if (this.SideRedstone.getValue().booleanValue()) {
                 this.placeBlock(new BlockPos((Vec3i)this.redstonetarget), EnumFacing.DOWN);
             } else {
-                this.placeBlock(new BlockPos((Vec3i)this.placeTarget.func_177982_a(0, 2, 0)), EnumFacing.DOWN);
+                this.placeBlock(new BlockPos((Vec3i)this.placeTarget.add(0, 2, 0)), EnumFacing.DOWN);
             }
             this.stage = 2;
             return;
         }
         if (this.stage == 2) {
-            Block block = DispenserMeta.mc.field_71441_e.func_180495_p(this.placeTarget.func_177972_a(DispenserMeta.mc.field_71439_g.func_174811_aO().func_176734_d()).func_177984_a()).func_177230_c();
+            Block block = DispenserMeta.mc.world.getBlockState(this.placeTarget.offset(DispenserMeta.mc.player.getHorizontalFacing().getOpposite()).up()).getBlock();
             if (block instanceof BlockAir || block instanceof BlockLiquid) {
                 return;
             }
-            DispenserMeta.mc.field_71439_g.field_71071_by.field_70461_c = this.hopperSlot;
-            this.placeBlock(new BlockPos((Vec3i)this.placeTarget.func_177972_a(DispenserMeta.mc.field_71439_g.func_174811_aO().func_176734_d())), DispenserMeta.mc.field_71439_g.func_174811_aO());
-            DispenserMeta.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)DispenserMeta.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            DispenserMeta.mc.player.inventory.currentItem = this.hopperSlot;
+            this.placeBlock(new BlockPos((Vec3i)this.placeTarget.offset(DispenserMeta.mc.player.getHorizontalFacing().getOpposite())), DispenserMeta.mc.player.getHorizontalFacing());
+            DispenserMeta.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)DispenserMeta.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             this.isSneaking = false;
-            DispenserMeta.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget.func_177972_a(DispenserMeta.mc.field_71439_g.func_174811_aO().func_176734_d()), EnumFacing.DOWN, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
-            DispenserMeta.mc.field_71439_g.field_71071_by.field_70461_c = this.shulkerSlot;
+            DispenserMeta.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(this.placeTarget.offset(DispenserMeta.mc.player.getHorizontalFacing().getOpposite()), EnumFacing.DOWN, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+            DispenserMeta.mc.player.inventory.currentItem = this.shulkerSlot;
             if (!this.grabItem.getValue().booleanValue()) {
                 this.disable();
                 return;
@@ -194,13 +196,13 @@ extends Module {
             return;
         }
         if (this.stage == 3) {
-            if (!(DispenserMeta.mc.field_71462_r instanceof GuiContainer)) {
+            if (!(DispenserMeta.mc.currentScreen instanceof GuiContainer)) {
                 return;
             }
-            if (((GuiContainer)DispenserMeta.mc.field_71462_r).field_147002_h.func_75139_a((int)0).func_75211_c().field_190928_g) {
+            if (((GuiContainer)DispenserMeta.mc.currentScreen).inventorySlots.getSlot((int)0).getStack().isEmpty) {
                 return;
             }
-            DispenserMeta.mc.field_71442_b.func_187098_a(DispenserMeta.mc.field_71439_g.field_71070_bA.field_75152_c, 0, DispenserMeta.mc.field_71439_g.field_71071_by.field_70461_c, ClickType.SWAP, (EntityPlayer)DispenserMeta.mc.field_71439_g);
+            DispenserMeta.mc.playerController.windowClick(DispenserMeta.mc.player.openContainer.windowId, 0, DispenserMeta.mc.player.inventory.currentItem, ClickType.SWAP, (EntityPlayer)DispenserMeta.mc.player);
             if (this.autoEnableHitAura.getValue().booleanValue()) {
                 ModuleManager.getModuleByName("Aura").enable();
             }
@@ -209,18 +211,18 @@ extends Module {
     }
 
     private void placeBlock(BlockPos pos, EnumFacing side) {
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
         if (!this.isSneaking) {
-            DispenserMeta.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)DispenserMeta.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            DispenserMeta.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)DispenserMeta.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             this.isSneaking = true;
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         if (this.rotate.getValue().booleanValue()) {
             BlockInteractionHelper.faceVectorPacketInstant(hitVec);
         }
-        DispenserMeta.mc.field_71442_b.func_187099_a(DispenserMeta.mc.field_71439_g, DispenserMeta.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        DispenserMeta.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+        DispenserMeta.mc.playerController.processRightClickBlock(DispenserMeta.mc.player, DispenserMeta.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        DispenserMeta.mc.player.swingArm(EnumHand.MAIN_HAND);
     }
 }
 

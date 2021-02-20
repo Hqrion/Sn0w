@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -18,16 +20,16 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        Blocks.field_150432_aD.field_149765_K = this.slipperiness.getValue().floatValue();
-        Blocks.field_150403_cj.field_149765_K = this.slipperiness.getValue().floatValue();
-        Blocks.field_185778_de.field_149765_K = this.slipperiness.getValue().floatValue();
+        Blocks.ICE.slipperiness = this.slipperiness.getValue().floatValue();
+        Blocks.PACKED_ICE.slipperiness = this.slipperiness.getValue().floatValue();
+        Blocks.FROSTED_ICE.slipperiness = this.slipperiness.getValue().floatValue();
     }
 
     @Override
     public void onDisable() {
-        Blocks.field_150432_aD.field_149765_K = 0.98f;
-        Blocks.field_150403_cj.field_149765_K = 0.98f;
-        Blocks.field_185778_de.field_149765_K = 0.98f;
+        Blocks.ICE.slipperiness = 0.98f;
+        Blocks.PACKED_ICE.slipperiness = 0.98f;
+        Blocks.FROSTED_ICE.slipperiness = 0.98f;
     }
 }
 

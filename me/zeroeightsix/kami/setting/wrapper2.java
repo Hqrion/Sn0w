@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -21,15 +23,15 @@ public class wrapper2 {
     public static Minecraft mc;
 
     public static Minecraft getMinecraft() {
-        return Minecraft.func_71410_x();
+        return Minecraft.getMinecraft();
     }
 
     public static EntityPlayerSP getPlayer() {
-        return wrapper2.getMinecraft().field_71439_g;
+        return wrapper2.getMinecraft().player;
     }
 
     public static World getWorld() {
-        return wrapper2.getMinecraft().field_71441_e;
+        return wrapper2.getMinecraft().world;
     }
 
     public static int getKey(String keyname) {
@@ -41,7 +43,7 @@ public class wrapper2 {
     }
 
     static {
-        mc = Minecraft.func_71410_x();
+        mc = Minecraft.getMinecraft();
     }
 }
 

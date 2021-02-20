@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -10,7 +12,7 @@ public class Fastplace
 extends Module {
     @Override
     public void onUpdate() {
-        Fastplace.mc.field_71467_ac = 0;
+        Fastplace.mc.rightClickDelayTimer = 0;
     }
 }
 

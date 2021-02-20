@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -56,7 +58,7 @@ extends Module {
         } else if (this.testGame.getValue().booleanValue()) {
             RainbowText.renderChristmasString(timer + Wrapper.getPlayer().getDisplayNameString() + " :)", Float.valueOf(xPos), Float.valueOf(this.y.getValue().floatValue()));
         } else {
-            Wrapper.getMinecraft().field_71466_p.func_175063_a(timer + Wrapper.getPlayer().getDisplayNameString() + " (^:<", xPos, this.y.getValue().floatValue(), color);
+            Wrapper.getMinecraft().fontRenderer.drawStringWithShadow(timer + Wrapper.getPlayer().getDisplayNameString() + " (^:<", xPos, this.y.getValue().floatValue(), color);
         }
     }
 

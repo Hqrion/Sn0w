@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -26,10 +28,10 @@ extends Module {
     private Setting<Boolean> EmptyHand = this.register(Settings.b("EmptyHand", false));
     @EventHandler
     public Listener<PacketEvent.Send> listener = new Listener<PacketEvent.Send>(event -> {
-        if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && this.Chorus.getValue().booleanValue() && NoCrystalWaste.mc.field_71439_g.func_184614_ca().func_77973_b() == Items.field_185161_cS) {
+        if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && this.Chorus.getValue().booleanValue() && NoCrystalWaste.mc.player.getHeldItemMainhand().getItem() == Items.CHORUS_FRUIT) {
             event.cancel();
         }
-        if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && this.EmptyHand.getValue().booleanValue() && NoCrystalWaste.mc.field_71439_g.field_184831_bT == ItemStack.field_190927_a) {
+        if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && this.EmptyHand.getValue().booleanValue() && NoCrystalWaste.mc.player.itemStackMainHand == ItemStack.EMPTY) {
             event.cancel();
         }
     }, new Predicate[0]);

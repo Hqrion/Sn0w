@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -40,47 +42,47 @@ extends GuiScreen {
             if (!(c instanceof Frame) || !(child = (Frame)c).isPinneable() || !child.isVisible()) continue;
             child.setOpacity(0.5f);
         }
-        this.framebuffer = new Framebuffer(Wrapper.getMinecraft().field_71443_c, Wrapper.getMinecraft().field_71440_d, false);
+        this.framebuffer = new Framebuffer(Wrapper.getMinecraft().displayWidth, Wrapper.getMinecraft().displayHeight, false);
     }
 
-    public void func_146281_b() {
+    public void onGuiClosed() {
         KamiGUI gui = KamiMod.getInstance().getKamiGUI();
         gui.getChildren().stream().filter(component -> component instanceof Frame && ((Frame)component).isPinneable() && component.isVisible()).forEach(component -> component.setOpacity(0.0f));
     }
 
-    public void func_73866_w_() {
+    public void initGui() {
         this.gui = KamiMod.getInstance().getKamiGUI();
     }
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.calculateMouse();
         this.gui.drawGUI();
         GL11.glEnable((int)3553);
-        GlStateManager.func_179124_c((float)1.0f, (float)1.0f, (float)1.0f);
+        GlStateManager.color((float)1.0f, (float)1.0f, (float)1.0f);
     }
 
-    protected void func_73864_a(int mouseX, int mouseY, int mouseButton) throws IOException {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         this.gui.handleMouseDown(DisplayGuiScreen.mouseX, DisplayGuiScreen.mouseY);
     }
 
-    protected void func_146286_b(int mouseX, int mouseY, int state) {
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
         this.gui.handleMouseRelease(DisplayGuiScreen.mouseX, DisplayGuiScreen.mouseY);
     }
 
-    protected void func_146273_a(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         this.gui.handleMouseDrag(DisplayGuiScreen.mouseX, DisplayGuiScreen.mouseY);
     }
 
-    public void func_73876_c() {
+    public void updateScreen() {
         int a;
         if (Mouse.hasWheel() && (a = Mouse.getDWheel()) != 0) {
             this.gui.handleWheel(mouseX, mouseY, a);
         }
     }
 
-    protected void func_73869_a(char typedChar, int keyCode) throws IOException {
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == 1) {
-            this.field_146297_k.func_147108_a(this.lastScreen);
+            this.mc.displayGuiScreen(this.lastScreen);
         } else {
             this.gui.handleKeyDown(keyCode);
             this.gui.handleKeyUp(keyCode);
@@ -89,11 +91,11 @@ extends GuiScreen {
 
     public static int getScale() {
         int scaleFactor;
-        int scale = Wrapper.getMinecraft().field_71474_y.field_74335_Z;
+        int scale = Wrapper.getMinecraft().gameSettings.guiScale;
         if (scale == 0) {
             scale = 1000;
         }
-        for (scaleFactor = 0; scaleFactor < scale && Wrapper.getMinecraft().field_71443_c / (scaleFactor + 1) >= 320 && Wrapper.getMinecraft().field_71440_d / (scaleFactor + 1) >= 240; ++scaleFactor) {
+        for (scaleFactor = 0; scaleFactor < scale && Wrapper.getMinecraft().displayWidth / (scaleFactor + 1) >= 320 && Wrapper.getMinecraft().displayHeight / (scaleFactor + 1) >= 240; ++scaleFactor) {
         }
         if (scaleFactor == 0) {
             scaleFactor = 1;
@@ -102,10 +104,10 @@ extends GuiScreen {
     }
 
     private void calculateMouse() {
-        Minecraft minecraft = Minecraft.func_71410_x();
+        Minecraft minecraft = Minecraft.getMinecraft();
         int scaleFactor = DisplayGuiScreen.getScale();
         mouseX = Mouse.getX() / scaleFactor;
-        mouseY = minecraft.field_71440_d / scaleFactor - Mouse.getY() / scaleFactor - 1;
+        mouseY = minecraft.displayHeight / scaleFactor - Mouse.getY() / scaleFactor - 1;
     }
 }
 

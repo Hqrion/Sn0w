@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -41,16 +43,16 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 public class WorldUtils {
-    private static final Minecraft mc = Minecraft.func_71410_x();
-    public static List<Block> emptyBlocks = Arrays.asList(Blocks.field_150350_a, Blocks.field_150356_k, Blocks.field_150353_l, Blocks.field_150358_i, Blocks.field_150355_j, Blocks.field_150395_bd, Blocks.field_150431_aC, Blocks.field_150329_H, Blocks.field_150480_ab);
-    public static List<Block> rightclickableBlocks = Arrays.asList(Blocks.field_150486_ae, Blocks.field_150447_bR, Blocks.field_150477_bB, Blocks.field_190977_dl, Blocks.field_190978_dm, Blocks.field_190979_dn, Blocks.field_190980_do, Blocks.field_190981_dp, Blocks.field_190982_dq, Blocks.field_190983_dr, Blocks.field_190984_ds, Blocks.field_190985_dt, Blocks.field_190986_du, Blocks.field_190987_dv, Blocks.field_190988_dw, Blocks.field_190989_dx, Blocks.field_190990_dy, Blocks.field_190991_dz, Blocks.field_190975_dA, Blocks.field_150467_bQ, Blocks.field_150471_bO, Blocks.field_150430_aB, Blocks.field_150441_bU, Blocks.field_150413_aR, Blocks.field_150416_aS, Blocks.field_150455_bV, Blocks.field_180390_bo, Blocks.field_180391_bp, Blocks.field_180392_bq, Blocks.field_180386_br, Blocks.field_180385_bs, Blocks.field_180387_bt, Blocks.field_150382_bo, Blocks.field_150367_z, Blocks.field_150409_cd, Blocks.field_150442_at, Blocks.field_150323_B, Blocks.field_150421_aI, Blocks.field_150461_bJ, Blocks.field_150324_C, Blocks.field_150460_al, Blocks.field_180413_ao, Blocks.field_180414_ap, Blocks.field_180412_aq, Blocks.field_180411_ar, Blocks.field_180410_as, Blocks.field_180409_at, Blocks.field_150414_aQ, Blocks.field_150381_bn, Blocks.field_150380_bt, Blocks.field_150438_bZ, Blocks.field_185776_dc, Blocks.field_150483_bI, Blocks.field_185777_dd, Blocks.field_150462_ai);
+    private static final Minecraft mc = Minecraft.getMinecraft();
+    public static List<Block> emptyBlocks = Arrays.asList(Blocks.AIR, Blocks.FLOWING_LAVA, Blocks.LAVA, Blocks.FLOWING_WATER, Blocks.WATER, Blocks.VINE, Blocks.SNOW_LAYER, Blocks.TALLGRASS, Blocks.FIRE);
+    public static List<Block> rightclickableBlocks = Arrays.asList(Blocks.CHEST, Blocks.TRAPPED_CHEST, Blocks.ENDER_CHEST, Blocks.WHITE_SHULKER_BOX, Blocks.ORANGE_SHULKER_BOX, Blocks.MAGENTA_SHULKER_BOX, Blocks.LIGHT_BLUE_SHULKER_BOX, Blocks.YELLOW_SHULKER_BOX, Blocks.LIME_SHULKER_BOX, Blocks.PINK_SHULKER_BOX, Blocks.GRAY_SHULKER_BOX, Blocks.SILVER_SHULKER_BOX, Blocks.CYAN_SHULKER_BOX, Blocks.PURPLE_SHULKER_BOX, Blocks.BLUE_SHULKER_BOX, Blocks.BROWN_SHULKER_BOX, Blocks.GREEN_SHULKER_BOX, Blocks.RED_SHULKER_BOX, Blocks.BLACK_SHULKER_BOX, Blocks.ANVIL, Blocks.WOODEN_BUTTON, Blocks.STONE_BUTTON, Blocks.UNPOWERED_COMPARATOR, Blocks.UNPOWERED_REPEATER, Blocks.POWERED_REPEATER, Blocks.POWERED_COMPARATOR, Blocks.OAK_FENCE_GATE, Blocks.SPRUCE_FENCE_GATE, Blocks.BIRCH_FENCE_GATE, Blocks.JUNGLE_FENCE_GATE, Blocks.DARK_OAK_FENCE_GATE, Blocks.ACACIA_FENCE_GATE, Blocks.BREWING_STAND, Blocks.DISPENSER, Blocks.DROPPER, Blocks.LEVER, Blocks.NOTEBLOCK, Blocks.JUKEBOX, Blocks.BEACON, Blocks.BED, Blocks.FURNACE, Blocks.OAK_DOOR, Blocks.SPRUCE_DOOR, Blocks.BIRCH_DOOR, Blocks.JUNGLE_DOOR, Blocks.ACACIA_DOOR, Blocks.DARK_OAK_DOOR, Blocks.CAKE, Blocks.ENCHANTING_TABLE, Blocks.DRAGON_EGG, Blocks.HOPPER, Blocks.REPEATING_COMMAND_BLOCK, Blocks.COMMAND_BLOCK, Blocks.CHAIN_COMMAND_BLOCK, Blocks.CRAFTING_TABLE);
 
     public static void openBlock(BlockPos pos) {
         EnumFacing[] facings;
         for (EnumFacing f : facings = EnumFacing.values()) {
-            Block neighborBlock = WorldUtils.mc.field_71441_e.func_180495_p(pos.func_177972_a(f)).func_177230_c();
+            Block neighborBlock = WorldUtils.mc.world.getBlockState(pos.offset(f)).getBlock();
             if (!emptyBlocks.contains(neighborBlock)) continue;
-            WorldUtils.mc.field_71442_b.func_187099_a(WorldUtils.mc.field_71439_g, WorldUtils.mc.field_71441_e, pos, f.func_176734_d(), new Vec3d((Vec3i)pos), EnumHand.MAIN_HAND);
+            WorldUtils.mc.playerController.processRightClickBlock(WorldUtils.mc.player, WorldUtils.mc.world, pos, f.getOpposite(), new Vec3d((Vec3i)pos), EnumHand.MAIN_HAND);
             return;
         }
     }
@@ -60,26 +62,26 @@ public class WorldUtils {
         if (!WorldUtils.isBlockEmpty(pos)) {
             return false;
         }
-        if (slot != WorldUtils.mc.field_71439_g.field_71071_by.field_70461_c) {
-            WorldUtils.mc.field_71439_g.field_71071_by.field_70461_c = slot;
+        if (slot != WorldUtils.mc.player.inventory.currentItem) {
+            WorldUtils.mc.player.inventory.currentItem = slot;
         }
         for (EnumFacing f : facings = EnumFacing.values()) {
-            Block neighborBlock = WorldUtils.mc.field_71441_e.func_180495_p(pos.func_177972_a(f)).func_177230_c();
-            Vec3d vec = new Vec3d((double)pos.func_177958_n() + 0.5 + (double)f.func_82601_c() * 0.5, (double)pos.func_177956_o() + 0.5 + (double)f.func_96559_d() * 0.5, (double)pos.func_177952_p() + 0.5 + (double)f.func_82599_e() * 0.5);
-            if (emptyBlocks.contains(neighborBlock) || !(WorldUtils.mc.field_71439_g.func_174824_e(mc.func_184121_ak()).func_72438_d(vec) <= 4.25)) continue;
-            float[] rot = new float[]{WorldUtils.mc.field_71439_g.field_70177_z, WorldUtils.mc.field_71439_g.field_70125_A};
+            Block neighborBlock = WorldUtils.mc.world.getBlockState(pos.offset(f)).getBlock();
+            Vec3d vec = new Vec3d((double)pos.getX() + 0.5 + (double)f.getXOffset() * 0.5, (double)pos.getY() + 0.5 + (double)f.getYOffset() * 0.5, (double)pos.getZ() + 0.5 + (double)f.getZOffset() * 0.5);
+            if (emptyBlocks.contains(neighborBlock) || !(WorldUtils.mc.player.getPositionEyes(mc.getRenderPartialTicks()).distanceTo(vec) <= 4.25)) continue;
+            float[] rot = new float[]{WorldUtils.mc.player.rotationYaw, WorldUtils.mc.player.rotationPitch};
             if (rotate) {
-                WorldUtils.rotatePacket(vec.field_72450_a, vec.field_72448_b, vec.field_72449_c);
+                WorldUtils.rotatePacket(vec.x, vec.y, vec.z);
             }
             if (rightclickableBlocks.contains(neighborBlock)) {
-                WorldUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)WorldUtils.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+                WorldUtils.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)WorldUtils.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             }
-            WorldUtils.mc.field_71442_b.func_187099_a(WorldUtils.mc.field_71439_g, WorldUtils.mc.field_71441_e, pos.func_177972_a(f), f.func_176734_d(), new Vec3d((Vec3i)pos), EnumHand.MAIN_HAND);
+            WorldUtils.mc.playerController.processRightClickBlock(WorldUtils.mc.player, WorldUtils.mc.world, pos.offset(f), f.getOpposite(), new Vec3d((Vec3i)pos), EnumHand.MAIN_HAND);
             if (rightclickableBlocks.contains(neighborBlock)) {
-                WorldUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)WorldUtils.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+                WorldUtils.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)WorldUtils.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             }
             if (rotateBack) {
-                WorldUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(rot[0], rot[1], WorldUtils.mc.field_71439_g.field_70122_E));
+                WorldUtils.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Rotation(rot[0], rot[1], WorldUtils.mc.player.onGround));
             }
             return true;
         }
@@ -88,15 +90,15 @@ public class WorldUtils {
 
     public static boolean isBlockEmpty(BlockPos pos) {
         Entity e;
-        if (!emptyBlocks.contains(WorldUtils.mc.field_71441_e.func_180495_p(pos).func_177230_c())) {
+        if (!emptyBlocks.contains(WorldUtils.mc.world.getBlockState(pos).getBlock())) {
             return false;
         }
         AxisAlignedBB box = new AxisAlignedBB(pos);
-        Iterator entityIter = WorldUtils.mc.field_71441_e.field_72996_f.iterator();
+        Iterator entityIter = WorldUtils.mc.world.loadedEntityList.iterator();
         do {
             if (entityIter.hasNext()) continue;
             return true;
-        } while (!((e = (Entity)entityIter.next()) instanceof EntityLivingBase) || !box.func_72326_a(e.func_174813_aQ()));
+        } while (!((e = (Entity)entityIter.next()) instanceof EntityLivingBase) || !box.intersects(e.getEntityBoundingBox()));
         return false;
     }
 
@@ -106,9 +108,9 @@ public class WorldUtils {
             return false;
         }
         for (EnumFacing f : facings = EnumFacing.values()) {
-            if (emptyBlocks.contains(WorldUtils.mc.field_71441_e.func_180495_p(pos.func_177972_a(f)).func_177230_c())) continue;
-            Vec3d vec3d = new Vec3d((double)pos.func_177958_n() + 0.5 + (double)f.func_82601_c() * 0.5, (double)pos.func_177956_o() + 0.5 + (double)f.func_96559_d() * 0.5, (double)pos.func_177952_p() + 0.5 + (double)f.func_82599_e() * 0.5);
-            if (!(WorldUtils.mc.field_71439_g.func_174824_e(mc.func_184121_ak()).func_72438_d(vec3d) <= 4.25)) continue;
+            if (emptyBlocks.contains(WorldUtils.mc.world.getBlockState(pos.offset(f)).getBlock())) continue;
+            Vec3d vec3d = new Vec3d((double)pos.getX() + 0.5 + (double)f.getXOffset() * 0.5, (double)pos.getY() + 0.5 + (double)f.getYOffset() * 0.5, (double)pos.getZ() + 0.5 + (double)f.getZOffset() * 0.5);
+            if (!(WorldUtils.mc.player.getPositionEyes(mc.getRenderPartialTicks()).distanceTo(vec3d) <= 4.25)) continue;
             return true;
         }
         return false;
@@ -119,24 +121,24 @@ public class WorldUtils {
     }
 
     public static void rotateClient(double x, double y, double z) {
-        double diffX = x - WorldUtils.mc.field_71439_g.field_70165_t;
-        double diffY = y - (WorldUtils.mc.field_71439_g.field_70163_u + (double)WorldUtils.mc.field_71439_g.func_70047_e());
-        double diffZ = z - WorldUtils.mc.field_71439_g.field_70161_v;
+        double diffX = x - WorldUtils.mc.player.posX;
+        double diffY = y - (WorldUtils.mc.player.posY + (double)WorldUtils.mc.player.getEyeHeight());
+        double diffZ = z - WorldUtils.mc.player.posZ;
         double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
         float yaw = (float)Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0f;
         float pitch = (float)(-Math.toDegrees(Math.atan2(diffY, diffXZ)));
-        WorldUtils.mc.field_71439_g.field_70177_z += MathHelper.func_76142_g((float)(yaw - WorldUtils.mc.field_71439_g.field_70177_z));
-        WorldUtils.mc.field_71439_g.field_70125_A += MathHelper.func_76142_g((float)(pitch - WorldUtils.mc.field_71439_g.field_70125_A));
+        WorldUtils.mc.player.rotationYaw += MathHelper.wrapDegrees((float)(yaw - WorldUtils.mc.player.rotationYaw));
+        WorldUtils.mc.player.rotationPitch += MathHelper.wrapDegrees((float)(pitch - WorldUtils.mc.player.rotationPitch));
     }
 
     public static void rotatePacket(double x, double y, double z) {
-        double diffX = x - WorldUtils.mc.field_71439_g.field_70165_t;
-        double diffY = y - (WorldUtils.mc.field_71439_g.field_70163_u + (double)WorldUtils.mc.field_71439_g.func_70047_e());
-        double diffZ = z - WorldUtils.mc.field_71439_g.field_70161_v;
+        double diffX = x - WorldUtils.mc.player.posX;
+        double diffY = y - (WorldUtils.mc.player.posY + (double)WorldUtils.mc.player.getEyeHeight());
+        double diffZ = z - WorldUtils.mc.player.posZ;
         double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
         float yaw = (float)Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0f;
         float pitch = (float)(-Math.toDegrees(Math.atan2(diffY, diffXZ)));
-        WorldUtils.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(yaw, pitch, WorldUtils.mc.field_71439_g.field_70122_E));
+        WorldUtils.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Rotation(yaw, pitch, WorldUtils.mc.player.onGround));
     }
 }
 

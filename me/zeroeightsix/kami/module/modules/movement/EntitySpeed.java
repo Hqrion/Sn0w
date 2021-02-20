@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -39,8 +41,8 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (EntitySpeed.mc.field_71441_e != null && EntitySpeed.mc.field_71439_g.func_184187_bx() != null) {
-            Entity riding = EntitySpeed.mc.field_71439_g.func_184187_bx();
+        if (EntitySpeed.mc.world != null && EntitySpeed.mc.player.getRidingEntity() != null) {
+            Entity riding = EntitySpeed.mc.player.getRidingEntity();
             if (riding instanceof EntityPig || riding instanceof AbstractHorse) {
                 this.steerEntity(riding);
             } else if (riding instanceof EntityBoat) {
@@ -51,18 +53,18 @@ extends Module {
 
     private void steerEntity(Entity entity) {
         if (!this.flight.getValue().booleanValue()) {
-            entity.field_70181_x = -0.4;
+            entity.motionY = -0.4;
         }
         if (this.flight.getValue().booleanValue()) {
-            if (EntitySpeed.mc.field_71474_y.field_74314_A.func_151470_d()) {
-                entity.field_70181_x = this.speed.getValue().floatValue();
-            } else if (EntitySpeed.mc.field_71474_y.field_74351_w.func_151470_d() || EntitySpeed.mc.field_71474_y.field_74368_y.func_151470_d()) {
-                entity.field_70181_x = this.wobble.getValue() != false ? Math.sin(EntitySpeed.mc.field_71439_g.field_70173_aa) : 0.0;
+            if (EntitySpeed.mc.gameSettings.keyBindJump.isKeyDown()) {
+                entity.motionY = this.speed.getValue().floatValue();
+            } else if (EntitySpeed.mc.gameSettings.keyBindForward.isKeyDown() || EntitySpeed.mc.gameSettings.keyBindBack.isKeyDown()) {
+                entity.motionY = this.wobble.getValue() != false ? Math.sin(EntitySpeed.mc.player.ticksExisted) : 0.0;
             }
         }
         this.moveForward(entity, (double)this.speed.getValue().floatValue() * 3.8);
         if (entity instanceof EntityHorse) {
-            entity.field_70177_z = EntitySpeed.mc.field_71439_g.field_70177_z;
+            entity.rotationYaw = EntitySpeed.mc.player.rotationYaw;
         }
     }
 
@@ -71,15 +73,15 @@ extends Module {
         if (boat == null) {
             return;
         }
-        boolean forward = EntitySpeed.mc.field_71474_y.field_74351_w.func_151470_d();
-        boolean left = EntitySpeed.mc.field_71474_y.field_74370_x.func_151470_d();
-        boolean right = EntitySpeed.mc.field_71474_y.field_74366_z.func_151470_d();
-        boolean back = EntitySpeed.mc.field_71474_y.field_74368_y.func_151470_d();
+        boolean forward = EntitySpeed.mc.gameSettings.keyBindForward.isKeyDown();
+        boolean left = EntitySpeed.mc.gameSettings.keyBindLeft.isKeyDown();
+        boolean right = EntitySpeed.mc.gameSettings.keyBindRight.isKeyDown();
+        boolean back = EntitySpeed.mc.gameSettings.keyBindBack.isKeyDown();
         if (!forward || !back) {
-            boat.field_70181_x = 0.0;
+            boat.motionY = 0.0;
         }
-        if (EntitySpeed.mc.field_71474_y.field_74314_A.func_151470_d()) {
-            boat.field_70181_x += (double)(this.speed.getValue().floatValue() / 2.0f);
+        if (EntitySpeed.mc.gameSettings.keyBindJump.isKeyDown()) {
+            boat.motionY += (double)(this.speed.getValue().floatValue() / 2.0f);
         }
         if (!(forward || left || right || back)) {
             return;
@@ -99,9 +101,9 @@ extends Module {
         if (angle == -1) {
             return;
         }
-        float yaw = EntitySpeed.mc.field_71439_g.field_70177_z + (float)angle;
-        boat.field_70159_w = EntityUtil.getRelativeX(yaw) * (double)this.speed.getValue().floatValue();
-        boat.field_70179_y = EntityUtil.getRelativeZ(yaw) * (double)this.speed.getValue().floatValue();
+        float yaw = EntitySpeed.mc.player.rotationYaw + (float)angle;
+        boat.motionX = EntityUtil.getRelativeX(yaw) * (double)this.speed.getValue().floatValue();
+        boat.motionZ = EntityUtil.getRelativeZ(yaw) * (double)this.speed.getValue().floatValue();
     }
 
     @Override
@@ -110,25 +112,25 @@ extends Module {
         if (boat == null) {
             return;
         }
-        boat.field_70177_z = EntitySpeed.mc.field_71439_g.field_70177_z;
-        boat.func_184442_a(false, false, false, false);
+        boat.rotationYaw = EntitySpeed.mc.player.rotationYaw;
+        boat.updateInputs(false, false, false, false);
     }
 
     private EntityBoat getBoat() {
-        if (EntitySpeed.mc.field_71439_g.func_184187_bx() != null && EntitySpeed.mc.field_71439_g.func_184187_bx() instanceof EntityBoat) {
-            return (EntityBoat)EntitySpeed.mc.field_71439_g.func_184187_bx();
+        if (EntitySpeed.mc.player.getRidingEntity() != null && EntitySpeed.mc.player.getRidingEntity() instanceof EntityBoat) {
+            return (EntityBoat)EntitySpeed.mc.player.getRidingEntity();
         }
         return null;
     }
 
     private void moveForward(Entity entity, double speed) {
         if (entity != null) {
-            MovementInput movementInput = EntitySpeed.mc.field_71439_g.field_71158_b;
-            double forward = movementInput.field_192832_b;
-            double strafe = movementInput.field_78902_a;
+            MovementInput movementInput = EntitySpeed.mc.player.movementInput;
+            double forward = movementInput.moveForward;
+            double strafe = movementInput.moveStrafe;
             boolean movingForward = forward != 0.0;
             boolean movingStrafe = strafe != 0.0;
-            float yaw = EntitySpeed.mc.field_71439_g.field_70177_z;
+            float yaw = EntitySpeed.mc.player.rotationYaw;
             if (!movingForward && !movingStrafe) {
                 this.setEntitySpeed(entity, 0.0, 0.0);
             } else {
@@ -153,12 +155,12 @@ extends Module {
     }
 
     private void setEntitySpeed(Entity entity, double motX, double motZ) {
-        entity.field_70159_w = motX;
-        entity.field_70179_y = motZ;
+        entity.motionX = motX;
+        entity.motionZ = motZ;
     }
 
     private boolean isBorderingChunk(Entity entity, double motX, double motZ) {
-        return this.antiStuck.getValue() != false && EntitySpeed.mc.field_71441_e.func_72964_e((int)(entity.field_70165_t + motX) >> 4, (int)(entity.field_70161_v + motZ) >> 4) instanceof EmptyChunk;
+        return this.antiStuck.getValue() != false && EntitySpeed.mc.world.getChunk((int)(entity.posX + motX) >> 4, (int)(entity.posZ + motZ) >> 4) instanceof EmptyChunk;
     }
 
     public static float getOpacity() {

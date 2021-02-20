@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -56,7 +58,7 @@ extends Module {
         if (entity instanceof EntityMinecartChest) {
             return ColourUtils.Colors.ORANGE;
         }
-        if (entity instanceof EntityItemFrame && ((EntityItemFrame)entity).func_82335_i().func_77973_b() instanceof ItemShulkerBox) {
+        if (entity instanceof EntityItemFrame && ((EntityItemFrame)entity).getDisplayedItem().getItem() instanceof ItemShulkerBox) {
             return ColourUtils.Colors.YELLOW;
         }
         return -1;
@@ -67,42 +69,42 @@ extends Module {
         int color;
         BlockPos pos;
         ArrayList<Triplet<BlockPos, Integer, Integer>> a = new ArrayList<Triplet<BlockPos, Integer, Integer>>();
-        GlStateManager.func_179094_E();
-        for (TileEntity tileEntity : Wrapper.getWorld().field_147482_g) {
-            pos = tileEntity.func_174877_v();
+        GlStateManager.pushMatrix();
+        for (TileEntity tileEntity : Wrapper.getWorld().loadedTileEntityList) {
+            pos = tileEntity.getPos();
             color = this.getTileEntityColor(tileEntity);
             int side = 63;
             if (tileEntity instanceof TileEntityChest) {
                 TileEntityChest chest = (TileEntityChest)tileEntity;
-                if (chest.field_145992_i != null) {
+                if (chest.adjacentChestZNeg != null) {
                     side = ~(side & 4);
                 }
-                if (chest.field_145990_j != null) {
+                if (chest.adjacentChestXPos != null) {
                     side = ~(side & 0x20);
                 }
-                if (chest.field_145988_l != null) {
+                if (chest.adjacentChestZPos != null) {
                     side = ~(side & 8);
                 }
-                if (chest.field_145991_k != null) {
+                if (chest.adjacentChestXNeg != null) {
                     side = ~(side & 0x10);
                 }
             }
             if (color == -1) continue;
             a.add(new Triplet<BlockPos, Integer, Integer>(pos, color, side));
         }
-        for (Entity entity : Wrapper.getWorld().field_72996_f) {
-            pos = entity.func_180425_c();
+        for (Entity entity : Wrapper.getWorld().loadedEntityList) {
+            pos = entity.getPosition();
             color = this.getEntityColor(entity);
             if (color == -1) continue;
-            a.add(new Triplet<BlockPos, Integer, Integer>(entity instanceof EntityItemFrame ? pos.func_177982_a(0, -1, 0) : pos, color, 63));
+            a.add(new Triplet<BlockPos, Integer, Integer>(entity instanceof EntityItemFrame ? pos.add(0, -1, 0) : pos, color, 63));
         }
         KamiTessellator.prepare(7);
         for (Triplet triplet : a) {
             KamiTessellator.drawBox((BlockPos)triplet.getFirst(), this.changeAlpha((Integer)triplet.getSecond(), 100), (int)((Integer)triplet.getThird()));
         }
         KamiTessellator.release();
-        GlStateManager.func_179121_F();
-        GlStateManager.func_179098_w();
+        GlStateManager.popMatrix();
+        GlStateManager.enableTexture2D();
     }
 
     int changeAlpha(int origColor, int userInputedAlpha) {

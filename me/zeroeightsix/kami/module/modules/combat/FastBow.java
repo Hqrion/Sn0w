@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -23,10 +25,10 @@ public class FastBow
 extends Module {
     @Override
     public void onUpdate() {
-        if (FastBow.mc.field_71439_g.field_71071_by.func_70448_g().func_77973_b() instanceof ItemBow && FastBow.mc.field_71439_g.func_184587_cr() && FastBow.mc.field_71439_g.func_184612_cw() >= 3) {
-            FastBow.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.field_177992_a, FastBow.mc.field_71439_g.func_174811_aO()));
-            FastBow.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItem(FastBow.mc.field_71439_g.func_184600_cs()));
-            FastBow.mc.field_71439_g.func_184597_cx();
+        if (FastBow.mc.player.inventory.getCurrentItem().getItem() instanceof ItemBow && FastBow.mc.player.isHandActive() && FastBow.mc.player.getItemInUseMaxCount() >= 3) {
+            FastBow.mc.player.connection.sendPacket((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, FastBow.mc.player.getHorizontalFacing()));
+            FastBow.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItem(FastBow.mc.player.getActiveHand()));
+            FastBow.mc.player.stopActiveHand();
         }
     }
 }

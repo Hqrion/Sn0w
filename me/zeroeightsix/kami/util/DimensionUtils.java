@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -12,7 +14,7 @@ public class DimensionUtils {
     public String biomeName;
 
     public DimensionUtils() {
-        this.biomeName = Minecraft.func_71410_x().field_71441_e.func_180494_b(Minecraft.func_71410_x().field_71439_g.func_180425_c()).func_185359_l();
+        this.biomeName = Minecraft.getMinecraft().world.getBiome(Minecraft.getMinecraft().player.getPosition()).getBiomeName();
     }
 }
 

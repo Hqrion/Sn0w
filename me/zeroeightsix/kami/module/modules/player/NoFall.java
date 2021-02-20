@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -41,7 +43,7 @@ extends Module {
     @EventHandler
     public Listener<PacketEvent.Send> sendListener = new Listener<PacketEvent.Send>(event -> {
         if (event.getPacket() instanceof CPacketPlayer && this.packet.getValue().booleanValue()) {
-            ((CPacketPlayer)event.getPacket()).field_149474_g = true;
+            ((CPacketPlayer)event.getPacket()).onGround = true;
         }
     }, new Predicate[0]);
 
@@ -49,22 +51,22 @@ extends Module {
     public void onUpdate() {
         Vec3d posVec;
         RayTraceResult result;
-        if (this.bucket.getValue().booleanValue() && NoFall.mc.field_71439_g.field_70143_R >= (float)this.distance.getValue().intValue() && !EntityUtil.isAboveWater((Entity)NoFall.mc.field_71439_g) && System.currentTimeMillis() - this.last > 100L && (result = NoFall.mc.field_71441_e.func_147447_a(posVec = NoFall.mc.field_71439_g.func_174791_d(), posVec.func_72441_c(0.0, (double)-5.33f, 0.0), true, true, false)) != null && result.field_72313_a == RayTraceResult.Type.BLOCK) {
+        if (this.bucket.getValue().booleanValue() && NoFall.mc.player.fallDistance >= (float)this.distance.getValue().intValue() && !EntityUtil.isAboveWater((Entity)NoFall.mc.player) && System.currentTimeMillis() - this.last > 100L && (result = NoFall.mc.world.rayTraceBlocks(posVec = NoFall.mc.player.getPositionVector(), posVec.add(0.0, (double)-5.33f, 0.0), true, true, false)) != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
             EnumHand hand = EnumHand.MAIN_HAND;
-            if (NoFall.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_151131_as) {
+            if (NoFall.mc.player.getHeldItemOffhand().getItem() == Items.WATER_BUCKET) {
                 hand = EnumHand.OFF_HAND;
-            } else if (NoFall.mc.field_71439_g.func_184614_ca().func_77973_b() != Items.field_151131_as) {
+            } else if (NoFall.mc.player.getHeldItemMainhand().getItem() != Items.WATER_BUCKET) {
                 for (int i = 0; i < 9; ++i) {
-                    if (NoFall.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_151131_as) continue;
-                    NoFall.mc.field_71439_g.field_71071_by.field_70461_c = i;
-                    NoFall.mc.field_71439_g.field_70125_A = 90.0f;
+                    if (NoFall.mc.player.inventory.getStackInSlot(i).getItem() != Items.WATER_BUCKET) continue;
+                    NoFall.mc.player.inventory.currentItem = i;
+                    NoFall.mc.player.rotationPitch = 90.0f;
                     this.last = System.currentTimeMillis();
                     return;
                 }
                 return;
             }
-            NoFall.mc.field_71439_g.field_70125_A = 90.0f;
-            NoFall.mc.field_71442_b.func_187101_a((EntityPlayer)NoFall.mc.field_71439_g, (World)NoFall.mc.field_71441_e, hand);
+            NoFall.mc.player.rotationPitch = 90.0f;
+            NoFall.mc.playerController.processRightClick((EntityPlayer)NoFall.mc.player, (World)NoFall.mc.world, hand);
             this.last = System.currentTimeMillis();
         }
     }

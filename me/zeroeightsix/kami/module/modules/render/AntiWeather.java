@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -13,8 +15,8 @@ extends Module {
         if (this.isDisabled()) {
             return;
         }
-        if (AntiWeather.mc.field_71441_e.func_72896_J()) {
-            AntiWeather.mc.field_71441_e.func_72894_k(0.0f);
+        if (AntiWeather.mc.world.isRaining()) {
+            AntiWeather.mc.world.setRainStrength(0.0f);
         }
     }
 }

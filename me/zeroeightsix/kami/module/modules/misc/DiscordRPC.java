@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -37,7 +39,7 @@ extends Module {
         this.presence.state = "ezzing nonamers";
         this.presence.largeImageText = "Gaming";
         this.discordRPC.Discord_UpdatePresence(this.presence);
-        this.presence.details = DiscordRPC.mc.field_71441_e != null ? (mc.func_71356_B() ? "playing singleplayer" : (this.ServerIp.getValue().booleanValue() ? "Playing " + DiscordRPC.mc.func_147104_D().field_78845_b : "Playing multiplayer")) : "Chilling in main menu";
+        this.presence.details = DiscordRPC.mc.world != null ? (mc.isSingleplayer() ? "playing singleplayer" : (this.ServerIp.getValue().booleanValue() ? "Playing " + DiscordRPC.mc.getCurrentServerData().serverIP : "Playing multiplayer")) : "Chilling in main menu";
     }
 
     @Override

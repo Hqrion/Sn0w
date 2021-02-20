@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -22,17 +24,17 @@ extends Module {
         block7: {
             if (!this.rage.getValue().booleanValue()) {
                 try {
-                    if (!Sprint.mc.field_71439_g.field_70123_F && Sprint.mc.field_71439_g.field_191988_bg > 0.0f) {
-                        Sprint.mc.field_71439_g.func_70031_b(true);
+                    if (!Sprint.mc.player.collidedHorizontally && Sprint.mc.player.moveForward > 0.0f) {
+                        Sprint.mc.player.setSprinting(true);
                         break block7;
                     }
-                    Sprint.mc.field_71439_g.func_70031_b(false);
+                    Sprint.mc.player.setSprinting(false);
                 }
                 catch (Exception exception) {}
-            } else if (MotionUtils.isMoving((EntityLivingBase)Sprint.mc.field_71439_g)) {
-                Sprint.mc.field_71439_g.func_70031_b(true);
+            } else if (MotionUtils.isMoving((EntityLivingBase)Sprint.mc.player)) {
+                Sprint.mc.player.setSprinting(true);
             } else {
-                Sprint.mc.field_71439_g.func_70031_b(false);
+                Sprint.mc.player.setSprinting(false);
             }
         }
     }

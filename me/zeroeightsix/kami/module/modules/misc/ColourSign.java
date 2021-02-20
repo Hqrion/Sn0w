@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -29,7 +31,7 @@ extends Module {
     @EventHandler
     public Listener<GuiScreenEvent.Displayed> eventListener = new Listener<GuiScreenEvent.Displayed>(event -> {
         if (event.getScreen() instanceof GuiEditSign && this.isEnabled()) {
-            event.setScreen((GuiScreen)new KamiGuiEditSign(((GuiEditSign)event.getScreen()).field_146848_f));
+            event.setScreen((GuiScreen)new KamiGuiEditSign(((GuiEditSign)event.getScreen()).tileSign));
         }
     }, new Predicate[0]);
 
@@ -39,22 +41,22 @@ extends Module {
             super(teSign);
         }
 
-        public void func_73866_w_() {
-            super.func_73866_w_();
+        public void initGui() {
+            super.initGui();
         }
 
-        protected void func_146284_a(GuiButton button) throws IOException {
-            if (button.field_146127_k == 0) {
-                this.field_146848_f.field_145915_a[this.field_146851_h] = new TextComponentString(this.field_146848_f.field_145915_a[this.field_146851_h].func_150254_d().replaceAll("(" + Command.SECTIONSIGN() + ")(.)", "$1$1$2$2"));
+        protected void actionPerformed(GuiButton button) throws IOException {
+            if (button.id == 0) {
+                this.tileSign.signText[this.editLine] = new TextComponentString(this.tileSign.signText[this.editLine].getFormattedText().replaceAll("(" + Command.SECTIONSIGN() + ")(.)", "$1$1$2$2"));
             }
-            super.func_146284_a(button);
+            super.actionPerformed(button);
         }
 
-        protected void func_73869_a(char typedChar, int keyCode) throws IOException {
-            super.func_73869_a(typedChar, keyCode);
-            String s = ((TextComponentString)this.field_146848_f.field_145915_a[this.field_146851_h]).func_150265_g();
+        protected void keyTyped(char typedChar, int keyCode) throws IOException {
+            super.keyTyped(typedChar, keyCode);
+            String s = ((TextComponentString)this.tileSign.signText[this.editLine]).getText();
             s = s.replace("&", Command.SECTIONSIGN() + "");
-            this.field_146848_f.field_145915_a[this.field_146851_h] = new TextComponentString(s);
+            this.tileSign.signText[this.editLine] = new TextComponentString(s);
         }
     }
 }

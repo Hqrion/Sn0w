@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -40,8 +42,8 @@ extends Module {
         int bgreen = this.green.getValue();
         int cblue = this.blue.getValue();
         int color = drgb = ColourUtils.toRGBA(ared, bgreen, cblue, 255);
-        int totems = PvPInfo.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_190929_cY).mapToInt(ItemStack::func_190916_E).sum();
-        if (PvPInfo.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_190929_cY) {
+        int totems = PvPInfo.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+        if (PvPInfo.mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) {
             ++totems;
         }
         if (this.rainbow.getValue().booleanValue()) {
@@ -58,9 +60,9 @@ extends Module {
             this.cFontRenderer.drawStringWithShadow("AutoTrap: " + this.getAutoTrap(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
             this.cFontRenderer.drawStringWithShadow("FeetPlace: " + this.getAutoFeetPlace(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
         } else {
-            PvPInfo.mc.field_71466_p.func_175063_a(ChatFormatting.WHITE + "Crystal: " + ChatFormatting.RESET + this.getCA(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
-            PvPInfo.mc.field_71466_p.func_175063_a(ChatFormatting.WHITE + "AutoTrap: " + ChatFormatting.RESET + this.getAutoTrap(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
-            PvPInfo.mc.field_71466_p.func_175063_a(ChatFormatting.WHITE + "Feet: " + ChatFormatting.RESET + this.getAutoFeetPlace(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
+            PvPInfo.mc.fontRenderer.drawStringWithShadow(ChatFormatting.WHITE + "Crystal: " + ChatFormatting.RESET + this.getCA(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
+            PvPInfo.mc.fontRenderer.drawStringWithShadow(ChatFormatting.WHITE + "AutoTrap: " + ChatFormatting.RESET + this.getAutoTrap(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
+            PvPInfo.mc.fontRenderer.drawStringWithShadow(ChatFormatting.WHITE + "Feet: " + ChatFormatting.RESET + this.getAutoFeetPlace(), this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
         }
     }
 

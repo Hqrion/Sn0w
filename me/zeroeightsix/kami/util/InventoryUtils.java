@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -22,13 +24,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class InventoryUtils {
-    private Minecraft mc = Minecraft.func_71410_x();
+    private Minecraft mc = Minecraft.getMinecraft();
     public boolean inProgress = false;
 
     public ArrayList<Integer> getSlots(int min, int max, int itemID) {
         ArrayList<Integer> slots = new ArrayList<Integer>();
         for (int i = min; i <= max; ++i) {
-            if (Item.func_150891_b((Item)this.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b()) != itemID) continue;
+            if (Item.getIdFromItem((Item)this.mc.player.inventory.getStackInSlot(i).getItem()) != itemID) continue;
             slots.add(i);
         }
         if (!slots.isEmpty()) {
@@ -48,7 +50,7 @@ public class InventoryUtils {
     public ArrayList<Integer> getSlotsFullInv(int min, int max, int itemId) {
         ArrayList<Integer> slots = new ArrayList<Integer>();
         for (int i = min; i < max; ++i) {
-            if (Item.func_150891_b((Item)((ItemStack)this.mc.field_71439_g.field_71069_bz.func_75138_a().get(i)).func_77973_b()) != itemId) continue;
+            if (Item.getIdFromItem((Item)((ItemStack)this.mc.player.inventoryContainer.getInventory().get(i)).getItem()) != itemId) continue;
             slots.add(i);
         }
         if (slots.isEmpty()) {
@@ -70,14 +72,14 @@ public class InventoryUtils {
         int currentCount = 0;
         if (itemList != null) {
             for (int i : itemList) {
-                currentCount += this.mc.field_71439_g.field_71071_by.func_70301_a(i).func_190916_E();
+                currentCount += this.mc.player.inventory.getStackInSlot(i).getCount();
             }
         }
         return currentCount;
     }
 
     public static void swapSlot(int slot) {
-        Minecraft.func_71410_x().field_71439_g.field_71071_by.field_70461_c = slot;
+        Minecraft.getMinecraft().player.inventory.currentItem = slot;
     }
 
     public void swapSlotToItem(int itemID) {
@@ -87,7 +89,7 @@ public class InventoryUtils {
     }
 
     private void inventoryClick(int slot, ClickType type2) {
-        this.mc.field_71442_b.func_187098_a(this.mc.field_71439_g.field_71069_bz.field_75152_c, slot, 0, type2, (EntityPlayer)this.mc.field_71439_g);
+        this.mc.playerController.windowClick(this.mc.player.inventoryContainer.windowId, slot, 0, type2, (EntityPlayer)this.mc.player);
     }
 
     public void moveToHotbar(int itemID, int exceptionID, long delayMillis) {
@@ -98,12 +100,12 @@ public class InventoryUtils {
         int slot1 = gsfinh.get(0);
         int slot2 = 36;
         for (int i = 36; i < 44; ++i) {
-            ItemStack currentItemStack = (ItemStack)this.mc.field_71439_g.field_71069_bz.func_75138_a().get(i);
-            if (currentItemStack.func_190926_b()) {
+            ItemStack currentItemStack = (ItemStack)this.mc.player.inventoryContainer.getInventory().get(i);
+            if (currentItemStack.isEmpty()) {
                 slot2 = i;
                 break;
             }
-            if (Item.func_150891_b((Item)currentItemStack.func_77973_b()) == exceptionID) continue;
+            if (Item.getIdFromItem((Item)currentItemStack.getItem()) == exceptionID) continue;
             slot2 = i;
             break;
         }
@@ -119,8 +121,8 @@ public class InventoryUtils {
             @Override
             public void run() {
                 InventoryUtils.this.inProgress = true;
-                GuiScreen prevScreen = ((InventoryUtils)InventoryUtils.this).mc.field_71462_r;
-                InventoryUtils.this.mc.func_147108_a((GuiScreen)new GuiInventory((EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.field_71439_g));
+                GuiScreen prevScreen = ((InventoryUtils)InventoryUtils.this).mc.currentScreen;
+                InventoryUtils.this.mc.displayGuiScreen((GuiScreen)new GuiInventory((EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.player));
                 try {
                     Thread.sleep(delayMillis);
                 }
@@ -142,7 +144,7 @@ public class InventoryUtils {
                     e.printStackTrace();
                 }
                 InventoryUtils.this.inventoryClick(slotFrom, ClickType.PICKUP);
-                InventoryUtils.this.mc.func_147108_a(prevScreen);
+                InventoryUtils.this.mc.displayGuiScreen(prevScreen);
                 InventoryUtils.this.inProgress = false;
             }
         };
@@ -158,8 +160,8 @@ public class InventoryUtils {
             @Override
             public void run() {
                 InventoryUtils.this.inProgress = true;
-                GuiScreen prevScreen = ((InventoryUtils)InventoryUtils.this).mc.field_71462_r;
-                InventoryUtils.this.mc.func_147108_a((GuiScreen)new GuiInventory((EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.field_71439_g));
+                GuiScreen prevScreen = ((InventoryUtils)InventoryUtils.this).mc.currentScreen;
+                InventoryUtils.this.mc.displayGuiScreen((GuiScreen)new GuiInventory((EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.player));
                 try {
                     Thread.sleep(delayMillis);
                 }
@@ -174,7 +176,7 @@ public class InventoryUtils {
                     e.printStackTrace();
                 }
                 InventoryUtils.this.inventoryClick(slotTo, ClickType.PICKUP);
-                InventoryUtils.this.mc.func_147108_a(prevScreen);
+                InventoryUtils.this.mc.displayGuiScreen(prevScreen);
                 InventoryUtils.this.inProgress = false;
             }
         };
@@ -212,7 +214,7 @@ public class InventoryUtils {
             @Override
             public void run() {
                 InventoryUtils.this.inProgress = true;
-                ((InventoryUtils)InventoryUtils.this).mc.field_71442_b.func_187098_a(((InventoryUtils)InventoryUtils.this).mc.field_71439_g.field_71069_bz.field_75152_c, 36, 1, ClickType.THROW, (EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.field_71439_g);
+                ((InventoryUtils)InventoryUtils.this).mc.playerController.windowClick(((InventoryUtils)InventoryUtils.this).mc.player.inventoryContainer.windowId, 36, 1, ClickType.THROW, (EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.player);
                 try {
                     Thread.sleep(delayMillis);
                 }
@@ -241,7 +243,7 @@ public class InventoryUtils {
             @Override
             public void run() {
                 InventoryUtils.this.inProgress = true;
-                ((InventoryUtils)InventoryUtils.this).mc.field_71442_b.func_187098_a(((InventoryUtils)InventoryUtils.this).mc.field_71439_g.field_71069_bz.field_75152_c, slot, 1, ClickType.THROW, (EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.field_71439_g);
+                ((InventoryUtils)InventoryUtils.this).mc.playerController.windowClick(((InventoryUtils)InventoryUtils.this).mc.player.inventoryContainer.windowId, slot, 1, ClickType.THROW, (EntityPlayer)((InventoryUtils)InventoryUtils.this).mc.player);
                 try {
                     Thread.sleep(delayMillis);
                 }

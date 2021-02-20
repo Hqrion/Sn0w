@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -24,25 +26,25 @@ extends Module {
     private boolean eating = false;
 
     private boolean isValid(ItemStack stack, int food) {
-        return stack.func_77973_b() instanceof ItemFood && (Integer)this.healthbar.getValue() - food >= ((ItemFood)stack.func_77973_b()).func_150905_g(stack);
+        return stack.getItem() instanceof ItemFood && (Integer)this.healthbar.getValue() - food >= ((ItemFood)stack.getItem()).getHealAmount(stack);
     }
 
     @Override
     public void onUpdate() {
-        if (this.eating && !OffhandEat.mc.field_71439_g.func_184587_cr()) {
+        if (this.eating && !OffhandEat.mc.player.isHandActive()) {
             this.eating = false;
-            KeyBinding.func_74510_a((int)OffhandEat.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)false);
+            KeyBinding.setKeyBindState((int)OffhandEat.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)false);
             return;
         }
         if (this.eating) {
             return;
         }
-        float playerAbsorption = OffhandEat.mc.field_71439_g.func_110139_bj();
-        if (this.isValid(OffhandEat.mc.field_71439_g.func_184592_cb(), (int)OffhandEat.mc.field_71439_g.func_110143_aJ() + (int)playerAbsorption)) {
-            OffhandEat.mc.field_71439_g.func_184598_c(EnumHand.OFF_HAND);
+        float playerAbsorption = OffhandEat.mc.player.getAbsorptionAmount();
+        if (this.isValid(OffhandEat.mc.player.getHeldItemOffhand(), (int)OffhandEat.mc.player.getHealth() + (int)playerAbsorption)) {
+            OffhandEat.mc.player.setActiveHand(EnumHand.OFF_HAND);
             this.eating = true;
-            KeyBinding.func_74510_a((int)OffhandEat.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)true);
-            mc.func_147121_ag();
+            KeyBinding.setKeyBindState((int)OffhandEat.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)true);
+            mc.rightClickMouse();
             return;
         }
     }

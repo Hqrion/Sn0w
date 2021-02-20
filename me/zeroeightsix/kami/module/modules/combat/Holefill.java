@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -71,7 +73,7 @@ public class Holefill
 extends Module {
     private int totalTicksRunning = 0;
     private ArrayList<BlockPos> holes = new ArrayList();
-    private List<Block> whiteList = Arrays.asList(Blocks.field_150343_Z);
+    private List<Block> whiteList = Arrays.asList(Blocks.OBSIDIAN);
     BlockPos pos;
     private int waitCounter;
     private Setting<Integer> range = this.register(Settings.integerBuilder("range").withMinimum(1).withValue(4).withMaximum(6).build());
@@ -91,32 +93,32 @@ extends Module {
         }
         ++this.totalTicksRunning;
         this.holes = new ArrayList();
-        Iterable blocks = BlockPos.func_177980_a((BlockPos)Holefill.mc.field_71439_g.func_180425_c().func_177982_a(-this.range.getValue().intValue(), -this.yRange.getValue().intValue(), -this.range.getValue().intValue()), (BlockPos)Holefill.mc.field_71439_g.func_180425_c().func_177982_a(this.range.getValue().intValue(), this.yRange.getValue().intValue(), this.range.getValue().intValue()));
+        Iterable blocks = BlockPos.getAllInBox((BlockPos)Holefill.mc.player.getPosition().add(-this.range.getValue().intValue(), -this.yRange.getValue().intValue(), -this.range.getValue().intValue()), (BlockPos)Holefill.mc.player.getPosition().add(this.range.getValue().intValue(), this.yRange.getValue().intValue(), this.range.getValue().intValue()));
         for (BlockPos pos : blocks) {
             boolean solidNeighbours;
-            if (Holefill.mc.field_71441_e.func_180495_p(pos).func_185904_a().func_76230_c() || Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 1, 0)).func_185904_a().func_76230_c() || !(solidNeighbours = Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(1, 0, 0)).func_177230_c() == Blocks.field_150357_h | Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(1, 0, 0)).func_177230_c() == Blocks.field_150343_Z && Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 0, 1)).func_177230_c() == Blocks.field_150357_h | Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 0, 1)).func_177230_c() == Blocks.field_150343_Z && Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(-1, 0, 0)).func_177230_c() == Blocks.field_150357_h | Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(-1, 0, 0)).func_177230_c() == Blocks.field_150343_Z && Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 0, -1)).func_177230_c() == Blocks.field_150357_h | Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 0, -1)).func_177230_c() == Blocks.field_150343_Z && Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 0, 0)).func_185904_a() == Material.field_151579_a && Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 1, 0)).func_185904_a() == Material.field_151579_a && Holefill.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 2, 0)).func_185904_a() == Material.field_151579_a)) continue;
+            if (Holefill.mc.world.getBlockState(pos).getMaterial().blocksMovement() || Holefill.mc.world.getBlockState(pos.add(0, 1, 0)).getMaterial().blocksMovement() || !(solidNeighbours = Holefill.mc.world.getBlockState(pos.add(1, 0, 0)).getBlock() == Blocks.BEDROCK | Holefill.mc.world.getBlockState(pos.add(1, 0, 0)).getBlock() == Blocks.OBSIDIAN && Holefill.mc.world.getBlockState(pos.add(0, 0, 1)).getBlock() == Blocks.BEDROCK | Holefill.mc.world.getBlockState(pos.add(0, 0, 1)).getBlock() == Blocks.OBSIDIAN && Holefill.mc.world.getBlockState(pos.add(-1, 0, 0)).getBlock() == Blocks.BEDROCK | Holefill.mc.world.getBlockState(pos.add(-1, 0, 0)).getBlock() == Blocks.OBSIDIAN && Holefill.mc.world.getBlockState(pos.add(0, 0, -1)).getBlock() == Blocks.BEDROCK | Holefill.mc.world.getBlockState(pos.add(0, 0, -1)).getBlock() == Blocks.OBSIDIAN && Holefill.mc.world.getBlockState(pos.add(0, 0, 0)).getMaterial() == Material.AIR && Holefill.mc.world.getBlockState(pos.add(0, 1, 0)).getMaterial() == Material.AIR && Holefill.mc.world.getBlockState(pos.add(0, 2, 0)).getMaterial() == Material.AIR)) continue;
             this.holes.add(pos);
         }
         int newSlot = -1;
         for (int i = 0; i < 9; ++i) {
             Block block;
-            ItemStack stack = Holefill.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || !(stack.func_77973_b() instanceof ItemBlock) || !this.whiteList.contains(block = ((ItemBlock)stack.func_77973_b()).func_179223_d())) continue;
+            ItemStack stack = Holefill.mc.player.inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock) || !this.whiteList.contains(block = ((ItemBlock)stack.getItem()).getBlock())) continue;
             newSlot = i;
             break;
         }
         if (newSlot == -1) {
             return;
         }
-        int oldSlot = Holefill.mc.field_71439_g.field_71071_by.field_70461_c;
-        Holefill.mc.field_71439_g.field_71071_by.field_70461_c = newSlot;
+        int oldSlot = Holefill.mc.player.inventory.currentItem;
+        Holefill.mc.player.inventory.currentItem = newSlot;
         this.holes.forEach(this::place);
-        Holefill.mc.field_71439_g.field_71071_by.field_70461_c = oldSlot;
+        Holefill.mc.player.inventory.currentItem = oldSlot;
     }
 
     @Override
     public void onEnable() {
-        if (Holefill.mc.field_71439_g != null && this.chat.getValue().booleanValue()) {
+        if (Holefill.mc.player != null && this.chat.getValue().booleanValue()) {
             Command.toggle_message(this);
         }
     }
@@ -127,7 +129,7 @@ extends Module {
     }
 
     private void place(BlockPos blockPos) {
-        for (Entity entity : Holefill.mc.field_71441_e.func_72839_b(null, new AxisAlignedBB(blockPos))) {
+        for (Entity entity : Holefill.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(blockPos))) {
             if (!(entity instanceof EntityLivingBase)) continue;
             return;
         }
@@ -136,26 +138,26 @@ extends Module {
     }
 
     private void placeBlock(BlockPos pos) {
-        Block block = Holefill.mc.field_71441_e.func_180495_p(pos).func_177230_c();
+        Block block = Holefill.mc.world.getBlockState(pos).getBlock();
         if (block instanceof BlockAir || !(block instanceof BlockLiquid)) {
             // empty if block
         }
-        for (Entity entity : Holefill.mc.field_71441_e.func_72839_b(null, new AxisAlignedBB(pos))) {
+        for (Entity entity : Holefill.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))) {
             if (!(entity instanceof EntityItem) && entity instanceof EntityXPOrb) continue;
         }
         EnumFacing side = BlockInteractionHelper.getPlaceableSide(pos);
         if (side == null) {
             // empty if block
         }
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
         if (!BlockInteractionHelper.canBeClicked(neighbour)) {
             // empty if block
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
-        Block neighbourBlock = Holefill.mc.field_71441_e.func_180495_p(neighbour).func_177230_c();
-        if (this.noGlitchBlocks.getValue().booleanValue() && !Holefill.mc.field_71442_b.func_178889_l().equals((Object)GameType.CREATIVE)) {
-            Holefill.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, neighbour, opposite));
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Block neighbourBlock = Holefill.mc.world.getBlockState(neighbour).getBlock();
+        if (this.noGlitchBlocks.getValue().booleanValue() && !Holefill.mc.playerController.getCurrentGameType().equals((Object)GameType.CREATIVE)) {
+            Holefill.mc.player.connection.sendPacket((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, neighbour, opposite));
             if (ModuleManager.getModuleByName("NoBreakAnimation").isEnabled()) {
                 ((NoBreakAnimation)ModuleManager.getModuleByName("NoBreakAnimation")).resetMining();
             }
@@ -163,51 +165,51 @@ extends Module {
     }
 
     public static boolean placeBlockScaffold(BlockPos pos, boolean rotate) {
-        Vec3d eyesPos = new Vec3d(Holefill.mc.field_71439_g.field_70165_t, Holefill.mc.field_71439_g.field_70163_u + (double)Holefill.mc.field_71439_g.func_70047_e(), Holefill.mc.field_71439_g.field_70161_v);
+        Vec3d eyesPos = new Vec3d(Holefill.mc.player.posX, Holefill.mc.player.posY + (double)Holefill.mc.player.getEyeHeight(), Holefill.mc.player.posZ);
         for (EnumFacing side : EnumFacing.values()) {
-            BlockPos neighbor = pos.func_177972_a(side);
-            EnumFacing side2 = side.func_176734_d();
+            BlockPos neighbor = pos.offset(side);
+            EnumFacing side2 = side.getOpposite();
             if (!BlockInteractionHelper.canBeClicked(neighbor)) continue;
-            Vec3d hitVec = new Vec3d((Vec3i)neighbor).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(side2.func_176730_m()).func_186678_a(0.5));
+            Vec3d hitVec = new Vec3d((Vec3i)neighbor).add(0.5, 0.5, 0.5).add(new Vec3d(side2.getDirectionVec()).scale(0.5));
             if (rotate) {
                 Holefill.faceVectorPacketInstant(hitVec);
             }
-            Holefill.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)Holefill.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            Holefill.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)Holefill.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             Holefill.processRightClickBlock(neighbor, side2, hitVec);
-            Holefill.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
-            Holefill.mc.field_71467_ac = 0;
-            Holefill.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)Holefill.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            Holefill.mc.player.swingArm(EnumHand.MAIN_HAND);
+            Holefill.mc.rightClickDelayTimer = 0;
+            Holefill.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)Holefill.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             return true;
         }
         return false;
     }
 
     public static void processRightClickBlock(BlockPos pos, EnumFacing side, Vec3d hitVec) {
-        Holefill.getPlayerController().func_187099_a(Holefill.mc.field_71439_g, Holefill.mc.field_71441_e, pos, side, hitVec, EnumHand.MAIN_HAND);
+        Holefill.getPlayerController().processRightClickBlock(Holefill.mc.player, Holefill.mc.world, pos, side, hitVec, EnumHand.MAIN_HAND);
     }
 
     public static void faceVectorPacketInstant(Vec3d vec) {
         float[] rotations = Holefill.getNeededRotations2(vec);
-        Holefill.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], Holefill.mc.field_71439_g.field_70122_E));
+        Holefill.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Rotation(rotations[0], rotations[1], Holefill.mc.player.onGround));
     }
 
     private static float[] getNeededRotations2(Vec3d vec) {
         Vec3d eyesPos = Holefill.getEyesPos();
-        double diffX = vec.field_72450_a - eyesPos.field_72450_a;
-        double diffY = vec.field_72448_b - eyesPos.field_72448_b;
-        double diffZ = vec.field_72449_c - eyesPos.field_72449_c;
+        double diffX = vec.x - eyesPos.x;
+        double diffY = vec.y - eyesPos.y;
+        double diffZ = vec.z - eyesPos.z;
         double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
         float yaw = (float)Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0f;
         float pitch = (float)(-Math.toDegrees(Math.atan2(diffY, diffXZ)));
-        return new float[]{Holefill.mc.field_71439_g.field_70177_z + MathHelper.func_76142_g((float)(yaw - Holefill.mc.field_71439_g.field_70177_z)), Holefill.mc.field_71439_g.field_70125_A + MathHelper.func_76142_g((float)(pitch - Holefill.mc.field_71439_g.field_70125_A))};
+        return new float[]{Holefill.mc.player.rotationYaw + MathHelper.wrapDegrees((float)(yaw - Holefill.mc.player.rotationYaw)), Holefill.mc.player.rotationPitch + MathHelper.wrapDegrees((float)(pitch - Holefill.mc.player.rotationPitch))};
     }
 
     public static Vec3d getEyesPos() {
-        return new Vec3d(Holefill.mc.field_71439_g.field_70165_t, Holefill.mc.field_71439_g.field_70163_u + (double)Holefill.mc.field_71439_g.func_70047_e(), Holefill.mc.field_71439_g.field_70161_v);
+        return new Vec3d(Holefill.mc.player.posX, Holefill.mc.player.posY + (double)Holefill.mc.player.getEyeHeight(), Holefill.mc.player.posZ);
     }
 
     public static Vec3d getInterpolatedPos(Entity entity, float ticks) {
-        return new Vec3d(entity.field_70142_S, entity.field_70137_T, entity.field_70136_U).func_178787_e(Holefill.getInterpolatedAmount(entity, ticks));
+        return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(Holefill.getInterpolatedAmount(entity, ticks));
     }
 
     public static Vec3d getInterpolatedAmount(Entity entity, double ticks) {
@@ -215,11 +217,11 @@ extends Module {
     }
 
     public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z) {
-        return new Vec3d((entity.field_70165_t - entity.field_70142_S) * x, (entity.field_70163_u - entity.field_70137_T) * y, (entity.field_70161_v - entity.field_70136_U) * z);
+        return new Vec3d((entity.posX - entity.lastTickPosX) * x, (entity.posY - entity.lastTickPosY) * y, (entity.posZ - entity.lastTickPosZ) * z);
     }
 
     private static PlayerControllerMP getPlayerController() {
-        return Holefill.mc.field_71442_b;
+        return Holefill.mc.playerController;
     }
 }
 

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -71,35 +73,35 @@ public class ModuleManager {
     }
 
     public static void onWorldRender(RenderWorldLastEvent event) {
-        Minecraft.func_71410_x().field_71424_I.func_76320_a("kami");
-        Minecraft.func_71410_x().field_71424_I.func_76320_a("setup");
-        GlStateManager.func_179090_x();
-        GlStateManager.func_179147_l();
-        GlStateManager.func_179118_c();
-        GlStateManager.func_179120_a((int)770, (int)771, (int)1, (int)0);
-        GlStateManager.func_179103_j((int)7425);
-        GlStateManager.func_179097_i();
-        GlStateManager.func_187441_d((float)1.0f);
+        Minecraft.getMinecraft().profiler.startSection("kami");
+        Minecraft.getMinecraft().profiler.startSection("setup");
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate((int)770, (int)771, (int)1, (int)0);
+        GlStateManager.shadeModel((int)7425);
+        GlStateManager.disableDepth();
+        GlStateManager.glLineWidth((float)1.0f);
         Vec3d renderPos = EntityUtil.getInterpolatedPos((Entity)Wrapper.getPlayer(), event.getPartialTicks());
         RenderEvent e = new RenderEvent(KamiTessellator.INSTANCE, renderPos);
         e.resetTranslation();
-        Minecraft.func_71410_x().field_71424_I.func_76319_b();
+        Minecraft.getMinecraft().profiler.endSection();
         modules.stream().filter(module -> module.alwaysListening || module.isEnabled()).forEach(module -> {
-            Minecraft.func_71410_x().field_71424_I.func_76320_a(module.getName());
+            Minecraft.getMinecraft().profiler.startSection(module.getName());
             module.onWorldRender(e);
-            Minecraft.func_71410_x().field_71424_I.func_76319_b();
+            Minecraft.getMinecraft().profiler.endSection();
         });
-        Minecraft.func_71410_x().field_71424_I.func_76320_a("release");
-        GlStateManager.func_187441_d((float)1.0f);
-        GlStateManager.func_179103_j((int)7424);
-        GlStateManager.func_179084_k();
-        GlStateManager.func_179141_d();
-        GlStateManager.func_179098_w();
-        GlStateManager.func_179126_j();
-        GlStateManager.func_179089_o();
+        Minecraft.getMinecraft().profiler.startSection("release");
+        GlStateManager.glLineWidth((float)1.0f);
+        GlStateManager.shadeModel((int)7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableDepth();
+        GlStateManager.enableCull();
         KamiTessellator.releaseGL();
-        Minecraft.func_71410_x().field_71424_I.func_76319_b();
-        Minecraft.func_71410_x().field_71424_I.func_76319_b();
+        Minecraft.getMinecraft().profiler.endSection();
+        Minecraft.getMinecraft().profiler.endSection();
     }
 
     public static void onBind(int eventKey) {

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -49,12 +51,12 @@ extends Module {
         int bgreen = this.green.getValue();
         int cblue = this.blue.getValue();
         int drgb = color = ColourUtils.toRGBA(ared, bgreen, cblue, 255);
-        int totems = Totems.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_190929_cY).mapToInt(ItemStack::func_190916_E).sum();
-        if (Totems.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_190929_cY) {
+        int totems = Totems.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+        if (Totems.mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) {
             ++totems;
         }
         this.sign = this.gamer.getValue() != false ? ": " : " ";
-        this.xPos = (int)(this.x.getValue().floatValue() - (float)TPSDISPLAY.mc.field_71466_p.func_78256_a("TPS" + this.sign + Math.round(LagCompensator.INSTANCE.getTickRate())));
+        this.xPos = (int)(this.x.getValue().floatValue() - (float)TPSDISPLAY.mc.fontRenderer.getStringWidth("TPS" + this.sign + Math.round(LagCompensator.INSTANCE.getTickRate())));
         if (this.smooth.getValue().booleanValue()) {
             if (this.rainbow.getValue().booleanValue()) {
                 RainbowText.renderRainbowWave("TPS" + this.sign + Math.round(LagCompensator.INSTANCE.getTickRate()), this.x.getValue(), this.y.getValue(), 0.6f, true);
@@ -65,11 +67,11 @@ extends Module {
             if (this.fullrainbow.getValue().booleanValue()) {
                 RainbowText.renderRainbowWave("TPS" + this.sign + Math.round(LagCompensator.INSTANCE.getTickRate()), this.x.getValue(), Float.valueOf(yCount), 0.6f, false);
             } else {
-                Wrapper.getMinecraft().field_71466_p.func_175063_a("TPS" + this.sign, this.x.getValue().floatValue(), yCount, -1);
-                RainbowText.renderRainbowWave(String.valueOf(Math.round(LagCompensator.INSTANCE.getTickRate())), Float.valueOf(this.x.getValue().floatValue() + (float)TPSDISPLAY.mc.field_71466_p.func_78256_a("TPS" + this.sign)), Float.valueOf(yCount), 0.6f, false);
+                Wrapper.getMinecraft().fontRenderer.drawStringWithShadow("TPS" + this.sign, this.x.getValue().floatValue(), yCount, -1);
+                RainbowText.renderRainbowWave(String.valueOf(Math.round(LagCompensator.INSTANCE.getTickRate())), Float.valueOf(this.x.getValue().floatValue() + (float)TPSDISPLAY.mc.fontRenderer.getStringWidth("TPS" + this.sign)), Float.valueOf(yCount), 0.6f, false);
             }
         } else {
-            Wrapper.getMinecraft().field_71466_p.func_175063_a("TPS" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + Math.round(LagCompensator.INSTANCE.getTickRate()), this.x.getValue().floatValue(), yCount, color);
+            Wrapper.getMinecraft().fontRenderer.drawStringWithShadow("TPS" + this.sign + KamiMod.getInstance().guiManager.getHUDTextColor() + Math.round(LagCompensator.INSTANCE.getTickRate()), this.x.getValue().floatValue(), yCount, color);
         }
     }
 }

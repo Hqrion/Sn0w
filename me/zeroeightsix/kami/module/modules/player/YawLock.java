@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -25,13 +27,13 @@ extends Module {
         }
         if (this.auto.getValue().booleanValue()) {
             int angle = 360 / this.slice.getValue();
-            float yaw = YawLock.mc.field_71439_g.field_70177_z;
-            YawLock.mc.field_71439_g.field_70177_z = yaw = (float)(Math.round(yaw / (float)angle) * angle);
-            if (YawLock.mc.field_71439_g.func_184218_aH()) {
-                YawLock.mc.field_71439_g.func_184187_bx().field_70177_z = yaw;
+            float yaw = YawLock.mc.player.rotationYaw;
+            YawLock.mc.player.rotationYaw = yaw = (float)(Math.round(yaw / (float)angle) * angle);
+            if (YawLock.mc.player.isRiding()) {
+                YawLock.mc.player.getRidingEntity().rotationYaw = yaw;
             }
         } else {
-            YawLock.mc.field_71439_g.field_70177_z = MathHelper.func_76131_a((float)(this.yaw.getValue().floatValue() - 180.0f), (float)-180.0f, (float)180.0f);
+            YawLock.mc.player.rotationYaw = MathHelper.clamp((float)(this.yaw.getValue().floatValue() - 180.0f), (float)-180.0f, (float)180.0f);
         }
     }
 }

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -24,16 +26,16 @@ extends Module {
 
     @Override
     protected void onEnable() {
-        if (Flight.mc.field_71439_g == null) {
+        if (Flight.mc.player == null) {
             return;
         }
         switch (this.mode.getValue()) {
             case VANILLA: {
-                Flight.mc.field_71439_g.field_71075_bZ.field_75100_b = true;
-                if (Flight.mc.field_71439_g.field_71075_bZ.field_75098_d) {
+                Flight.mc.player.capabilities.isFlying = true;
+                if (Flight.mc.player.capabilities.isCreativeMode) {
                     return;
                 }
-                Flight.mc.field_71439_g.field_71075_bZ.field_75101_c = true;
+                Flight.mc.player.capabilities.allowFlying = true;
             }
         }
     }
@@ -42,33 +44,33 @@ extends Module {
     public void onUpdate() {
         switch (this.mode.getValue()) {
             case STATIC: {
-                Flight.mc.field_71439_g.field_71075_bZ.field_75100_b = false;
-                Flight.mc.field_71439_g.field_70159_w = 0.0;
-                Flight.mc.field_71439_g.field_70181_x = 0.0;
-                Flight.mc.field_71439_g.field_70179_y = 0.0;
-                Flight.mc.field_71439_g.field_70747_aH = this.speed.getValue().floatValue();
-                if (Flight.mc.field_71474_y.field_74314_A.func_151470_d()) {
-                    Flight.mc.field_71439_g.field_70181_x += (double)this.speed.getValue().floatValue();
+                Flight.mc.player.capabilities.isFlying = false;
+                Flight.mc.player.motionX = 0.0;
+                Flight.mc.player.motionY = 0.0;
+                Flight.mc.player.motionZ = 0.0;
+                Flight.mc.player.jumpMovementFactor = this.speed.getValue().floatValue();
+                if (Flight.mc.gameSettings.keyBindJump.isKeyDown()) {
+                    Flight.mc.player.motionY += (double)this.speed.getValue().floatValue();
                 }
-                if (!Flight.mc.field_71474_y.field_74311_E.func_151470_d()) break;
-                Flight.mc.field_71439_g.field_70181_x -= (double)this.speed.getValue().floatValue();
+                if (!Flight.mc.gameSettings.keyBindSneak.isKeyDown()) break;
+                Flight.mc.player.motionY -= (double)this.speed.getValue().floatValue();
                 break;
             }
             case VANILLA: {
-                Flight.mc.field_71439_g.field_71075_bZ.func_75092_a(this.speed.getValue().floatValue() / 100.0f);
-                Flight.mc.field_71439_g.field_71075_bZ.field_75100_b = true;
-                if (Flight.mc.field_71439_g.field_71075_bZ.field_75098_d) {
+                Flight.mc.player.capabilities.setFlySpeed(this.speed.getValue().floatValue() / 100.0f);
+                Flight.mc.player.capabilities.isFlying = true;
+                if (Flight.mc.player.capabilities.isCreativeMode) {
                     return;
                 }
-                Flight.mc.field_71439_g.field_71075_bZ.field_75101_c = true;
+                Flight.mc.player.capabilities.allowFlying = true;
                 break;
             }
             case PACKET: {
                 int angle;
-                boolean forward = Flight.mc.field_71474_y.field_74351_w.func_151470_d();
-                boolean left = Flight.mc.field_71474_y.field_74370_x.func_151470_d();
-                boolean right = Flight.mc.field_71474_y.field_74366_z.func_151470_d();
-                boolean back = Flight.mc.field_71474_y.field_74368_y.func_151470_d();
+                boolean forward = Flight.mc.gameSettings.keyBindForward.isKeyDown();
+                boolean left = Flight.mc.gameSettings.keyBindLeft.isKeyDown();
+                boolean right = Flight.mc.gameSettings.keyBindRight.isKeyDown();
+                boolean back = Flight.mc.gameSettings.keyBindBack.isKeyDown();
                 if (left && right) {
                     angle = forward ? 0 : (back ? 180 : -1);
                 } else if (forward && back) {
@@ -82,13 +84,13 @@ extends Module {
                     }
                 }
                 if (angle != -1 && (forward || left || right || back)) {
-                    float yaw = Flight.mc.field_71439_g.field_70177_z + (float)angle;
-                    Flight.mc.field_71439_g.field_70159_w = EntityUtil.getRelativeX(yaw) * (double)0.2f;
-                    Flight.mc.field_71439_g.field_70179_y = EntityUtil.getRelativeZ(yaw) * (double)0.2f;
+                    float yaw = Flight.mc.player.rotationYaw + (float)angle;
+                    Flight.mc.player.motionX = EntityUtil.getRelativeX(yaw) * (double)0.2f;
+                    Flight.mc.player.motionZ = EntityUtil.getRelativeZ(yaw) * (double)0.2f;
                 }
-                Flight.mc.field_71439_g.field_70181_x = 0.0;
-                Flight.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.PositionRotation(Flight.mc.field_71439_g.field_70165_t + Flight.mc.field_71439_g.field_70159_w, Flight.mc.field_71439_g.field_70163_u + (Minecraft.func_71410_x().field_71474_y.field_74314_A.func_151470_d() ? 0.0622 : 0.0) - (Minecraft.func_71410_x().field_71474_y.field_74311_E.func_151470_d() ? 0.0622 : 0.0), Flight.mc.field_71439_g.field_70161_v + Flight.mc.field_71439_g.field_70179_y, Flight.mc.field_71439_g.field_70177_z, Flight.mc.field_71439_g.field_70125_A, false));
-                Flight.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.PositionRotation(Flight.mc.field_71439_g.field_70165_t + Flight.mc.field_71439_g.field_70159_w, Flight.mc.field_71439_g.field_70163_u - 42069.0, Flight.mc.field_71439_g.field_70161_v + Flight.mc.field_71439_g.field_70179_y, Flight.mc.field_71439_g.field_70177_z, Flight.mc.field_71439_g.field_70125_A, true));
+                Flight.mc.player.motionY = 0.0;
+                Flight.mc.player.connection.sendPacket((Packet)new CPacketPlayer.PositionRotation(Flight.mc.player.posX + Flight.mc.player.motionX, Flight.mc.player.posY + (Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown() ? 0.0622 : 0.0) - (Minecraft.getMinecraft().gameSettings.keyBindSneak.isKeyDown() ? 0.0622 : 0.0), Flight.mc.player.posZ + Flight.mc.player.motionZ, Flight.mc.player.rotationYaw, Flight.mc.player.rotationPitch, false));
+                Flight.mc.player.connection.sendPacket((Packet)new CPacketPlayer.PositionRotation(Flight.mc.player.posX + Flight.mc.player.motionX, Flight.mc.player.posY - 42069.0, Flight.mc.player.posZ + Flight.mc.player.motionZ, Flight.mc.player.rotationYaw, Flight.mc.player.rotationPitch, true));
             }
         }
     }
@@ -97,18 +99,18 @@ extends Module {
     protected void onDisable() {
         switch (this.mode.getValue()) {
             case VANILLA: {
-                Flight.mc.field_71439_g.field_71075_bZ.field_75100_b = false;
-                Flight.mc.field_71439_g.field_71075_bZ.func_75092_a(0.05f);
-                if (Flight.mc.field_71439_g.field_71075_bZ.field_75098_d) {
+                Flight.mc.player.capabilities.isFlying = false;
+                Flight.mc.player.capabilities.setFlySpeed(0.05f);
+                if (Flight.mc.player.capabilities.isCreativeMode) {
                     return;
                 }
-                Flight.mc.field_71439_g.field_71075_bZ.field_75101_c = false;
+                Flight.mc.player.capabilities.allowFlying = false;
             }
         }
     }
 
     public double[] moveLooking() {
-        return new double[]{Flight.mc.field_71439_g.field_70177_z * 360.0f / 360.0f * 180.0f / 180.0f, 0.0};
+        return new double[]{Flight.mc.player.rotationYaw * 360.0f / 360.0f * 180.0f / 180.0f, 0.0};
     }
 
     public static enum FlightMode {

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -60,43 +62,43 @@ extends Module {
     @Override
     public void onWorldRender(RenderEvent event) {
         float pow;
-        if (Larpjectories.mc.field_71441_e == null || Larpjectories.mc.field_71439_g == null) {
+        if (Larpjectories.mc.world == null || Larpjectories.mc.player == null) {
             return;
         }
-        double renderPosX = Larpjectories.mc.field_71439_g.field_70142_S + (Larpjectories.mc.field_71439_g.field_70165_t - Larpjectories.mc.field_71439_g.field_70142_S) * (double)event.getPartialTicks();
-        double renderPosY = Larpjectories.mc.field_71439_g.field_70137_T + (Larpjectories.mc.field_71439_g.field_70163_u - Larpjectories.mc.field_71439_g.field_70137_T) * (double)event.getPartialTicks();
-        double renderPosZ = Larpjectories.mc.field_71439_g.field_70136_U + (Larpjectories.mc.field_71439_g.field_70161_v - Larpjectories.mc.field_71439_g.field_70136_U) * (double)event.getPartialTicks();
-        Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND);
-        if (!(Larpjectories.mc.field_71474_y.field_74320_O == 0 && (Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() instanceof ItemBow || Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() instanceof ItemFishingRod || Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() instanceof ItemEnderPearl || Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() instanceof ItemEgg || Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() instanceof ItemSnowball || Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() instanceof ItemExpBottle))) {
+        double renderPosX = Larpjectories.mc.player.lastTickPosX + (Larpjectories.mc.player.posX - Larpjectories.mc.player.lastTickPosX) * (double)event.getPartialTicks();
+        double renderPosY = Larpjectories.mc.player.lastTickPosY + (Larpjectories.mc.player.posY - Larpjectories.mc.player.lastTickPosY) * (double)event.getPartialTicks();
+        double renderPosZ = Larpjectories.mc.player.lastTickPosZ + (Larpjectories.mc.player.posZ - Larpjectories.mc.player.lastTickPosZ) * (double)event.getPartialTicks();
+        Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND);
+        if (!(Larpjectories.mc.gameSettings.thirdPersonView == 0 && (Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemBow || Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemFishingRod || Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemEnderPearl || Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemEgg || Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemSnowball || Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemExpBottle))) {
             return;
         }
         GL11.glPushMatrix();
-        Item item = Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b();
-        double posX = renderPosX - (double)(MathHelper.func_76134_b((float)(Larpjectories.mc.field_71439_g.field_70177_z / 180.0f * (float)Math.PI)) * 0.16f);
-        double posY = renderPosY + (double)Larpjectories.mc.field_71439_g.func_70047_e() - 0.1000000014901161;
-        double posZ = renderPosZ - (double)(MathHelper.func_76126_a((float)(Larpjectories.mc.field_71439_g.field_70177_z / 180.0f * (float)Math.PI)) * 0.16f);
-        double motionX = (double)(-MathHelper.func_76126_a((float)(Larpjectories.mc.field_71439_g.field_70177_z / 180.0f * (float)Math.PI)) * MathHelper.func_76134_b((float)(Larpjectories.mc.field_71439_g.field_70125_A / 180.0f * (float)Math.PI))) * (item instanceof ItemBow ? 1.0 : 0.4);
-        double motionY = (double)(-MathHelper.func_76126_a((float)(Larpjectories.mc.field_71439_g.field_70125_A / 180.0f * (float)Math.PI))) * (item instanceof ItemBow ? 1.0 : 0.4);
-        double motionZ = (double)(MathHelper.func_76134_b((float)(Larpjectories.mc.field_71439_g.field_70177_z / 180.0f * (float)Math.PI)) * MathHelper.func_76134_b((float)(Larpjectories.mc.field_71439_g.field_70125_A / 180.0f * (float)Math.PI))) * (item instanceof ItemBow ? 1.0 : 0.4);
-        int var6 = 72000 - Larpjectories.mc.field_71439_g.func_184605_cv();
+        Item item = Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem();
+        double posX = renderPosX - (double)(MathHelper.cos((float)(Larpjectories.mc.player.rotationYaw / 180.0f * (float)Math.PI)) * 0.16f);
+        double posY = renderPosY + (double)Larpjectories.mc.player.getEyeHeight() - 0.1000000014901161;
+        double posZ = renderPosZ - (double)(MathHelper.sin((float)(Larpjectories.mc.player.rotationYaw / 180.0f * (float)Math.PI)) * 0.16f);
+        double motionX = (double)(-MathHelper.sin((float)(Larpjectories.mc.player.rotationYaw / 180.0f * (float)Math.PI)) * MathHelper.cos((float)(Larpjectories.mc.player.rotationPitch / 180.0f * (float)Math.PI))) * (item instanceof ItemBow ? 1.0 : 0.4);
+        double motionY = (double)(-MathHelper.sin((float)(Larpjectories.mc.player.rotationPitch / 180.0f * (float)Math.PI))) * (item instanceof ItemBow ? 1.0 : 0.4);
+        double motionZ = (double)(MathHelper.cos((float)(Larpjectories.mc.player.rotationYaw / 180.0f * (float)Math.PI)) * MathHelper.cos((float)(Larpjectories.mc.player.rotationPitch / 180.0f * (float)Math.PI))) * (item instanceof ItemBow ? 1.0 : 0.4);
+        int var6 = 72000 - Larpjectories.mc.player.getItemInUseCount();
         float power = (float)var6 / 20.0f;
         power = (power * power + power * 2.0f) / 3.0f;
         if (power > 1.0f) {
             power = 1.0f;
         }
-        float distance = MathHelper.func_76133_a((double)(motionX * motionX + motionY * motionY + motionZ * motionZ));
+        float distance = MathHelper.sqrt((double)(motionX * motionX + motionY * motionY + motionZ * motionZ));
         motionX /= (double)distance;
         motionY /= (double)distance;
         motionZ /= (double)distance;
-        float f = item instanceof ItemBow ? power * 2.0f : (item instanceof ItemFishingRod ? 1.25f : (pow = Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() == Items.field_151062_by ? 0.9f : 1.0f));
-        motionX *= (double)(pow * (item instanceof ItemFishingRod ? 0.75f : (Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() == Items.field_151062_by ? 0.75f : 1.5f)));
-        motionY *= (double)(pow * (item instanceof ItemFishingRod ? 0.75f : (Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() == Items.field_151062_by ? 0.75f : 1.5f)));
-        motionZ *= (double)(pow * (item instanceof ItemFishingRod ? 0.75f : (Larpjectories.mc.field_71439_g.func_184586_b(EnumHand.MAIN_HAND).func_77973_b() == Items.field_151062_by ? 0.75f : 1.5f)));
+        float f = item instanceof ItemBow ? power * 2.0f : (item instanceof ItemFishingRod ? 1.25f : (pow = Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.EXPERIENCE_BOTTLE ? 0.9f : 1.0f));
+        motionX *= (double)(pow * (item instanceof ItemFishingRod ? 0.75f : (Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.EXPERIENCE_BOTTLE ? 0.75f : 1.5f)));
+        motionY *= (double)(pow * (item instanceof ItemFishingRod ? 0.75f : (Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.EXPERIENCE_BOTTLE ? 0.75f : 1.5f)));
+        motionZ *= (double)(pow * (item instanceof ItemFishingRod ? 0.75f : (Larpjectories.mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.EXPERIENCE_BOTTLE ? 0.75f : 1.5f)));
         this.enableGL3D(2.0f);
         if (power > 0.6f) {
-            GlStateManager.func_179131_c((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
+            GlStateManager.color((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
         } else {
-            GlStateManager.func_179131_c((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
+            GlStateManager.color((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
         }
         GL11.glEnable((int)2848);
         float size = (float)(item instanceof ItemBow ? 0.3 : 0.25);
@@ -106,26 +108,26 @@ extends Module {
         while (!hasLanded && posY > 0.0) {
             Vec3d present = new Vec3d(posX, posY, posZ);
             Vec3d future = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
-            RayTraceResult possibleLandingStrip = Larpjectories.mc.field_71441_e.func_147447_a(present, future, false, true, false);
-            if (possibleLandingStrip != null && possibleLandingStrip.field_72313_a != RayTraceResult.Type.MISS) {
+            RayTraceResult possibleLandingStrip = Larpjectories.mc.world.rayTraceBlocks(present, future, false, true, false);
+            if (possibleLandingStrip != null && possibleLandingStrip.typeOfHit != RayTraceResult.Type.MISS) {
                 landingPosition = possibleLandingStrip;
                 hasLanded = true;
             }
             AxisAlignedBB arrowBox = new AxisAlignedBB(posX - (double)size, posY - (double)size, posZ - (double)size, posX + (double)size, posY + (double)size, posZ + (double)size);
-            ArrayList entities = this.getEntitiesWithinAABB(arrowBox.func_72317_d(motionX, motionY, motionZ).func_72321_a(1.0, 1.0, 1.0));
+            ArrayList entities = this.getEntitiesWithinAABB(arrowBox.offset(motionX, motionY, motionZ).expand(1.0, 1.0, 1.0));
             for (Object entity : entities) {
                 Entity boundingBox = (Entity)entity;
-                if (!boundingBox.func_70067_L() || boundingBox == Larpjectories.mc.field_71439_g) continue;
+                if (!boundingBox.canBeCollidedWith() || boundingBox == Larpjectories.mc.player) continue;
                 float var7 = 0.3f;
-                AxisAlignedBB var8 = boundingBox.func_174813_aQ().func_72321_a((double)0.3f, (double)0.3f, (double)0.3f);
-                RayTraceResult possibleEntityLanding = var8.func_72327_a(present, future);
+                AxisAlignedBB var8 = boundingBox.getEntityBoundingBox().expand((double)0.3f, (double)0.3f, (double)0.3f);
+                RayTraceResult possibleEntityLanding = var8.calculateIntercept(present, future);
                 if (possibleEntityLanding == null) continue;
                 hasLanded = true;
                 landingOnEntity = boundingBox;
                 landingPosition = possibleEntityLanding;
             }
             if (landingOnEntity != null) {
-                GlStateManager.func_179131_c((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
+                GlStateManager.color((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
             }
             posX += motionX;
             posY += motionY;
@@ -136,27 +138,27 @@ extends Module {
             motionZ *= (double)0.99f;
             motionY -= item instanceof ItemBow ? 0.05 : 0.03;
         }
-        if (landingPosition != null && landingPosition.field_72313_a == RayTraceResult.Type.BLOCK) {
-            GlStateManager.func_179137_b((double)(posX - renderPosX), (double)(posY - renderPosY), (double)(posZ - renderPosZ));
-            int side = landingPosition.field_178784_b.func_176745_a();
+        if (landingPosition != null && landingPosition.typeOfHit == RayTraceResult.Type.BLOCK) {
+            GlStateManager.translate((double)(posX - renderPosX), (double)(posY - renderPosY), (double)(posZ - renderPosZ));
+            int side = landingPosition.sideHit.getIndex();
             if (side == 2) {
-                GlStateManager.func_179114_b((float)90.0f, (float)1.0f, (float)0.0f, (float)0.0f);
+                GlStateManager.rotate((float)90.0f, (float)1.0f, (float)0.0f, (float)0.0f);
             } else if (side == 3) {
-                GlStateManager.func_179114_b((float)90.0f, (float)1.0f, (float)0.0f, (float)0.0f);
+                GlStateManager.rotate((float)90.0f, (float)1.0f, (float)0.0f, (float)0.0f);
             } else if (side == 4) {
-                GlStateManager.func_179114_b((float)90.0f, (float)0.0f, (float)0.0f, (float)1.0f);
+                GlStateManager.rotate((float)90.0f, (float)0.0f, (float)0.0f, (float)1.0f);
             } else if (side == 5) {
-                GlStateManager.func_179114_b((float)90.0f, (float)0.0f, (float)0.0f, (float)1.0f);
+                GlStateManager.rotate((float)90.0f, (float)0.0f, (float)0.0f, (float)1.0f);
             }
             Cylinder c = new Cylinder();
-            GlStateManager.func_179114_b((float)-90.0f, (float)1.0f, (float)0.0f, (float)0.0f);
+            GlStateManager.rotate((float)-90.0f, (float)1.0f, (float)0.0f, (float)0.0f);
             c.setDrawStyle(100011);
             if (landingOnEntity != null) {
-                GlStateManager.func_179131_c((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
+                GlStateManager.color((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
                 GL11.glLineWidth((float)2.5f);
                 c.draw(0.6f, 0.3f, 0.0f, 4, 1);
                 GL11.glLineWidth((float)0.1f);
-                GlStateManager.func_179131_c((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
+                GlStateManager.color((float)((float)this.red.getValue().intValue() / 255.0f), (float)((float)this.green.getValue().intValue() / 255.0f), (float)((float)this.blue.getValue().intValue() / 255.0f), (float)1.0f);
             }
             c.draw(0.6f, 0.3f, 0.0f, 4, 1);
         }
@@ -172,7 +174,7 @@ extends Module {
         GL11.glDisable((int)2929);
         GL11.glDepthMask((boolean)false);
         GL11.glEnable((int)2884);
-        Larpjectories.mc.field_71460_t.func_175072_h();
+        Larpjectories.mc.entityRenderer.disableLightmap();
         GL11.glEnable((int)2848);
         GL11.glHint((int)3154, (int)4354);
         GL11.glHint((int)3155, (int)4354);
@@ -193,14 +195,14 @@ extends Module {
 
     private ArrayList getEntitiesWithinAABB(AxisAlignedBB bb) {
         ArrayList list = new ArrayList();
-        int chunkMinX = MathHelper.func_76128_c((double)((bb.field_72340_a - 2.0) / 16.0));
-        int chunkMaxX = MathHelper.func_76128_c((double)((bb.field_72336_d + 2.0) / 16.0));
-        int chunkMinZ = MathHelper.func_76128_c((double)((bb.field_72339_c - 2.0) / 16.0));
-        int chunkMaxZ = MathHelper.func_76128_c((double)((bb.field_72334_f + 2.0) / 16.0));
+        int chunkMinX = MathHelper.floor((double)((bb.minX - 2.0) / 16.0));
+        int chunkMaxX = MathHelper.floor((double)((bb.maxX + 2.0) / 16.0));
+        int chunkMinZ = MathHelper.floor((double)((bb.minZ - 2.0) / 16.0));
+        int chunkMaxZ = MathHelper.floor((double)((bb.maxZ + 2.0) / 16.0));
         for (int x = chunkMinX; x <= chunkMaxX; ++x) {
             for (int z = chunkMinZ; z <= chunkMaxZ; ++z) {
-                if (Larpjectories.mc.field_71441_e.func_72863_F().func_186026_b(x, z) == null) continue;
-                Larpjectories.mc.field_71441_e.func_72964_e(x, z).func_177414_a((Entity)Larpjectories.mc.field_71439_g, bb, list, (Predicate)null);
+                if (Larpjectories.mc.world.getChunkProvider().getLoadedChunk(x, z) == null) continue;
+                Larpjectories.mc.world.getChunk(x, z).getEntitiesWithinAABBForEntity((Entity)Larpjectories.mc.player, bb, list, (Predicate)null);
             }
         }
         return list;

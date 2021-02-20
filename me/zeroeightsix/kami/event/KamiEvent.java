@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -9,7 +11,7 @@ import me.zeroeightsix.kami.util.Wrapper;
 public class KamiEvent
 extends Cancellable {
     private Era era = Era.PRE;
-    private final float partialTicks = Wrapper.getMinecraft().func_184121_ak();
+    private final float partialTicks = Wrapper.getMinecraft().getRenderPartialTicks();
 
     public Era getEra() {
         return this.era;

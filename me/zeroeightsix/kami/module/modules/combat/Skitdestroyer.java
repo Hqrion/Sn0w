@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -15,7 +17,7 @@ extends Module {
     @Override
     public void onEnable() {
         if (this.kill.getValue().booleanValue()) {
-            Skitdestroyer.mc.field_71439_g.func_71165_d("/kill Skitttyy");
+            Skitdestroyer.mc.player.sendChatMessage("/kill Skitttyy");
         }
     }
 }

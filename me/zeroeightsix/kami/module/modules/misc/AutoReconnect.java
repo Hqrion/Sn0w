@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -29,12 +31,12 @@ extends Module {
     @EventHandler
     public Listener<GuiScreenEvent.Closed> closedListener = new Listener<GuiScreenEvent.Closed>(event -> {
         if (event.getScreen() instanceof GuiConnecting) {
-            cServer = AutoReconnect.mc.field_71422_O;
+            cServer = AutoReconnect.mc.currentServerData;
         }
     }, new Predicate[0]);
     @EventHandler
     public Listener<GuiScreenEvent.Displayed> displayedListener = new Listener<GuiScreenEvent.Displayed>(event -> {
-        if (this.isEnabled() && event.getScreen() instanceof GuiDisconnected && (cServer != null || AutoReconnect.mc.field_71422_O != null)) {
+        if (this.isEnabled() && event.getScreen() instanceof GuiDisconnected && (cServer != null || AutoReconnect.mc.currentServerData != null)) {
             event.setScreen((GuiScreen)new KamiGuiDisconnected((GuiDisconnected)event.getScreen()));
         }
     }, new Predicate[0]);
@@ -45,24 +47,24 @@ extends Module {
         long cTime;
 
         public KamiGuiDisconnected(GuiDisconnected disconnected) {
-            super(disconnected.field_146307_h, disconnected.field_146306_a, disconnected.field_146304_f);
+            super(disconnected.parentScreen, disconnected.reason, disconnected.message);
             this.millis = (Integer)AutoReconnect.this.seconds.getValue() * 1000;
             this.cTime = System.currentTimeMillis();
         }
 
-        public void func_73876_c() {
+        public void updateScreen() {
             if (this.millis <= 0) {
-                this.field_146297_k.func_147108_a((GuiScreen)new GuiConnecting(this.field_146307_h, this.field_146297_k, cServer == null ? this.field_146297_k.field_71422_O : cServer));
+                this.mc.displayGuiScreen((GuiScreen)new GuiConnecting(this.parentScreen, this.mc, cServer == null ? this.mc.currentServerData : cServer));
             }
         }
 
-        public void func_73863_a(int mouseX, int mouseY, float partialTicks) {
-            super.func_73863_a(mouseX, mouseY, partialTicks);
+        public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+            super.drawScreen(mouseX, mouseY, partialTicks);
             long a = System.currentTimeMillis();
             this.millis = (int)((long)this.millis - (a - this.cTime));
             this.cTime = a;
             String s = "Reconnecting in " + Math.max(0.0, Math.floor((double)this.millis / 100.0) / 10.0) + "s";
-            this.field_146289_q.func_175065_a(s, (float)(this.field_146294_l / 2 - this.field_146289_q.func_78256_a(s) / 2), (float)(this.field_146295_m - 16), 0xFFFFFF, true);
+            this.fontRenderer.drawString(s, (float)(this.width / 2 - this.fontRenderer.getStringWidth(s) / 2), (float)(this.height - 16), 0xFFFFFF, true);
         }
     }
 }

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -23,8 +25,8 @@ public class RainbowText {
                 updateX = Float.valueOf(updateX.floatValue() + (float)cFontRenderer.getStringWidth(str));
                 continue;
             }
-            Minecraft.func_71410_x().field_71466_p.func_175063_a(str, updateX.floatValue(), y.floatValue(), RainbowText.effect((long)i * 3500000L, bright, 100).getRGB());
-            updateX = Float.valueOf(updateX.floatValue() + (float)Minecraft.func_71410_x().field_71466_p.func_78263_a(s.charAt(i)));
+            Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(str, updateX.floatValue(), y.floatValue(), RainbowText.effect((long)i * 3500000L, bright, 100).getRGB());
+            updateX = Float.valueOf(updateX.floatValue() + (float)Minecraft.getMinecraft().fontRenderer.getCharWidth(s.charAt(i)));
         }
     }
 
@@ -41,8 +43,8 @@ public class RainbowText {
             String str = s.charAt(i) + "";
             Color hacker = i % 2 == 0 ? new Color(255, 0, 0) : new Color(0, 155, 0);
             if (hacker == null) continue;
-            Minecraft.func_71410_x().field_71466_p.func_175063_a(str, updateX.floatValue(), y.floatValue(), hacker.getRGB());
-            updateX = Float.valueOf(updateX.floatValue() + (float)Minecraft.func_71410_x().field_71466_p.func_78263_a(s.charAt(i)));
+            Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(str, updateX.floatValue(), y.floatValue(), hacker.getRGB());
+            updateX = Float.valueOf(updateX.floatValue() + (float)Minecraft.getMinecraft().fontRenderer.getCharWidth(s.charAt(i)));
         }
     }
 }

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -38,13 +40,13 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (VoidESP.mc.field_71439_g == null) {
+        if (VoidESP.mc.player == null) {
             return;
         }
-        if (VoidESP.mc.field_71439_g.field_71093_bK == 1) {
+        if (VoidESP.mc.player.dimension == 1) {
             return;
         }
-        if (VoidESP.mc.field_71439_g.func_180425_c().field_177960_b > this.activateAtY.getValue()) {
+        if (VoidESP.mc.player.getPosition().y > this.activateAtY.getValue()) {
             return;
         }
         if (this.voidHoles == null) {
@@ -54,7 +56,7 @@ extends Module {
         }
         List<BlockPos> blockPosList = BlockInteractionHelper.getCircle(CrystalAura.getPlayerPos(), 0, this.range.getValue().intValue(), false);
         for (BlockPos pos : blockPosList) {
-            if (VoidESP.mc.field_71441_e.func_180495_p(pos).func_177230_c().equals(Blocks.field_150357_h) || this.isAnyBedrock(pos, Offsets.center)) continue;
+            if (VoidESP.mc.world.getBlockState(pos).getBlock().equals(Blocks.BEDROCK) || this.isAnyBedrock(pos, Offsets.center)) continue;
             boolean aboveFree = false;
             if (!this.isAnyBedrock(pos, Offsets.above)) {
                 aboveFree = true;
@@ -84,7 +86,7 @@ extends Module {
 
     private boolean isAnyBedrock(BlockPos origin, BlockPos[] offset) {
         for (BlockPos pos : offset) {
-            if (!VoidESP.mc.field_71441_e.func_180495_p(origin.func_177971_a((Vec3i)pos)).func_177230_c().equals(Blocks.field_150357_h)) continue;
+            if (!VoidESP.mc.world.getBlockState(origin.add((Vec3i)pos)).getBlock().equals(Blocks.BEDROCK)) continue;
             return true;
         }
         return false;
@@ -92,7 +94,7 @@ extends Module {
 
     @Override
     public void onWorldRender(RenderEvent event) {
-        if (VoidESP.mc.field_71439_g == null || this.voidHoles == null || this.voidHoles.isEmpty()) {
+        if (VoidESP.mc.player == null || this.voidHoles == null || this.voidHoles.isEmpty()) {
             return;
         }
         KamiTessellator.prepare(7);

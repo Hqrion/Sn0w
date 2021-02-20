@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -49,13 +51,13 @@ implements EventListener {
             sumTickRates += tickRate;
             numTicks += 1.0f;
         }
-        return MathHelper.func_76131_a((float)(sumTickRates / numTicks), (float)0.0f, (float)20.0f);
+        return MathHelper.clamp((float)(sumTickRates / numTicks), (float)0.0f, (float)20.0f);
     }
 
     public void onTimeUpdate() {
         if (this.timeLastTimeUpdate != -1L) {
             float timeElapsed = (float)(System.currentTimeMillis() - this.timeLastTimeUpdate) / 1000.0f;
-            this.tickRates[this.nextIndex % this.tickRates.length] = MathHelper.func_76131_a((float)(20.0f / timeElapsed), (float)0.0f, (float)20.0f);
+            this.tickRates[this.nextIndex % this.tickRates.length] = MathHelper.clamp((float)(20.0f / timeElapsed), (float)0.0f, (float)20.0f);
             ++this.nextIndex;
         }
         this.timeLastTimeUpdate = System.currentTimeMillis();

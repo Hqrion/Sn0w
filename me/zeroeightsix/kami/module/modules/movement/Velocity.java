@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -29,28 +31,28 @@ extends Module {
         if (event.getEra() == KamiEvent.Era.PRE) {
             if (event.getPacket() instanceof SPacketEntityVelocity) {
                 SPacketEntityVelocity velocity = (SPacketEntityVelocity)event.getPacket();
-                if (velocity.func_149412_c() == Velocity.mc.field_71439_g.field_145783_c) {
+                if (velocity.getEntityID() == Velocity.mc.player.entityId) {
                     if (this.horizontal.getValue().floatValue() == 0.0f && this.vertical.getValue().floatValue() == 0.0f) {
                         event.cancel();
                     }
-                    velocity.field_149415_b = (int)((float)velocity.field_149415_b * this.horizontal.getValue().floatValue());
-                    velocity.field_149416_c = (int)((float)velocity.field_149416_c * this.vertical.getValue().floatValue());
-                    velocity.field_149414_d = (int)((float)velocity.field_149414_d * this.horizontal.getValue().floatValue());
+                    velocity.motionX = (int)((float)velocity.motionX * this.horizontal.getValue().floatValue());
+                    velocity.motionY = (int)((float)velocity.motionY * this.vertical.getValue().floatValue());
+                    velocity.motionZ = (int)((float)velocity.motionZ * this.horizontal.getValue().floatValue());
                 }
             } else if (event.getPacket() instanceof SPacketExplosion) {
                 if (this.horizontal.getValue().floatValue() == 0.0f && this.vertical.getValue().floatValue() == 0.0f) {
                     event.cancel();
                 }
                 SPacketExplosion velocity = (SPacketExplosion)event.getPacket();
-                velocity.field_149152_f *= this.horizontal.getValue().floatValue();
-                velocity.field_149153_g *= this.vertical.getValue().floatValue();
-                velocity.field_149159_h *= this.horizontal.getValue().floatValue();
+                velocity.motionX *= this.horizontal.getValue().floatValue();
+                velocity.motionY *= this.vertical.getValue().floatValue();
+                velocity.motionZ *= this.horizontal.getValue().floatValue();
             }
         }
     }, new Predicate[0]);
     @EventHandler
     private Listener<EntityEvent.EntityCollision> entityCollisionListener = new Listener<EntityEvent.EntityCollision>(event -> {
-        if (event.getEntity() == Velocity.mc.field_71439_g) {
+        if (event.getEntity() == Velocity.mc.player) {
             if (this.horizontal.getValue().floatValue() == 0.0f && this.vertical.getValue().floatValue() == 0.0f) {
                 event.cancel();
                 return;

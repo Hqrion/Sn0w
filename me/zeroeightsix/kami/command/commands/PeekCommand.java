@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -25,12 +27,12 @@ extends Command {
 
     @Override
     public void call(String[] args) {
-        ItemStack is = Wrapper.getPlayer().field_71071_by.func_70448_g();
-        if (is.func_77973_b() instanceof ItemShulkerBox) {
+        ItemStack is = Wrapper.getPlayer().inventory.getCurrentItem();
+        if (is.getItem() instanceof ItemShulkerBox) {
             TileEntityShulkerBox entityBox = new TileEntityShulkerBox();
-            entityBox.field_145854_h = ((ItemShulkerBox)is.func_77973_b()).func_179223_d();
-            entityBox.func_145834_a(Wrapper.getWorld());
-            entityBox.func_145839_a(is.func_77978_p().func_74775_l("BlockEntityTag"));
+            entityBox.blockType = ((ItemShulkerBox)is.getItem()).getBlock();
+            entityBox.setWorld(Wrapper.getWorld());
+            entityBox.readFromNBT(is.getTagCompound().getCompoundTag("BlockEntityTag"));
             sb = entityBox;
         } else {
             Command.sendChatMessage("You aren't carrying a shulker box.");

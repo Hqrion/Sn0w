@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -126,49 +128,49 @@ public class ReflectionHelper {
 
     public static void init() {
         try {
-            renderPosX = ReflectionHelper.getField(RenderManager.class, "renderPosX", "field_78725_b");
-            renderPosY = ReflectionHelper.getField(RenderManager.class, "renderPosY", "field_78726_c");
-            renderPosZ = ReflectionHelper.getField(RenderManager.class, "renderPosZ", "field_78723_d");
-            playerViewX = ReflectionHelper.getField(RenderManager.class, "playerViewX", "field_78732_j");
-            playerViewY = ReflectionHelper.getField(RenderManager.class, "playerViewY", "field_78735_i");
-            timer = ReflectionHelper.getField(Minecraft.class, "timer", "field_71428_T");
-            modelManager = ReflectionHelper.getField(Minecraft.class, "modelManager", "field_175617_aL");
-            rightClickMouse = ReflectionHelper.getMethod(Minecraft.class, new String[]{"rightClickMouse", "func_147121_ag"}, new Class[0]);
-            pressed = ReflectionHelper.getField(KeyBinding.class, "pressed", "field_74513_e");
-            cpacketPlayerYaw = ReflectionHelper.getField(CPacketPlayer.class, "yaw", "field_149476_e");
-            cpacketPlayerPitch = ReflectionHelper.getField(CPacketPlayer.class, "pitch", "field_149473_f");
-            spacketPlayerPosLookYaw = ReflectionHelper.getField(SPacketPlayerPosLook.class, "yaw", "field_148936_d");
-            spacketPlayerPosLookPitch = ReflectionHelper.getField(SPacketPlayerPosLook.class, "pitch", "field_148937_e");
-            mapTextureObjects = ReflectionHelper.getField(TextureManager.class, "mapTextureObjects", "field_110585_a");
-            cpacketPlayerOnGround = ReflectionHelper.getField(CPacketPlayer.class, "onGround", "field_149474_g");
-            rightClickDelayTimer = ReflectionHelper.getField(Minecraft.class, "rightClickDelayTimer", "field_71467_ac");
-            horseJumpPower = ReflectionHelper.getField(EntityPlayerSP.class, "horseJumpPower", "field_110321_bQ");
-            curBlockDamageMP = ReflectionHelper.getField(PlayerControllerMP.class, "curBlockDamageMP", "field_78770_f");
-            blockHitDelay = ReflectionHelper.getField(PlayerControllerMP.class, "blockHitDelay", "field_78781_i");
-            debugFps = ReflectionHelper.getField(Minecraft.class, "debugFPS", "field_71470_ab");
-            lowerChestInventory = ReflectionHelper.getField(GuiChest.class, "lowerChestInventory", "field_147015_w");
-            shulkerInventory = ReflectionHelper.getField(GuiShulkerBox.class, "inventory", "field_190779_v");
-            spacketExplosionMotionX = ReflectionHelper.getField(SPacketExplosion.class, "motionX", "field_149152_f");
-            spacketExplosionMotionY = ReflectionHelper.getField(SPacketExplosion.class, "motionY", "field_149153_g");
-            spacketExplosionMotionZ = ReflectionHelper.getField(SPacketExplosion.class, "motionZ", "field_149159_h");
-            cpacketPlayerY = ReflectionHelper.getField(CPacketPlayer.class, "y", "field_149477_b");
-            cpacketVehicleMoveY = ReflectionHelper.getField(CPacketVehicleMove.class, "y", "field_187008_b");
-            session = ReflectionHelper.getField(Minecraft.class, "session", "field_71449_j");
-            PLAYER_MODEL_FLAG = ReflectionHelper.getField(EntityPlayer.class, "PLAYER_MODEL_FLAG", "field_184827_bp");
-            speedInAir = ReflectionHelper.getField(EntityPlayer.class, "speedInAir", "field_71102_ce");
-            guiButtonHovered = ReflectionHelper.getField(GuiButton.class, "hovered", "field_146123_n");
-            ridingEntity = ReflectionHelper.getField(Entity.class, "ridingEntity", "field_184239_as");
-            foodExhaustionLevel = ReflectionHelper.getField(FoodStats.class, "foodExhaustionLevel", "field_75126_c");
-            cPacketUpdateSignLines = ReflectionHelper.getField(CPacketUpdateSign.class, "lines", "field_149590_d");
-            hopperInventory = ReflectionHelper.getField(GuiHopper.class, "hopperInventory", "field_147083_w");
-            cPacketChatMessage = ReflectionHelper.getField(CPacketChatMessage.class, "message", "field_149440_a");
-            guiSceenServerListServerData = ReflectionHelper.getField(GuiScreenServerList.class, "serverData", "field_146301_f");
-            guiDisconnectedParentScreen = ReflectionHelper.getField(GuiDisconnected.class, "parentScreen", "field_146307_h");
-            sPacketChatChatComponent = ReflectionHelper.getField(SPacketChat.class, "chatComponent", "field_148919_a");
-            boundingBox = ReflectionHelper.getField(Entity.class, "boundingBox", "field_148919_a");
-            y_vec3d = ReflectionHelper.getField(Vec3d.class, "y", "field_72448_b", "c");
-            sleeping = ReflectionHelper.getField(EntityPlayer.class, "sleeping", "field_71083_bS", "bK");
-            sleepTimer = ReflectionHelper.getField(EntityPlayer.class, "sleepTimer", "field_71076_b");
+            renderPosX = ReflectionHelper.getField(RenderManager.class, "renderPosX", "renderPosX");
+            renderPosY = ReflectionHelper.getField(RenderManager.class, "renderPosY", "renderPosY");
+            renderPosZ = ReflectionHelper.getField(RenderManager.class, "renderPosZ", "renderPosZ");
+            playerViewX = ReflectionHelper.getField(RenderManager.class, "playerViewX", "playerViewX");
+            playerViewY = ReflectionHelper.getField(RenderManager.class, "playerViewY", "playerViewY");
+            timer = ReflectionHelper.getField(Minecraft.class, "timer", "timer");
+            modelManager = ReflectionHelper.getField(Minecraft.class, "modelManager", "modelManager");
+            rightClickMouse = ReflectionHelper.getMethod(Minecraft.class, new String[]{"rightClickMouse", "rightClickMouse"}, new Class[0]);
+            pressed = ReflectionHelper.getField(KeyBinding.class, "pressed", "pressed");
+            cpacketPlayerYaw = ReflectionHelper.getField(CPacketPlayer.class, "yaw", "yaw");
+            cpacketPlayerPitch = ReflectionHelper.getField(CPacketPlayer.class, "pitch", "pitch");
+            spacketPlayerPosLookYaw = ReflectionHelper.getField(SPacketPlayerPosLook.class, "yaw", "yaw");
+            spacketPlayerPosLookPitch = ReflectionHelper.getField(SPacketPlayerPosLook.class, "pitch", "pitch");
+            mapTextureObjects = ReflectionHelper.getField(TextureManager.class, "mapTextureObjects", "mapTextureObjects");
+            cpacketPlayerOnGround = ReflectionHelper.getField(CPacketPlayer.class, "onGround", "onGround");
+            rightClickDelayTimer = ReflectionHelper.getField(Minecraft.class, "rightClickDelayTimer", "rightClickDelayTimer");
+            horseJumpPower = ReflectionHelper.getField(EntityPlayerSP.class, "horseJumpPower", "horseJumpPower");
+            curBlockDamageMP = ReflectionHelper.getField(PlayerControllerMP.class, "curBlockDamageMP", "curBlockDamageMP");
+            blockHitDelay = ReflectionHelper.getField(PlayerControllerMP.class, "blockHitDelay", "blockHitDelay");
+            debugFps = ReflectionHelper.getField(Minecraft.class, "debugFPS", "debugFPS");
+            lowerChestInventory = ReflectionHelper.getField(GuiChest.class, "lowerChestInventory", "lowerChestInventory");
+            shulkerInventory = ReflectionHelper.getField(GuiShulkerBox.class, "inventory", "inventory");
+            spacketExplosionMotionX = ReflectionHelper.getField(SPacketExplosion.class, "motionX", "motionX");
+            spacketExplosionMotionY = ReflectionHelper.getField(SPacketExplosion.class, "motionY", "motionY");
+            spacketExplosionMotionZ = ReflectionHelper.getField(SPacketExplosion.class, "motionZ", "motionZ");
+            cpacketPlayerY = ReflectionHelper.getField(CPacketPlayer.class, "y", "y");
+            cpacketVehicleMoveY = ReflectionHelper.getField(CPacketVehicleMove.class, "y", "y");
+            session = ReflectionHelper.getField(Minecraft.class, "session", "session");
+            PLAYER_MODEL_FLAG = ReflectionHelper.getField(EntityPlayer.class, "PLAYER_MODEL_FLAG", "PLAYER_MODEL_FLAG");
+            speedInAir = ReflectionHelper.getField(EntityPlayer.class, "speedInAir", "speedInAir");
+            guiButtonHovered = ReflectionHelper.getField(GuiButton.class, "hovered", "hovered");
+            ridingEntity = ReflectionHelper.getField(Entity.class, "ridingEntity", "ridingEntity");
+            foodExhaustionLevel = ReflectionHelper.getField(FoodStats.class, "foodExhaustionLevel", "foodExhaustionLevel");
+            cPacketUpdateSignLines = ReflectionHelper.getField(CPacketUpdateSign.class, "lines", "lines");
+            hopperInventory = ReflectionHelper.getField(GuiHopper.class, "hopperInventory", "hopperInventory");
+            cPacketChatMessage = ReflectionHelper.getField(CPacketChatMessage.class, "message", "message");
+            guiSceenServerListServerData = ReflectionHelper.getField(GuiScreenServerList.class, "serverData", "serverData");
+            guiDisconnectedParentScreen = ReflectionHelper.getField(GuiDisconnected.class, "parentScreen", "parentScreen");
+            sPacketChatChatComponent = ReflectionHelper.getField(SPacketChat.class, "chatComponent", "chatComponent");
+            boundingBox = ReflectionHelper.getField(Entity.class, "boundingBox", "chatComponent");
+            y_vec3d = ReflectionHelper.getField(Vec3d.class, "y", "y", "c");
+            sleeping = ReflectionHelper.getField(EntityPlayer.class, "sleeping", "sleeping", "bK");
+            sleepTimer = ReflectionHelper.getField(EntityPlayer.class, "sleepTimer", "sleepTimer");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -209,7 +211,7 @@ public class ReflectionHelper {
 
     public static double getRenderPosX() {
         try {
-            return (Double)renderPosX.get(Wrapper.getMinecraft().func_175598_ae());
+            return (Double)renderPosX.get(Wrapper.getMinecraft().getRenderManager());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -219,7 +221,7 @@ public class ReflectionHelper {
 
     public static double getRenderPosY() {
         try {
-            return (Double)renderPosY.get(Wrapper.getMinecraft().func_175598_ae());
+            return (Double)renderPosY.get(Wrapper.getMinecraft().getRenderManager());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -229,7 +231,7 @@ public class ReflectionHelper {
 
     public static double getRenderPosZ() {
         try {
-            return (Double)renderPosZ.get(Wrapper.getMinecraft().func_175598_ae());
+            return (Double)renderPosZ.get(Wrapper.getMinecraft().getRenderManager());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -239,7 +241,7 @@ public class ReflectionHelper {
 
     public static float getPlayerViewY() {
         try {
-            return ((Float)playerViewY.get(Wrapper.getMinecraft().func_175598_ae())).floatValue();
+            return ((Float)playerViewY.get(Wrapper.getMinecraft().getRenderManager())).floatValue();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -249,7 +251,7 @@ public class ReflectionHelper {
 
     public static float getPlayerViewX() {
         try {
-            return ((Float)playerViewX.get(Wrapper.getMinecraft().func_175598_ae())).floatValue();
+            return ((Float)playerViewX.get(Wrapper.getMinecraft().getRenderManager())).floatValue();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -349,7 +351,7 @@ public class ReflectionHelper {
 
     public static Map<ResourceLocation, ITextureObject> getMapTextureObjects() {
         try {
-            return (Map)mapTextureObjects.get(Wrapper.getMinecraft().func_110434_K());
+            return (Map)mapTextureObjects.get(Wrapper.getMinecraft().getTextureManager());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -379,7 +381,7 @@ public class ReflectionHelper {
 
     public static void setHorseJumpPower(float value) {
         try {
-            horseJumpPower.set(Wrapper.getMinecraft().field_71439_g, Float.valueOf(value));
+            horseJumpPower.set(Wrapper.getMinecraft().player, Float.valueOf(value));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -389,7 +391,7 @@ public class ReflectionHelper {
 
     public static float getCurBlockDamageMP() {
         try {
-            return ((Float)curBlockDamageMP.get(Wrapper.getMinecraft().field_71442_b)).floatValue();
+            return ((Float)curBlockDamageMP.get(Wrapper.getMinecraft().playerController)).floatValue();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -399,7 +401,7 @@ public class ReflectionHelper {
 
     public static void setCurBlockDamageMP(float value) {
         try {
-            curBlockDamageMP.set(Wrapper.getMinecraft().field_71442_b, Float.valueOf(value));
+            curBlockDamageMP.set(Wrapper.getMinecraft().playerController, Float.valueOf(value));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -409,7 +411,7 @@ public class ReflectionHelper {
 
     public static int getBlockHitDelay() {
         try {
-            return (Integer)blockHitDelay.get(Wrapper.getMinecraft().field_71442_b);
+            return (Integer)blockHitDelay.get(Wrapper.getMinecraft().playerController);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -419,7 +421,7 @@ public class ReflectionHelper {
 
     public static void setBlockHitDelay(float value) {
         try {
-            blockHitDelay.set(Wrapper.getMinecraft().field_71442_b, Float.valueOf(value));
+            blockHitDelay.set(Wrapper.getMinecraft().playerController, Float.valueOf(value));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -599,7 +601,7 @@ public class ReflectionHelper {
 
     public static float getFoodExhaustionLevel() {
         try {
-            return ((Float)foodExhaustionLevel.get(Wrapper.getMinecraft().field_71439_g.func_71024_bL())).floatValue();
+            return ((Float)foodExhaustionLevel.get(Wrapper.getMinecraft().player.getFoodStats())).floatValue();
         }
         catch (Exception e) {
             e.printStackTrace();

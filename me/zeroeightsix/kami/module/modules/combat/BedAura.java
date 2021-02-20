@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -106,64 +108,64 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        BedAura.mc.field_71441_e.field_147482_g.stream().filter(e -> e instanceof TileEntityBed).filter(e -> BedAura.mc.field_71439_g.func_70011_f((double)e.func_174877_v().func_177958_n(), (double)e.func_174877_v().func_177956_o(), (double)e.func_174877_v().func_177952_p()) <= (double)this.range.getValue().intValue()).sorted(Comparator.comparing(e -> BedAura.mc.field_71439_g.func_70011_f((double)e.func_174877_v().func_177958_n(), (double)e.func_174877_v().func_177956_o(), (double)e.func_174877_v().func_177952_p()))).forEach(bed -> {
-            if (BedAura.mc.field_71439_g.field_71093_bK == 0) {
+        BedAura.mc.world.loadedTileEntityList.stream().filter(e -> e instanceof TileEntityBed).filter(e -> BedAura.mc.player.getDistance((double)e.getPos().getX(), (double)e.getPos().getY(), (double)e.getPos().getZ()) <= (double)this.range.getValue().intValue()).sorted(Comparator.comparing(e -> BedAura.mc.player.getDistance((double)e.getPos().getX(), (double)e.getPos().getY(), (double)e.getPos().getZ()))).forEach(bed -> {
+            if (BedAura.mc.player.dimension == 0) {
                 return;
             }
             if (this.rotate.getValue().booleanValue()) {
-                BlocksUtils.faceVectorPacketInstant(new Vec3d((Vec3i)bed.func_174877_v().func_177963_a(0.5, 0.5, 0.5)));
+                BlocksUtils.faceVectorPacketInstant(new Vec3d((Vec3i)bed.getPos().add(0.5, 0.5, 0.5)));
             }
-            BedAura.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(bed.func_174877_v(), EnumFacing.UP, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+            BedAura.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(bed.getPos(), EnumFacing.UP, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
         });
         if (this.refill.getValue().booleanValue()) {
             int slot = -1;
             for (int i = 0; i < 9; ++i) {
-                if (BedAura.mc.field_71439_g.field_71071_by.func_70301_a(i) != ItemStack.field_190927_a) continue;
+                if (BedAura.mc.player.inventory.getStackInSlot(i) != ItemStack.EMPTY) continue;
                 slot = i;
                 break;
             }
             if (this.moving && slot != -1) {
-                BedAura.mc.field_71442_b.func_187098_a(0, slot + 36, 0, ClickType.PICKUP, (EntityPlayer)BedAura.mc.field_71439_g);
+                BedAura.mc.playerController.windowClick(0, slot + 36, 0, ClickType.PICKUP, (EntityPlayer)BedAura.mc.player);
                 this.moving = false;
                 slot = -1;
             }
             int bedSlot = -1;
             for (int i = 0; i < 9; ++i) {
-                ItemStack stack = BedAura.mc.field_71439_g.field_71071_by.func_70301_a(i);
-                if (!(stack.func_77973_b() instanceof ItemBed)) continue;
+                ItemStack stack = BedAura.mc.player.inventory.getStackInSlot(i);
+                if (!(stack.getItem() instanceof ItemBed)) continue;
                 bedSlot = 1;
                 break;
             }
-            if (slot != -1 && !(BedAura.mc.field_71462_r instanceof GuiContainer) && BedAura.mc.field_71439_g.field_71071_by.func_70445_o().func_190926_b()) {
+            if (slot != -1 && !(BedAura.mc.currentScreen instanceof GuiContainer) && BedAura.mc.player.inventory.getItemStack().isEmpty()) {
                 int t = -1;
                 for (int i = 0; i < 45; ++i) {
-                    if (BedAura.mc.field_71439_g.field_71071_by.func_70301_a(i).func_77973_b() != Items.field_151104_aV || i < 9) continue;
+                    if (BedAura.mc.player.inventory.getStackInSlot(i).getItem() != Items.BED || i < 9) continue;
                     t = i;
                     break;
                 }
-                if (bedSlot != -1 && BedAura.mc.field_71439_g.field_70173_aa % this.switchDelay.getValue() == 0) {
-                    BedAura.mc.field_71439_g.field_71071_by.field_70461_c = bedSlot;
-                    BedAura.mc.field_71442_b.func_78765_e();
+                if (bedSlot != -1 && BedAura.mc.player.ticksExisted % this.switchDelay.getValue() == 0) {
+                    BedAura.mc.player.inventory.currentItem = bedSlot;
+                    BedAura.mc.playerController.updateController();
                 }
                 if (t != -1) {
-                    BedAura.mc.field_71442_b.func_187098_a(0, t, 0, ClickType.PICKUP, (EntityPlayer)BedAura.mc.field_71439_g);
+                    BedAura.mc.playerController.windowClick(0, t, 0, ClickType.PICKUP, (EntityPlayer)BedAura.mc.player);
                     this.moving = true;
                 }
             }
         }
-        if (BedAura.mc.field_71439_g.func_110143_aJ() < (float)this.antiSuicideHlth.getValue().intValue() && this.antiSuicide.getValue().booleanValue()) {
+        if (BedAura.mc.player.getHealth() < (float)this.antiSuicideHlth.getValue().intValue() && this.antiSuicide.getValue().booleanValue()) {
             this.disable();
         }
         for (EntityPlayer player : this.getTargets()) {
-            this.targetPlayer = new BlockPos((int)player.field_70165_t, (int)player.field_70163_u, (int)player.field_70161_v);
-            if (!(this.targetPlayer.func_185332_f((int)BedAura.mc.field_71439_g.field_70165_t, (int)BedAura.mc.field_71439_g.field_70163_u, (int)BedAura.mc.field_71439_g.field_70161_v) <= (double)this.range.getValue().intValue())) continue;
-            this.west = this.targetPlayer.func_177976_e();
-            this.east = this.targetPlayer.func_177974_f();
-            this.north = this.targetPlayer.func_177978_c();
-            this.south = this.targetPlayer.func_177968_d();
-            if (player.func_184613_cA()) {
+            this.targetPlayer = new BlockPos((int)player.posX, (int)player.posY, (int)player.posZ);
+            if (!(this.targetPlayer.getDistance((int)BedAura.mc.player.posX, (int)BedAura.mc.player.posY, (int)BedAura.mc.player.posZ) <= (double)this.range.getValue().intValue())) continue;
+            this.west = this.targetPlayer.west();
+            this.east = this.targetPlayer.east();
+            this.north = this.targetPlayer.north();
+            this.south = this.targetPlayer.south();
+            if (player.isElytraFlying()) {
                 this.targetBlock = this.util.beddistance(this.west, this.east, this.north, this.south);
-                this.targetBlock = new BlockPos(this.targetBlock.func_177958_n(), this.targetBlock.func_177956_o() - 1, this.targetBlock.func_177952_p());
+                this.targetBlock = new BlockPos(this.targetBlock.getX(), this.targetBlock.getY() - 1, this.targetBlock.getZ());
             } else {
                 this.targetBlock = this.util.beddistance(this.west, this.east, this.north, this.south);
             }
@@ -182,10 +184,10 @@ extends Module {
             }
             if (this.facing == null) continue;
             if (this.autoSwitch.getValue().booleanValue()) {
-                this.switchHandToItemIfNeed(Items.field_151104_aV);
+                this.switchHandToItemIfNeed(Items.BED);
             }
-            if (BedAura.mc.field_71439_g.func_184614_ca().func_77973_b() != Items.field_151104_aV) continue;
-            this.targetPlace = new BlockPos(this.targetBlock.func_177958_n(), this.targetBlock.func_177956_o() + 1, this.targetBlock.func_177952_p());
+            if (BedAura.mc.player.getHeldItemMainhand().getItem() != Items.BED) continue;
+            this.targetPlace = new BlockPos(this.targetBlock.getX(), this.targetBlock.getY() + 1, this.targetBlock.getZ());
             this.placeBlock(this.targetPlace, this.facing);
         }
     }
@@ -208,36 +210,36 @@ extends Module {
     }
 
     public List<EntityPlayer> getTargets() {
-        return BedAura.mc.field_71441_e.field_73010_i.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.func_70005_c_())).sorted(Comparator.comparing(e -> Float.valueOf(BedAura.mc.field_71439_g.func_70032_d((Entity)e)))).collect(Collectors.toList());
+        return BedAura.mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).sorted(Comparator.comparing(e -> Float.valueOf(BedAura.mc.player.getDistance((Entity)e)))).collect(Collectors.toList());
     }
 
     private void placeBlock(BlockPos pos, EnumFacing side) {
         boolean shouldSneak;
-        BlockPos neighbour = pos.func_177972_a(side);
+        BlockPos neighbour = pos.offset(side);
         EnumFacing opposite = this.facing;
-        boolean bl = shouldSneak = !BedAura.mc.field_71439_g.func_70093_af();
+        boolean bl = shouldSneak = !BedAura.mc.player.isSneaking();
         if (shouldSneak) {
-            BedAura.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)BedAura.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            BedAura.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)BedAura.mc.player, CPacketEntityAction.Action.START_SNEAKING));
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         BlocksUtils.faceVectorPacketInstant(hitVec);
-        BedAura.mc.field_71442_b.func_187099_a(BedAura.mc.field_71439_g, BedAura.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        BedAura.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+        BedAura.mc.playerController.processRightClickBlock(BedAura.mc.player, BedAura.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        BedAura.mc.player.swingArm(EnumHand.MAIN_HAND);
         if (shouldSneak) {
-            BedAura.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)BedAura.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            BedAura.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)BedAura.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
         }
-        BedAura.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItemOnBlock(pos, EnumFacing.DOWN, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+        BedAura.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItemOnBlock(pos, EnumFacing.DOWN, EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
     }
 
     private boolean switchHandToItemIfNeed(Item toItem) {
-        if (BedAura.mc.field_71439_g.func_184614_ca().func_77973_b() == toItem || BedAura.mc.field_71439_g.func_184592_cb().func_77973_b() == toItem) {
+        if (BedAura.mc.player.getHeldItemMainhand().getItem() == toItem || BedAura.mc.player.getHeldItemOffhand().getItem() == toItem) {
             return false;
         }
         for (int i = 0; i < 9; ++i) {
-            ItemStack stack = BedAura.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || stack.func_77973_b() != toItem) continue;
-            BedAura.mc.field_71439_g.field_71071_by.field_70461_c = i;
-            BedAura.mc.field_71442_b.func_78765_e();
+            ItemStack stack = BedAura.mc.player.inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || stack.getItem() != toItem) continue;
+            BedAura.mc.player.inventory.currentItem = i;
+            BedAura.mc.playerController.updateController();
             return true;
         }
         return true;

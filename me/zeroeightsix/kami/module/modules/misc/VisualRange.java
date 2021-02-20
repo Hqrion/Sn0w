@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -36,20 +38,20 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (VisualRange.mc.field_71439_g == null) {
+        if (VisualRange.mc.player == null) {
             return;
         }
         ArrayList<String> tickPlayerList = new ArrayList<String>();
-        for (Entity entity : VisualRange.mc.field_71441_e.func_72910_y()) {
+        for (Entity entity : VisualRange.mc.world.getLoadedEntityList()) {
             if (!(entity instanceof EntityPlayer)) continue;
-            tickPlayerList.add(entity.func_70005_c_());
+            tickPlayerList.add(entity.getName());
         }
         if (tickPlayerList.size() > 0) {
             for (String playerName : tickPlayerList) {
-                if (playerName.equals(VisualRange.mc.field_71439_g.func_70005_c_()) || this.knownPlayers.contains(playerName)) continue;
+                if (playerName.equals(VisualRange.mc.player.getName()) || this.knownPlayers.contains(playerName)) continue;
                 this.knownPlayers.add(playerName);
                 if (this.publicChat.getValue().booleanValue()) {
-                    VisualRange.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketChatMessage("" + playerName + " Nigger Spotted "));
+                    VisualRange.mc.player.connection.sendPacket((Packet)new CPacketChatMessage("" + playerName + " Nigger Spotted "));
                 } else {
                     if (Friends.isFriend(playerName)) {
                         this.sendNotification(" " + ChatFormatting.GRAY.toString() + playerName + ChatFormatting.GRAY.toString() + " \u00a7aEn v\u00e4n the nigaga monkey has been spotted.");
@@ -57,11 +59,11 @@ extends Module {
                         this.sendNotification(" " + ChatFormatting.GRAY.toString() + playerName + ChatFormatting.GRAY.toString() + " \u00a74En the non nigaga monkey spotted.");
                     }
                     if (this.sound.getValue().booleanValue()) {
-                        VisualRange.mc.field_71439_g.func_184185_a(SoundEvents.field_187689_f, 1.0f, 1.0f);
+                        VisualRange.mc.player.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1.0f, 1.0f);
                     }
                 }
                 if (this.LOGonRender.getValue().booleanValue()) {
-                    VisualRange.mc.field_71439_g.field_70170_p.func_72882_A();
+                    VisualRange.mc.player.world.sendQuittingDisconnectingPacket();
                 }
                 return;
             }
@@ -72,7 +74,7 @@ extends Module {
                 this.knownPlayers.remove(playerName);
                 if (this.leaving.getValue().booleanValue()) {
                     if (this.publicChat.getValue().booleanValue()) {
-                        VisualRange.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketChatMessage("Jag kan inte se: " + playerName + " l\u00e4ngre! "));
+                        VisualRange.mc.player.connection.sendPacket((Packet)new CPacketChatMessage("Jag kan inte se: " + playerName + " l\u00e4ngre! "));
                     } else if (Friends.isFriend(playerName)) {
                         this.sendNotification("[VisualRange] " + ChatFormatting.GREEN.toString() + playerName + ChatFormatting.RESET.toString() + " left my Render Distance!");
                     } else {

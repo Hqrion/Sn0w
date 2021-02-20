@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -35,7 +37,7 @@ public abstract class Command {
     protected String syntax;
     protected String description;
     protected SyntaxChunk[] syntaxChunks;
-    public static final Minecraft mc = Minecraft.func_71410_x();
+    public static final Minecraft mc = Minecraft.getMinecraft();
     static String gamerhacker = "Sn0w" + ChatFormatting.DARK_GRAY.toString() + " \u27ab " + ChatFormatting.RESET.toString();
 
     public Command(String label, SyntaxChunk[] syntaxChunks) {
@@ -49,9 +51,9 @@ public abstract class Command {
     }
 
     public static void gamermessage(String message) {
-        if (Command.mc.field_71439_g != null) {
-            ITextComponent itc = new TextComponentString(message).func_150255_a(new Style().func_150209_a(new HoverEvent(HoverEvent.Action.SHOW_TEXT, (ITextComponent)new TextComponentString("Sn0w"))));
-            Command.mc.field_71456_v.func_146158_b().func_146234_a(itc, 5936);
+        if (Command.mc.player != null) {
+            ITextComponent itc = new TextComponentString(message).setStyle(new Style().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, (ITextComponent)new TextComponentString("Sn0w"))));
+            Command.mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(itc, 5936);
         }
     }
 
@@ -74,7 +76,7 @@ public abstract class Command {
         if (Wrapper.getPlayer() == null) {
             return;
         }
-        Wrapper.getPlayer().func_145747_a((ITextComponent)new ChatMessage(message));
+        Wrapper.getPlayer().sendMessage((ITextComponent)new ChatMessage(message));
     }
 
     public static String getCommandPrefix() {
@@ -127,11 +129,11 @@ public abstract class Command {
             this.text = sb.toString();
         }
 
-        public String func_150261_e() {
+        public String getUnformattedComponentText() {
             return this.text;
         }
 
-        public ITextComponent func_150259_f() {
+        public ITextComponent createCopy() {
             return new ChatMessage(this.text);
         }
     }

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -28,40 +30,40 @@ extends Module {
     private boolean eating = false;
 
     private boolean isValid(ItemStack stack, int food) {
-        return stack.func_77973_b() instanceof ItemFood && (Integer)this.healthbar.getValue() - food >= ((ItemFood)stack.func_77973_b()).func_150905_g(stack);
+        return stack.getItem() instanceof ItemFood && (Integer)this.healthbar.getValue() - food >= ((ItemFood)stack.getItem()).getHealAmount(stack);
     }
 
     @Override
     public void onUpdate() {
-        if (this.eating && !AutoEatcrystalOLD.mc.field_71439_g.func_184587_cr()) {
+        if (this.eating && !AutoEatcrystalOLD.mc.player.isHandActive()) {
             if (this.lastSlot != -1) {
-                AutoEatcrystalOLD.mc.field_71439_g.field_71071_by.field_70461_c = this.lastSlot;
+                AutoEatcrystalOLD.mc.player.inventory.currentItem = this.lastSlot;
                 this.lastSlot = -1;
             }
             this.eating = false;
-            KeyBinding.func_74510_a((int)AutoEatcrystalOLD.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)false);
+            KeyBinding.setKeyBindState((int)AutoEatcrystalOLD.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)false);
             return;
         }
         if (this.eating) {
             return;
         }
-        float playerAbsorption = AutoEatcrystalOLD.mc.field_71439_g.func_110139_bj();
-        if (this.isValid(AutoEatcrystalOLD.mc.field_71439_g.func_184592_cb(), (int)AutoEatcrystalOLD.mc.field_71439_g.func_110143_aJ() + (int)playerAbsorption)) {
-            AutoEatcrystalOLD.mc.field_71439_g.func_184598_c(EnumHand.OFF_HAND);
+        float playerAbsorption = AutoEatcrystalOLD.mc.player.getAbsorptionAmount();
+        if (this.isValid(AutoEatcrystalOLD.mc.player.getHeldItemOffhand(), (int)AutoEatcrystalOLD.mc.player.getHealth() + (int)playerAbsorption)) {
+            AutoEatcrystalOLD.mc.player.setActiveHand(EnumHand.OFF_HAND);
             this.eating = true;
-            KeyBinding.func_74510_a((int)AutoEatcrystalOLD.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)false);
-            mc.func_147121_ag();
+            KeyBinding.setKeyBindState((int)AutoEatcrystalOLD.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)false);
+            mc.rightClickMouse();
         } else {
             for (int i = 0; i < 9; ++i) {
-                if (!this.isValid(AutoEatcrystalOLD.mc.field_71439_g.field_71071_by.func_70301_a(i), (int)AutoEatcrystalOLD.mc.field_71439_g.func_110143_aJ() + (int)playerAbsorption)) continue;
+                if (!this.isValid(AutoEatcrystalOLD.mc.player.inventory.getStackInSlot(i), (int)AutoEatcrystalOLD.mc.player.getHealth() + (int)playerAbsorption)) continue;
                 if (this.switch1.getValue().booleanValue()) {
-                    this.lastSlot = AutoEatcrystalOLD.mc.field_71439_g.field_71071_by.field_70461_c;
-                    AutoEatcrystalOLD.mc.field_71439_g.field_71071_by.field_70461_c = i;
+                    this.lastSlot = AutoEatcrystalOLD.mc.player.inventory.currentItem;
+                    AutoEatcrystalOLD.mc.player.inventory.currentItem = i;
                 }
-                if (AutoEatcrystalOLD.mc.field_71439_g.func_184614_ca().func_77973_b() != Items.field_151153_ao) continue;
+                if (AutoEatcrystalOLD.mc.player.getHeldItemMainhand().getItem() != Items.GOLDEN_APPLE) continue;
                 this.eating = true;
-                KeyBinding.func_74510_a((int)AutoEatcrystalOLD.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)true);
-                mc.func_147121_ag();
+                KeyBinding.setKeyBindState((int)AutoEatcrystalOLD.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)true);
+                mc.rightClickMouse();
                 return;
             }
         }

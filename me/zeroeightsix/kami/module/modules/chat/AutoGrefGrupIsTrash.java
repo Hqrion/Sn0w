@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -16,13 +18,13 @@ extends Module {
     @Override
     public void onEnable() {
         if (this.grefGrup.getValue().booleanValue()) {
-            AutoGrefGrupIsTrash.mc.field_71439_g.func_71165_d("Gref Grup is trash");
+            AutoGrefGrupIsTrash.mc.player.sendChatMessage("Gref Grup is trash");
             this.disable();
         } else if (this.builderseighttool.getValue().booleanValue()) {
-            AutoGrefGrupIsTrash.mc.field_71439_g.func_71165_d("8 Bad 8 tps");
+            AutoGrefGrupIsTrash.mc.player.sendChatMessage("8 Bad 8 tps");
             this.disable();
         } else {
-            AutoGrefGrupIsTrash.mc.field_71439_g.func_71165_d("YOU ARE TRASH");
+            AutoGrefGrupIsTrash.mc.player.sendChatMessage("YOU ARE TRASH");
             this.disable();
         }
     }

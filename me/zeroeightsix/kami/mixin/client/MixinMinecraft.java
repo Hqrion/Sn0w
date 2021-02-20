@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -57,63 +59,63 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value={Minecraft.class})
 public class MixinMinecraft {
     @Shadow
-    WorldClient field_71441_e;
+    WorldClient world;
     @Shadow
-    EntityPlayerSP field_71439_g;
+    EntityPlayerSP player;
     @Shadow
-    GuiScreen field_71462_r;
+    GuiScreen currentScreen;
     @Shadow
-    GameSettings field_71474_y;
+    GameSettings gameSettings;
     @Shadow
-    GuiIngame field_71456_v;
+    GuiIngame ingameGUI;
     @Shadow
-    boolean field_71454_w;
+    boolean skipRenderWorld;
     @Shadow
-    SoundHandler field_147127_av;
+    SoundHandler soundHandler;
     @Shadow
-    public PlayerControllerMP field_71442_b;
+    public PlayerControllerMP playerController;
 
     @Inject(method={"displayGuiScreen"}, at={@At(value="HEAD")}, cancellable=true)
     public void displayGuiScreen(GuiScreen guiScreenIn, CallbackInfo info) {
-        GuiScreenEvent.Closed screenEvent = new GuiScreenEvent.Closed(Wrapper.getMinecraft().field_71462_r);
+        GuiScreenEvent.Closed screenEvent = new GuiScreenEvent.Closed(Wrapper.getMinecraft().currentScreen);
         KamiMod.EVENT_BUS.post(screenEvent);
         GuiScreenEvent.Displayed screenEvent1 = new GuiScreenEvent.Displayed(guiScreenIn);
         KamiMod.EVENT_BUS.post(screenEvent1);
         guiScreenIn = screenEvent1.getScreen();
-        if (guiScreenIn == null && this.field_71441_e == null) {
+        if (guiScreenIn == null && this.world == null) {
             guiScreenIn = new GuiMainMenu();
-        } else if (guiScreenIn == null && this.field_71439_g.func_110143_aJ() <= 0.0f) {
+        } else if (guiScreenIn == null && this.player.getHealth() <= 0.0f) {
             guiScreenIn = new GuiGameOver(null);
         }
-        GuiScreen old = this.field_71462_r;
+        GuiScreen old = this.currentScreen;
         GuiOpenEvent event = new GuiOpenEvent(guiScreenIn);
         if (MinecraftForge.EVENT_BUS.post((Event)event)) {
             return;
         }
         guiScreenIn = event.getGui();
         if (old != null && guiScreenIn != old) {
-            old.func_146281_b();
+            old.onGuiClosed();
         }
         if (guiScreenIn instanceof GuiMainMenu || guiScreenIn instanceof GuiMultiplayer) {
-            this.field_71474_y.field_74330_P = false;
-            this.field_71456_v.func_146158_b().func_146231_a(true);
+            this.gameSettings.showDebugInfo = false;
+            this.ingameGUI.getChatGUI().clearChatMessages(true);
         }
-        this.field_71462_r = guiScreenIn;
+        this.currentScreen = guiScreenIn;
         if (guiScreenIn != null) {
-            Minecraft.func_71410_x().func_71364_i();
-            KeyBinding.func_74506_a();
+            Minecraft.getMinecraft().setIngameNotInFocus();
+            KeyBinding.unPressAllKeys();
             while (Mouse.next()) {
             }
             while (Keyboard.next()) {
             }
-            ScaledResolution scaledresolution = new ScaledResolution(Minecraft.func_71410_x());
-            int i = scaledresolution.func_78326_a();
-            int j = scaledresolution.func_78328_b();
-            guiScreenIn.func_146280_a(Minecraft.func_71410_x(), i, j);
-            this.field_71454_w = false;
+            ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+            int i = scaledresolution.getScaledWidth();
+            int j = scaledresolution.getScaledHeight();
+            guiScreenIn.setWorldAndResolution(Minecraft.getMinecraft(), i, j);
+            this.skipRenderWorld = false;
         } else {
-            this.field_147127_av.func_147687_e();
-            Minecraft.func_71410_x().func_71381_h();
+            this.soundHandler.resumeSounds();
+            Minecraft.getMinecraft().setIngameFocus();
         }
         info.cancel();
     }
@@ -133,7 +135,7 @@ public class MixinMinecraft {
         if (ModuleManager.isModuleEnabled("BreakTweaks")) {
             return false;
         }
-        return this.field_71439_g.func_184587_cr();
+        return this.player.isHandActive();
     }
 
     @Redirect(method={"rightClickMouse"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/multiplayer/PlayerControllerMP;getIsHittingBlock()Z"))
@@ -141,7 +143,7 @@ public class MixinMinecraft {
         if (ModuleManager.isModuleEnabled("BreakTweaks")) {
             return false;
         }
-        return this.field_71442_b.func_181040_m();
+        return this.playerController.getIsHittingBlock();
     }
 
     private void save() {

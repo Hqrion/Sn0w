@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -51,9 +53,9 @@ extends Module {
         int r = rgb >> 16 & 0xFF;
         int g = rgb >> 8 & 0xFF;
         int b = rgb & 0xFF;
-        Minecraft mc = Minecraft.func_71410_x();
-        RayTraceResult ray = mc.field_71476_x;
-        if (ray.field_72313_a == RayTraceResult.Type.BLOCK && (iblockstate = mc.field_71441_e.func_180495_p(blockpos = ray.func_178782_a())).func_185904_a() != Material.field_151579_a && mc.field_71441_e.func_175723_af().func_177746_a(blockpos)) {
+        Minecraft mc = Minecraft.getMinecraft();
+        RayTraceResult ray = mc.objectMouseOver;
+        if (ray.typeOfHit == RayTraceResult.Type.BLOCK && (iblockstate = mc.world.getBlockState(blockpos = ray.getBlockPos())).getMaterial() != Material.AIR && mc.world.getWorldBorder().contains(blockpos)) {
             if (this.box.getValue().booleanValue()) {
                 KamiTessellator.prepare(7);
                 if (this.rainbow.getValue().booleanValue()) {
@@ -71,7 +73,7 @@ extends Module {
                     KamiTessellator.drawBoundingBoxBlockPos(blockpos, this.width.getValue().floatValue(), this.Red.getValue(), this.Green.getValue(), this.Blue.getValue(), this.alpha2.getValue());
                 }
                 if (this.Stringlolol.getValue().booleanValue()) {
-                    this.drawString(blockpos, blockpos.field_177962_a + ", " + blockpos.field_177960_b + ", " + blockpos.field_177961_c);
+                    this.drawString(blockpos, blockpos.x + ", " + blockpos.y + ", " + blockpos.z);
                 }
                 KamiTessellator.release();
             }
@@ -79,12 +81,12 @@ extends Module {
     }
 
     private void drawString(BlockPos blockPos, String str) {
-        GlStateManager.func_179094_E();
-        CrystalAura.glBillboardDistanceScaled((float)blockPos.field_177962_a + 0.5f, (float)blockPos.field_177960_b + 0.5f, (float)blockPos.field_177961_c + 0.5f, (EntityPlayer)BlockHighlight.mc.field_71439_g, 1.5f);
-        GlStateManager.func_179097_i();
-        GlStateManager.func_179137_b((double)(-((double)BlockHighlight.mc.field_71466_p.func_78256_a(str) / 2.0)), (double)0.0, (double)0.0);
-        BlockHighlight.mc.field_71466_p.func_175063_a(str, 0.0f, 0.0f, 24063);
-        GlStateManager.func_179121_F();
+        GlStateManager.pushMatrix();
+        CrystalAura.glBillboardDistanceScaled((float)blockPos.x + 0.5f, (float)blockPos.y + 0.5f, (float)blockPos.z + 0.5f, (EntityPlayer)BlockHighlight.mc.player, 1.5f);
+        GlStateManager.disableDepth();
+        GlStateManager.translate((double)(-((double)BlockHighlight.mc.fontRenderer.getStringWidth(str) / 2.0)), (double)0.0, (double)0.0);
+        BlockHighlight.mc.fontRenderer.drawStringWithShadow(str, 0.0f, 0.0f, 24063);
+        GlStateManager.popMatrix();
     }
 }
 

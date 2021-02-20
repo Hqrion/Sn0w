@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -44,7 +46,7 @@ extends AbstractComponentUI<ActiveModules> {
         FontRenderer renderer = Wrapper.getFontRenderer();
         this.mods = GUI.BracketsArraylistss.getValue().booleanValue() ? (ModuleManager.isModuleEnabled("CF") ? ModuleManager.getModules().stream().filter(Module::isEnabled).filter(Module::isDrawn).sorted(Comparator.comparing(module -> this.cFontRenderer.getStringWidth(module.getName() + (module.getHudInfo() == null ? "" : " [" + module.getHudInfo() + "]")) * (component.sort_up ? -1 : 1))).collect(Collectors.toList()) : ModuleManager.getModules().stream().filter(Module::isEnabled).filter(Module::isDrawn).sorted(Comparator.comparing(module -> renderer.getStringWidth(module.getName() + (module.getHudInfo() == null ? "" : " [" + module.getHudInfo() + "]")) * (component.sort_up ? -1 : 1))).collect(Collectors.toList())) : (ModuleManager.isModuleEnabled("CF") ? ModuleManager.getModules().stream().filter(Module::isEnabled).filter(Module::isDrawn).sorted(Comparator.comparing(module -> this.cFontRenderer.getStringWidth(module.getName() + (module.getHudInfo() == null ? "" : module.getHudInfo() + " ")) * (component.sort_up ? -1 : 1))).collect(Collectors.toList()) : ModuleManager.getModules().stream().filter(Module::isEnabled).filter(Module::isDrawn).sorted(Comparator.comparing(module -> renderer.getStringWidth(module.getName() + (module.getHudInfo() == null ? "" : module.getHudInfo() + " ")) * (component.sort_up ? -1 : 1))).collect(Collectors.toList()));
         int[] y = new int[]{2};
-        if (GUI.CareForPotionHud.getValue().booleanValue() && component.getParent().getY() < 26 && Wrapper.getPlayer().func_70651_bq().size() > 0 && component.getParent().getOpacity() == 0.0f) {
+        if (GUI.CareForPotionHud.getValue().booleanValue() && component.getParent().getY() < 26 && Wrapper.getPlayer().getActivePotionEffects().size() > 0 && component.getParent().getOpacity() == 0.0f) {
             y[0] = Math.max(component.getParent().getY(), 26 - component.getParent().getY());
         }
         float[] hue = new float[]{(float)(System.currentTimeMillis() % 11520L) / 11520.0f};

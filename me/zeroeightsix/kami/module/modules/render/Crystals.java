@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -39,8 +41,8 @@ extends Module {
         int bgreen = this.green.getValue();
         int cblue = this.blue.getValue();
         int drgb = color = ColourUtils.toRGBA(ared, bgreen, cblue, 255);
-        int crystals = Crystals.mc.field_71439_g.field_71071_by.field_70462_a.stream().filter(itemStack -> itemStack.func_77973_b() == Items.field_185158_cP).mapToInt(ItemStack::func_190916_E).sum();
-        if (Crystals.mc.field_71439_g.func_184592_cb().func_77973_b() == Items.field_185158_cP) {
+        int crystals = Crystals.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.END_CRYSTAL).mapToInt(ItemStack::getCount).sum();
+        if (Crystals.mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
             ++crystals;
         }
         if (this.rainbow.getValue().booleanValue()) {
@@ -54,7 +56,7 @@ extends Module {
         if (this.smooth.getValue().booleanValue()) {
             this.cFontRenderer.drawStringWithShadow("Crystals " + KamiMod.getInstance().guiManager.getHUDTextColor() + crystals, this.x.getValue().floatValue(), (yCount += 10.0f) - (float)this.cFontRenderer.getHeight() - 1.0f, color);
         } else {
-            Wrapper.getMinecraft().field_71466_p.func_175063_a("Crystals " + KamiMod.getInstance().guiManager.getHUDTextColor() + crystals, this.x.getValue().floatValue(), (yCount += 10.0f) - (float)Wrapper.getMinecraft().field_71466_p.field_78288_b, color);
+            Wrapper.getMinecraft().fontRenderer.drawStringWithShadow("Crystals " + KamiMod.getInstance().guiManager.getHUDTextColor() + crystals, this.x.getValue().floatValue(), (yCount += 10.0f) - (float)Wrapper.getMinecraft().fontRenderer.FONT_HEIGHT, color);
         }
     }
 }

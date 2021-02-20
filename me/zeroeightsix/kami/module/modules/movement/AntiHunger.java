@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -19,7 +21,7 @@ extends Module {
     @EventHandler
     public Listener<PacketEvent.Send> packetListener = new Listener<PacketEvent.Send>(event -> {
         if (event.getPacket() instanceof CPacketPlayer) {
-            ((CPacketPlayer)event.getPacket()).field_149474_g = false;
+            ((CPacketPlayer)event.getPacket()).onGround = false;
         }
     }, new Predicate[0]);
 }

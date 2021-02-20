@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -61,18 +63,18 @@ extends Module {
     @Override
     public void onUpdate() {
         boolean shield;
-        if (Aura.mc.field_71439_g.field_70128_L) {
+        if (Aura.mc.player.isDead) {
             return;
         }
-        boolean bl = shield = Aura.mc.field_71439_g.func_184592_cb().func_77973_b().equals(Items.field_185159_cQ) && Aura.mc.field_71439_g.func_184600_cs() == EnumHand.OFF_HAND;
-        if (Aura.mc.field_71439_g.func_184587_cr() && !shield) {
+        boolean bl = shield = Aura.mc.player.getHeldItemOffhand().getItem().equals(Items.SHIELD) && Aura.mc.player.getActiveHand() == EnumHand.OFF_HAND;
+        if (Aura.mc.player.isHandActive() && !shield) {
             return;
         }
         if (this.waitMode.getValue().equals((Object)WaitMode.DYNAMIC)) {
-            if (Aura.mc.field_71439_g.func_184825_o(this.getLagComp()) < 1.0f) {
+            if (Aura.mc.player.getCooledAttackStrength(this.getLagComp()) < 1.0f) {
                 return;
             }
-            if (Aura.mc.field_71439_g.field_70173_aa % 2 != 0) {
+            if (Aura.mc.player.ticksExisted % 2 != 0) {
                 return;
             }
         }
@@ -83,16 +85,16 @@ extends Module {
             }
             this.waitCounter = 0;
         }
-        for (Entity target : Minecraft.func_71410_x().field_71441_e.field_72996_f) {
-            if (!EntityUtil.isLiving(target) || target == Aura.mc.field_71439_g || (double)Aura.mc.field_71439_g.func_70032_d(target) > this.hitRange.getValue() || ((EntityLivingBase)target).func_110143_aJ() <= 0.0f || this.waitMode.getValue().equals((Object)WaitMode.DYNAMIC) && ((EntityLivingBase)target).field_70737_aN != 0 || !this.ignoreWalls.getValue().booleanValue() && !Aura.mc.field_71439_g.func_70685_l(target) && !this.canEntityFeetBeSeen(target)) continue;
+        for (Entity target : Minecraft.getMinecraft().world.loadedEntityList) {
+            if (!EntityUtil.isLiving(target) || target == Aura.mc.player || (double)Aura.mc.player.getDistance(target) > this.hitRange.getValue() || ((EntityLivingBase)target).getHealth() <= 0.0f || this.waitMode.getValue().equals((Object)WaitMode.DYNAMIC) && ((EntityLivingBase)target).hurtTime != 0 || !this.ignoreWalls.getValue().booleanValue() && !Aura.mc.player.canEntityBeSeen(target) && !this.canEntityFeetBeSeen(target)) continue;
             if (target == null) {
                 Aura.resetRotation();
             }
             gamertarget = target;
-            if (this.attackPlayers.getValue().booleanValue() && target instanceof EntityPlayer && !Friends.isFriend(target.func_70005_c_())) {
+            if (this.attackPlayers.getValue().booleanValue() && target instanceof EntityPlayer && !Friends.isFriend(target.getName())) {
                 this.attack(target);
                 if (this.Rotate.getValue().booleanValue()) {
-                    this.lookAtPacket(target.field_70165_t, target.field_70163_u, target.field_70161_v, (EntityPlayer)Aura.mc.field_71439_g);
+                    this.lookAtPacket(target.posX, target.posY, target.posZ, (EntityPlayer)Aura.mc.player);
                 }
                 return;
             }
@@ -116,8 +118,8 @@ extends Module {
 
     private static void resetRotation() {
         if (isSpoofingAngles) {
-            yaw = Aura.mc.field_71439_g.field_70177_z;
-            pitch = Aura.mc.field_71439_g.field_70125_A;
+            yaw = Aura.mc.player.rotationYaw;
+            pitch = Aura.mc.player.rotationPitch;
             isSpoofingAngles = false;
         }
     }
@@ -134,9 +136,9 @@ extends Module {
     }
 
     public static double[] calculateLookAt(double px, double py, double pz, EntityPlayer me) {
-        double dirx = me.field_70165_t - px;
-        double diry = me.field_70163_u - py;
-        double dirz = me.field_70161_v - pz;
+        double dirx = me.posX - px;
+        double diry = me.posY - py;
+        double dirz = me.posZ - pz;
         double len = Math.sqrt(dirx * dirx + diry * diry + dirz * dirz);
         double pitch = Math.asin(diry /= len);
         double yaw = Math.atan2(dirz /= len, dirx /= len);
@@ -146,17 +148,17 @@ extends Module {
     }
 
     private boolean checkSharpness(ItemStack stack) {
-        if (stack.func_77978_p() == null) {
+        if (stack.getTagCompound() == null) {
             return false;
         }
-        NBTTagList enchants = (NBTTagList)stack.func_77978_p().func_74781_a("ench");
+        NBTTagList enchants = (NBTTagList)stack.getTagCompound().getTag("ench");
         if (enchants == null) {
             return false;
         }
-        for (int i = 0; i < enchants.func_74745_c(); ++i) {
-            NBTTagCompound enchant = enchants.func_150305_b(i);
-            if (enchant.func_74762_e("id") != 16) continue;
-            int lvl = enchant.func_74762_e("lvl");
+        for (int i = 0; i < enchants.tagCount(); ++i) {
+            NBTTagCompound enchant = enchants.getCompoundTagAt(i);
+            if (enchant.getInteger("id") != 16) continue;
+            int lvl = enchant.getInteger("lvl");
             if (lvl < 42) break;
             return true;
         }
@@ -165,27 +167,27 @@ extends Module {
 
     private void attack(Entity e) {
         boolean holding32k = false;
-        if (this.checkSharpness(Aura.mc.field_71439_g.func_184614_ca())) {
+        if (this.checkSharpness(Aura.mc.player.getHeldItemMainhand())) {
             holding32k = true;
         }
         if (this.switchTo32k.getValue().booleanValue() && !holding32k) {
             int newSlot = -1;
             for (int i = 0; i < 9; ++i) {
-                ItemStack stack = Aura.mc.field_71439_g.field_71071_by.func_70301_a(i);
-                if (stack == ItemStack.field_190927_a || !this.checkSharpness(stack)) continue;
+                ItemStack stack = Aura.mc.player.inventory.getStackInSlot(i);
+                if (stack == ItemStack.EMPTY || !this.checkSharpness(stack)) continue;
                 newSlot = i;
                 break;
             }
             if (newSlot != -1) {
-                Aura.mc.field_71439_g.field_71071_by.field_70461_c = newSlot;
+                Aura.mc.player.inventory.currentItem = newSlot;
                 holding32k = true;
             }
         }
         if (this.onlyUse32k.getValue().booleanValue() && !holding32k) {
             return;
         }
-        Aura.mc.field_71442_b.func_78764_a((EntityPlayer)Aura.mc.field_71439_g, e);
-        Aura.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
+        Aura.mc.playerController.attackEntity((EntityPlayer)Aura.mc.player, e);
+        Aura.mc.player.swingArm(EnumHand.MAIN_HAND);
     }
 
     private float getLagComp() {
@@ -196,7 +198,7 @@ extends Module {
     }
 
     private boolean canEntityFeetBeSeen(Entity entityIn) {
-        return Aura.mc.field_71441_e.func_147447_a(new Vec3d(Aura.mc.field_71439_g.field_70165_t, Aura.mc.field_71439_g.field_70163_u + (double)Aura.mc.field_71439_g.func_70047_e(), Aura.mc.field_71439_g.field_70161_v), new Vec3d(entityIn.field_70165_t, entityIn.field_70163_u, entityIn.field_70161_v), false, true, false) == null;
+        return Aura.mc.world.rayTraceBlocks(new Vec3d(Aura.mc.player.posX, Aura.mc.player.posY + (double)Aura.mc.player.getEyeHeight(), Aura.mc.player.posZ), new Vec3d(entityIn.posX, entityIn.posY, entityIn.posZ), false, true, false) == null;
     }
 
     private static enum WaitMode {

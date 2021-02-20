@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -39,11 +41,11 @@ extends Module {
     @EventHandler
     public Listener<PacketEvent.Send> sendPacket = new Listener<PacketEvent.Send>(event -> {
         if (event.getEra() == KamiEvent.Era.PRE) {
-            if (event.getPacket() instanceof CPacketPlayer.Rotation && AutoEffect.mc.field_71439_g.func_184614_ca().func_77973_b() instanceof ItemBow) {
-                ((CPacketPlayer.Rotation)event.getPacket()).field_149473_f = -90.0f;
+            if (event.getPacket() instanceof CPacketPlayer.Rotation && AutoEffect.mc.player.getHeldItemMainhand().getItem() instanceof ItemBow) {
+                ((CPacketPlayer.Rotation)event.getPacket()).pitch = -90.0f;
             }
-            if (event.getPacket() instanceof CPacketPlayer.PositionRotation && AutoEffect.mc.field_71439_g.func_184614_ca().func_77973_b() instanceof ItemBow) {
-                ((CPacketPlayer.PositionRotation)event.getPacket()).field_149473_f = -90.0f;
+            if (event.getPacket() instanceof CPacketPlayer.PositionRotation && AutoEffect.mc.player.getHeldItemMainhand().getItem() instanceof ItemBow) {
+                ((CPacketPlayer.PositionRotation)event.getPacket()).pitch = -90.0f;
             }
         }
     }, new Predicate[0]);
@@ -51,24 +53,24 @@ extends Module {
     @Override
     protected void onEnable() {
         super.onEnable();
-        KeyBinding.func_74510_a((int)AutoEffect.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)true);
+        KeyBinding.setKeyBindState((int)AutoEffect.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)true);
         Command.sendChatMessage(" This Feature IS " + ChatFormatting.RED + "Buggy " + ChatFormatting.WHITE + "RN im fixing");
     }
 
     @Override
     protected void onDisable() {
         super.onDisable();
-        KeyBinding.func_74510_a((int)AutoEffect.mc.field_71474_y.field_74313_G.func_151463_i(), (boolean)false);
+        KeyBinding.setKeyBindState((int)AutoEffect.mc.gameSettings.keyBindUseItem.getKeyCode(), (boolean)false);
         this.ready1 = false;
         this.ready2 = false;
     }
 
     @Override
     public void onUpdate() {
-        if (AutoEffect.mc.field_71439_g.field_71071_by.func_70448_g().func_77973_b() instanceof ItemBow && AutoEffect.mc.field_71439_g.func_184587_cr() && AutoEffect.mc.field_71439_g.func_184612_cw() >= 4) {
-            AutoEffect.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.field_177992_a, AutoEffect.mc.field_71439_g.func_174811_aO()));
-            AutoEffect.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerTryUseItem(AutoEffect.mc.field_71439_g.func_184600_cs()));
-            AutoEffect.mc.field_71439_g.func_184597_cx();
+        if (AutoEffect.mc.player.inventory.getCurrentItem().getItem() instanceof ItemBow && AutoEffect.mc.player.isHandActive() && AutoEffect.mc.player.getItemInUseMaxCount() >= 4) {
+            AutoEffect.mc.player.connection.sendPacket((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, AutoEffect.mc.player.getHorizontalFacing()));
+            AutoEffect.mc.player.connection.sendPacket((Packet)new CPacketPlayerTryUseItem(AutoEffect.mc.player.getActiveHand()));
+            AutoEffect.mc.player.stopActiveHand();
             this.disable();
         }
     }

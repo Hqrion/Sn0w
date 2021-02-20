@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -65,8 +67,8 @@ extends Module {
     private Listener<PacketEvent.Send> packetListener = new Listener<PacketEvent.Send>(event -> {
         Packet packet = event.getPacket();
         if (packet instanceof CPacketPlayer && isSpoofingAngles) {
-            ((CPacketPlayer)packet).field_149476_e = (float)yaw;
-            ((CPacketPlayer)packet).field_149473_f = (float)pitch;
+            ((CPacketPlayer)packet).yaw = (float)yaw;
+            ((CPacketPlayer)packet).pitch = (float)pitch;
         }
     }, new Predicate[0]);
 
@@ -97,7 +99,7 @@ extends Module {
         GL11.glEnable((int)2884);
         if (this.render != null) {
             for (BlockPos hole : this.findObbyHoles()) {
-                if (this.hideOwn.getValue().booleanValue() && hole.equals((Object)new BlockPos(HoleESP.mc.field_71439_g.field_70165_t, HoleESP.mc.field_71439_g.field_70163_u, HoleESP.mc.field_71439_g.field_70161_v))) continue;
+                if (this.hideOwn.getValue().booleanValue() && hole.equals((Object)new BlockPos(HoleESP.mc.player.posX, HoleESP.mc.player.posY, HoleESP.mc.player.posZ))) continue;
                 if (this.obbyChroma.getValue().booleanValue()) {
                     if (this.highlight.getValue().booleanValue()) {
                         KamiTessellator.prepare(7);
@@ -141,7 +143,7 @@ extends Module {
                 KamiTessellator.release();
             }
             for (BlockPos hole : this.findBRockHoles()) {
-                if (this.hideOwn.getValue().booleanValue() && hole.equals((Object)new BlockPos(HoleESP.mc.field_71439_g.field_70165_t, HoleESP.mc.field_71439_g.field_70163_u, HoleESP.mc.field_71439_g.field_70161_v))) continue;
+                if (this.hideOwn.getValue().booleanValue() && hole.equals((Object)new BlockPos(HoleESP.mc.player.posX, HoleESP.mc.player.posY, HoleESP.mc.player.posZ))) continue;
                 if (this.bRockChroma.getValue().booleanValue()) {
                     if (this.highlight.getValue().booleanValue()) {
                         KamiTessellator.prepare(7);
@@ -193,52 +195,52 @@ extends Module {
     }
 
     private boolean IsObbyHole(BlockPos blockPos) {
-        BlockPos boost = blockPos.func_177982_a(0, 1, 0);
-        BlockPos boost2 = blockPos.func_177982_a(0, 0, 0);
-        BlockPos boost3 = blockPos.func_177982_a(0, 0, -1);
-        BlockPos boost4 = blockPos.func_177982_a(1, 0, 0);
-        BlockPos boost5 = blockPos.func_177982_a(-1, 0, 0);
-        BlockPos boost6 = blockPos.func_177982_a(0, 0, 1);
-        BlockPos boost7 = blockPos.func_177982_a(0, 2, 0);
-        BlockPos boost8 = blockPos.func_177963_a(0.5, 0.5, 0.5);
-        BlockPos boost9 = blockPos.func_177982_a(0, -1, 0);
-        return !(HoleESP.mc.field_71441_e.func_180495_p(boost).func_177230_c() != Blocks.field_150350_a || this.IsBRockHole(blockPos) || HoleESP.mc.field_71441_e.func_180495_p(boost2).func_177230_c() != Blocks.field_150350_a || HoleESP.mc.field_71441_e.func_180495_p(boost7).func_177230_c() != Blocks.field_150350_a || HoleESP.mc.field_71441_e.func_180495_p(boost3).func_177230_c() != Blocks.field_150343_Z && HoleESP.mc.field_71441_e.func_180495_p(boost3).func_177230_c() != Blocks.field_150357_h || HoleESP.mc.field_71441_e.func_180495_p(boost4).func_177230_c() != Blocks.field_150343_Z && HoleESP.mc.field_71441_e.func_180495_p(boost4).func_177230_c() != Blocks.field_150357_h || HoleESP.mc.field_71441_e.func_180495_p(boost5).func_177230_c() != Blocks.field_150343_Z && HoleESP.mc.field_71441_e.func_180495_p(boost5).func_177230_c() != Blocks.field_150357_h || HoleESP.mc.field_71441_e.func_180495_p(boost6).func_177230_c() != Blocks.field_150343_Z && HoleESP.mc.field_71441_e.func_180495_p(boost6).func_177230_c() != Blocks.field_150357_h || HoleESP.mc.field_71441_e.func_180495_p(boost8).func_177230_c() != Blocks.field_150350_a || HoleESP.mc.field_71441_e.func_180495_p(boost9).func_177230_c() != Blocks.field_150343_Z && HoleESP.mc.field_71441_e.func_180495_p(boost9).func_177230_c() != Blocks.field_150357_h);
+        BlockPos boost = blockPos.add(0, 1, 0);
+        BlockPos boost2 = blockPos.add(0, 0, 0);
+        BlockPos boost3 = blockPos.add(0, 0, -1);
+        BlockPos boost4 = blockPos.add(1, 0, 0);
+        BlockPos boost5 = blockPos.add(-1, 0, 0);
+        BlockPos boost6 = blockPos.add(0, 0, 1);
+        BlockPos boost7 = blockPos.add(0, 2, 0);
+        BlockPos boost8 = blockPos.add(0.5, 0.5, 0.5);
+        BlockPos boost9 = blockPos.add(0, -1, 0);
+        return !(HoleESP.mc.world.getBlockState(boost).getBlock() != Blocks.AIR || this.IsBRockHole(blockPos) || HoleESP.mc.world.getBlockState(boost2).getBlock() != Blocks.AIR || HoleESP.mc.world.getBlockState(boost7).getBlock() != Blocks.AIR || HoleESP.mc.world.getBlockState(boost3).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(boost3).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(boost4).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(boost4).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(boost5).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(boost5).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(boost6).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(boost6).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(boost8).getBlock() != Blocks.AIR || HoleESP.mc.world.getBlockState(boost9).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(boost9).getBlock() != Blocks.BEDROCK);
     }
 
     private boolean IsBRockHole(BlockPos blockPos) {
-        BlockPos boost = blockPos.func_177982_a(0, 1, 0);
-        BlockPos boost2 = blockPos.func_177982_a(0, 0, 0);
-        BlockPos boost3 = blockPos.func_177982_a(0, 0, -1);
-        BlockPos boost4 = blockPos.func_177982_a(1, 0, 0);
-        BlockPos boost5 = blockPos.func_177982_a(-1, 0, 0);
-        BlockPos boost6 = blockPos.func_177982_a(0, 0, 1);
-        BlockPos boost7 = blockPos.func_177982_a(0, 2, 0);
-        BlockPos boost8 = blockPos.func_177963_a(0.5, 0.5, 0.5);
-        BlockPos boost9 = blockPos.func_177982_a(0, -1, 0);
-        return HoleESP.mc.field_71441_e.func_180495_p(boost).func_177230_c() == Blocks.field_150350_a && HoleESP.mc.field_71441_e.func_180495_p(boost2).func_177230_c() == Blocks.field_150350_a && HoleESP.mc.field_71441_e.func_180495_p(boost7).func_177230_c() == Blocks.field_150350_a && HoleESP.mc.field_71441_e.func_180495_p(boost3).func_177230_c() == Blocks.field_150357_h && HoleESP.mc.field_71441_e.func_180495_p(boost4).func_177230_c() == Blocks.field_150357_h && HoleESP.mc.field_71441_e.func_180495_p(boost5).func_177230_c() == Blocks.field_150357_h && HoleESP.mc.field_71441_e.func_180495_p(boost6).func_177230_c() == Blocks.field_150357_h && HoleESP.mc.field_71441_e.func_180495_p(boost8).func_177230_c() == Blocks.field_150350_a && HoleESP.mc.field_71441_e.func_180495_p(boost9).func_177230_c() == Blocks.field_150357_h;
+        BlockPos boost = blockPos.add(0, 1, 0);
+        BlockPos boost2 = blockPos.add(0, 0, 0);
+        BlockPos boost3 = blockPos.add(0, 0, -1);
+        BlockPos boost4 = blockPos.add(1, 0, 0);
+        BlockPos boost5 = blockPos.add(-1, 0, 0);
+        BlockPos boost6 = blockPos.add(0, 0, 1);
+        BlockPos boost7 = blockPos.add(0, 2, 0);
+        BlockPos boost8 = blockPos.add(0.5, 0.5, 0.5);
+        BlockPos boost9 = blockPos.add(0, -1, 0);
+        return HoleESP.mc.world.getBlockState(boost).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(boost2).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(boost7).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(boost3).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(boost4).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(boost5).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(boost6).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(boost8).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(boost9).getBlock() == Blocks.BEDROCK;
     }
 
     public static BlockPos getPlayerPos() {
-        return new BlockPos(Math.floor(HoleESP.mc.field_71439_g.field_70165_t), Math.floor(HoleESP.mc.field_71439_g.field_70163_u), Math.floor(HoleESP.mc.field_71439_g.field_70161_v));
+        return new BlockPos(Math.floor(HoleESP.mc.player.posX), Math.floor(HoleESP.mc.player.posY), Math.floor(HoleESP.mc.player.posZ));
     }
 
     private List<BlockPos> findObbyHoles() {
-        NonNullList positions = NonNullList.func_191196_a();
+        NonNullList positions = NonNullList.create();
         positions.addAll((Collection)this.getSphere(HoleESP.getPlayerPos(), this.range.getValue().floatValue(), this.range.getValue().intValue(), false, true, 0).stream().filter(this::IsObbyHole).collect(Collectors.toList()));
         return positions;
     }
 
     private List<BlockPos> findBRockHoles() {
-        NonNullList positions = NonNullList.func_191196_a();
+        NonNullList positions = NonNullList.create();
         positions.addAll((Collection)this.getSphere(HoleESP.getPlayerPos(), this.range.getValue().floatValue(), this.range.getValue().intValue(), false, true, 0).stream().filter(this::IsBRockHole).collect(Collectors.toList()));
         return positions;
     }
 
     public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
         ArrayList<BlockPos> circleblocks = new ArrayList<BlockPos>();
-        int cx = loc.func_177958_n();
-        int cy = loc.func_177956_o();
-        int cz = loc.func_177952_p();
+        int cx = loc.getX();
+        int cy = loc.getY();
+        int cz = loc.getZ();
         int x = cx - (int)r;
         while ((float)x <= (float)cx + r) {
             int z = cz - (int)r;
@@ -270,8 +272,8 @@ extends Module {
 
     private static void resetRotation() {
         if (isSpoofingAngles) {
-            yaw = HoleESP.mc.field_71439_g.field_70177_z;
-            pitch = HoleESP.mc.field_71439_g.field_70125_A;
+            yaw = HoleESP.mc.player.rotationYaw;
+            pitch = HoleESP.mc.player.rotationPitch;
             isSpoofingAngles = false;
         }
     }

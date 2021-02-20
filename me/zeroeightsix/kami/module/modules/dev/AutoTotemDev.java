@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -35,35 +37,35 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (AutoTotemDev.mc.field_71439_g == null) {
+        if (AutoTotemDev.mc.player == null) {
             return;
         }
         if (!this.findTotems()) {
             return;
         }
-        if (this.pauseInContainers.getValue().booleanValue() && AutoTotemDev.mc.field_71462_r instanceof GuiContainer && !(AutoTotemDev.mc.field_71462_r instanceof GuiInventory)) {
+        if (this.pauseInContainers.getValue().booleanValue() && AutoTotemDev.mc.currentScreen instanceof GuiContainer && !(AutoTotemDev.mc.currentScreen instanceof GuiInventory)) {
             return;
         }
-        if (this.pauseInInventory.getValue().booleanValue() && AutoTotemDev.mc.field_71462_r instanceof GuiInventory && AutoTotemDev.mc.field_71462_r instanceof GuiInventory) {
+        if (this.pauseInInventory.getValue().booleanValue() && AutoTotemDev.mc.currentScreen instanceof GuiInventory && AutoTotemDev.mc.currentScreen instanceof GuiInventory) {
             return;
         }
         if (this.soft.getValue().booleanValue()) {
-            if (AutoTotemDev.mc.field_71439_g.func_184592_cb().func_77973_b().equals(Items.field_190931_a)) {
-                AutoTotemDev.mc.field_71442_b.func_187098_a(0, this.preferredTotemSlot, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.field_71439_g);
-                AutoTotemDev.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.field_71439_g);
-                AutoTotemDev.mc.field_71442_b.func_78765_e();
+            if (AutoTotemDev.mc.player.getHeldItemOffhand().getItem().equals(Items.AIR)) {
+                AutoTotemDev.mc.playerController.windowClick(0, this.preferredTotemSlot, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.player);
+                AutoTotemDev.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.player);
+                AutoTotemDev.mc.playerController.updateController();
             }
-        } else if (!AutoTotemDev.mc.field_71439_g.func_184592_cb().func_77973_b().equals(Items.field_190929_cY)) {
+        } else if (!AutoTotemDev.mc.player.getHeldItemOffhand().getItem().equals(Items.TOTEM_OF_UNDYING)) {
             boolean offhandEmptyPreSwitch = false;
-            if (AutoTotemDev.mc.field_71439_g.func_184592_cb().func_77973_b().equals(Items.field_190931_a)) {
+            if (AutoTotemDev.mc.player.getHeldItemOffhand().getItem().equals(Items.AIR)) {
                 offhandEmptyPreSwitch = true;
             }
-            AutoTotemDev.mc.field_71442_b.func_187098_a(0, this.preferredTotemSlot, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.field_71439_g);
-            AutoTotemDev.mc.field_71442_b.func_187098_a(0, 45, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.field_71439_g);
+            AutoTotemDev.mc.playerController.windowClick(0, this.preferredTotemSlot, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.player);
+            AutoTotemDev.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.player);
             if (!offhandEmptyPreSwitch) {
-                AutoTotemDev.mc.field_71442_b.func_187098_a(0, this.preferredTotemSlot, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.field_71439_g);
+                AutoTotemDev.mc.playerController.windowClick(0, this.preferredTotemSlot, 0, ClickType.PICKUP, (EntityPlayer)AutoTotemDev.mc.player);
             }
-            AutoTotemDev.mc.field_71442_b.func_78765_e();
+            AutoTotemDev.mc.playerController.updateController();
         }
     }
 
@@ -73,8 +75,8 @@ extends Module {
         preferredTotemSlotStackSize.set(Integer.MIN_VALUE);
         AutoTotemDev.getInventoryAndHotbarSlots().forEach((slotKey, slotValue) -> {
             int numOfTotemsInStack = 0;
-            if (slotValue.func_77973_b().equals(Items.field_190929_cY)) {
-                numOfTotemsInStack = slotValue.func_190916_E();
+            if (slotValue.getItem().equals(Items.TOTEM_OF_UNDYING)) {
+                numOfTotemsInStack = slotValue.getCount();
                 if (preferredTotemSlotStackSize.get() < numOfTotemsInStack) {
                     preferredTotemSlotStackSize.set(numOfTotemsInStack);
                     this.preferredTotemSlot = slotKey;
@@ -82,8 +84,8 @@ extends Module {
             }
             this.numOfTotems += numOfTotemsInStack;
         });
-        if (AutoTotemDev.mc.field_71439_g.func_184592_cb().func_77973_b().equals(Items.field_190929_cY)) {
-            this.numOfTotems += AutoTotemDev.mc.field_71439_g.func_184592_cb().func_190916_E();
+        if (AutoTotemDev.mc.player.getHeldItemOffhand().getItem().equals(Items.TOTEM_OF_UNDYING)) {
+            this.numOfTotems += AutoTotemDev.mc.player.getHeldItemOffhand().getCount();
         }
         return this.numOfTotems != 0;
     }
@@ -95,7 +97,7 @@ extends Module {
     private static Map<Integer, ItemStack> getInventorySlots(int current, int last) {
         HashMap<Integer, ItemStack> fullInventorySlots = new HashMap<Integer, ItemStack>();
         while (current <= last) {
-            fullInventorySlots.put(current, (ItemStack)AutoTotemDev.mc.field_71439_g.field_71069_bz.func_75138_a().get(current));
+            fullInventorySlots.put(current, (ItemStack)AutoTotemDev.mc.player.inventoryContainer.getInventory().get(current));
             ++current;
         }
         return fullInventorySlots;

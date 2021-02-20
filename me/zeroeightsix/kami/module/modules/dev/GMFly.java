@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  */
@@ -24,11 +26,11 @@ extends Module {
     }
 
     private void toggleFly(boolean b) {
-        GMFly.mc.field_71439_g.field_71075_bZ.field_75100_b = b;
-        if (GMFly.mc.field_71439_g.field_71075_bZ.field_75098_d) {
+        GMFly.mc.player.capabilities.isFlying = b;
+        if (GMFly.mc.player.capabilities.isCreativeMode) {
             return;
         }
-        GMFly.mc.field_71439_g.field_71075_bZ.field_75101_c = b;
+        GMFly.mc.player.capabilities.allowFlying = b;
     }
 }
 

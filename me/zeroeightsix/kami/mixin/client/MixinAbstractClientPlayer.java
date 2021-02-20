@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -27,11 +29,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinAbstractClientPlayer {
     @Shadow
     @Nullable
-    protected abstract NetworkPlayerInfo func_175155_b();
+    protected abstract NetworkPlayerInfo getPlayerInfo();
 
     @Inject(method={"getLocationCape"}, at={@At(value="HEAD")}, cancellable=true)
     public void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
-        UUID uuid = this.func_175155_b().func_178845_a().getId();
+        UUID uuid = this.getPlayerInfo().getGameProfile().getId();
         if (ModuleManager.isModuleEnabled("Capes") && KamiMod.getInstance().capeUtils.hasCape(uuid)) {
             if (Capes.WhiteCape.getValue().booleanValue()) {
                 cir.setReturnValue(new ResourceLocation("minecraft:whitecape.png"));

@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -80,53 +82,53 @@ extends Module {
     private BlockPos basePos;
 
     private void centerPlayer(double x, double y, double z) {
-        AutoFeetPlace.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayer.Position(x, y, z, true));
-        AutoFeetPlace.mc.field_71439_g.func_70107_b(x, y, z);
+        AutoFeetPlace.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Position(x, y, z, true));
+        AutoFeetPlace.mc.player.setPosition(x, y, z);
     }
 
     double getDst(Vec3d vec) {
-        return this.playerPos.func_72438_d(vec);
+        return this.playerPos.distanceTo(vec);
     }
 
     @Override
     protected void onEnable() {
-        if (AutoFeetPlace.mc.field_71439_g == null) {
+        if (AutoFeetPlace.mc.player == null) {
             this.disable();
             return;
         }
-        BlockPos centerPos = AutoFeetPlace.mc.field_71439_g.func_180425_c();
-        this.playerPos = AutoFeetPlace.mc.field_71439_g.func_174791_d();
-        double y = centerPos.func_177956_o();
-        double x = centerPos.func_177958_n();
-        double z = centerPos.func_177952_p();
+        BlockPos centerPos = AutoFeetPlace.mc.player.getPosition();
+        this.playerPos = AutoFeetPlace.mc.player.getPositionVector();
+        double y = centerPos.getY();
+        double x = centerPos.getX();
+        double z = centerPos.getZ();
         Vec3d plusPlus = new Vec3d(x + 0.5, y, z + 0.5);
         Vec3d plusMinus = new Vec3d(x + 0.5, y, z - 0.5);
         Vec3d minusMinus = new Vec3d(x - 0.5, y, z - 0.5);
         Vec3d minusPlus = new Vec3d(x - 0.5, y, z + 0.5);
         if (this.autoCenter.getValue().booleanValue()) {
             if (this.getDst(plusPlus) < this.getDst(plusMinus) && this.getDst(plusPlus) < this.getDst(minusMinus) && this.getDst(plusPlus) < this.getDst(minusPlus)) {
-                x = (double)centerPos.func_177958_n() + 0.5;
-                z = (double)centerPos.func_177952_p() + 0.5;
+                x = (double)centerPos.getX() + 0.5;
+                z = (double)centerPos.getZ() + 0.5;
                 this.centerPlayer(x, y, z);
             }
             if (this.getDst(plusMinus) < this.getDst(plusPlus) && this.getDst(plusMinus) < this.getDst(minusMinus) && this.getDst(plusMinus) < this.getDst(minusPlus)) {
-                x = (double)centerPos.func_177958_n() + 0.5;
-                z = (double)centerPos.func_177952_p() - 0.5;
+                x = (double)centerPos.getX() + 0.5;
+                z = (double)centerPos.getZ() - 0.5;
                 this.centerPlayer(x, y, z);
             }
             if (this.getDst(minusMinus) < this.getDst(plusPlus) && this.getDst(minusMinus) < this.getDst(plusMinus) && this.getDst(minusMinus) < this.getDst(minusPlus)) {
-                x = (double)centerPos.func_177958_n() - 0.5;
-                z = (double)centerPos.func_177952_p() - 0.5;
+                x = (double)centerPos.getX() - 0.5;
+                z = (double)centerPos.getZ() - 0.5;
                 this.centerPlayer(x, y, z);
             }
             if (this.getDst(minusPlus) < this.getDst(plusPlus) && this.getDst(minusPlus) < this.getDst(plusMinus) && this.getDst(minusPlus) < this.getDst(minusMinus)) {
-                x = (double)centerPos.func_177958_n() - 0.5;
-                z = (double)centerPos.func_177952_p() + 0.5;
+                x = (double)centerPos.getX() - 0.5;
+                z = (double)centerPos.getZ() + 0.5;
                 this.centerPlayer(x, y, z);
             }
         }
         this.firstRun = true;
-        this.playerHotbarSlot = AutoFeetPlace.mc.field_71439_g.field_71071_by.field_70461_c;
+        this.playerHotbarSlot = AutoFeetPlace.mc.player.inventory.currentItem;
         this.lastHotbarSlot = -1;
         if (this.announceUsage.getValue().booleanValue()) {
             Command.sendChatMessage("AutoFeetPlace " + ChatFormatting.AQUA + "Enabled" + ChatFormatting.WHITE + "!");
@@ -135,14 +137,14 @@ extends Module {
 
     @Override
     protected void onDisable() {
-        if (AutoFeetPlace.mc.field_71439_g == null) {
+        if (AutoFeetPlace.mc.player == null) {
             return;
         }
         if (this.lastHotbarSlot != this.playerHotbarSlot && this.playerHotbarSlot != -1) {
-            AutoFeetPlace.mc.field_71439_g.field_71071_by.field_70461_c = this.playerHotbarSlot;
+            AutoFeetPlace.mc.player.inventory.currentItem = this.playerHotbarSlot;
         }
         if (this.isSneaking) {
-            AutoFeetPlace.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)AutoFeetPlace.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+            AutoFeetPlace.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoFeetPlace.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             this.isSneaking = false;
         }
         this.playerHotbarSlot = -1;
@@ -154,7 +156,7 @@ extends Module {
 
     @Override
     public void onUpdate() {
-        if (AutoFeetPlace.mc.field_71439_g == null || ModuleManager.isModuleEnabled("Freecam")) {
+        if (AutoFeetPlace.mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
             return;
         }
         if (this.triggerable.getValue().booleanValue() && this.totalTicksRunning >= this.timeoutTicks.getValue()) {
@@ -189,7 +191,7 @@ extends Module {
                 break;
             }
             BlockPos offsetPos = new BlockPos(offsetPattern[this.offsetStep]);
-            BlockPos targetPos = new BlockPos(AutoFeetPlace.mc.field_71439_g.func_174791_d()).func_177982_a(offsetPos.field_177962_a, offsetPos.field_177960_b, offsetPos.field_177961_c);
+            BlockPos targetPos = new BlockPos(AutoFeetPlace.mc.player.getPositionVector()).add(offsetPos.x, offsetPos.y, offsetPos.z);
             if (this.placeBlock(targetPos)) {
                 ++blocksPlaced;
             }
@@ -197,11 +199,11 @@ extends Module {
         }
         if (blocksPlaced > 0) {
             if (this.lastHotbarSlot != this.playerHotbarSlot && this.playerHotbarSlot != -1) {
-                AutoFeetPlace.mc.field_71439_g.field_71071_by.field_70461_c = this.playerHotbarSlot;
+                AutoFeetPlace.mc.player.inventory.currentItem = this.playerHotbarSlot;
                 this.lastHotbarSlot = this.playerHotbarSlot;
             }
             if (this.isSneaking) {
-                AutoFeetPlace.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)AutoFeetPlace.mc.field_71439_g, CPacketEntityAction.Action.STOP_SNEAKING));
+                AutoFeetPlace.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoFeetPlace.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                 this.isSneaking = false;
             }
         }
@@ -209,11 +211,11 @@ extends Module {
     }
 
     private boolean placeBlock(BlockPos pos) {
-        Block block = AutoFeetPlace.mc.field_71441_e.func_180495_p(pos).func_177230_c();
+        Block block = AutoFeetPlace.mc.world.getBlockState(pos).getBlock();
         if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
             return false;
         }
-        for (Entity entity : AutoFeetPlace.mc.field_71441_e.func_72839_b(null, new AxisAlignedBB(pos))) {
+        for (Entity entity : AutoFeetPlace.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))) {
             if (entity instanceof EntityItem || entity instanceof EntityXPOrb) continue;
             return false;
         }
@@ -221,33 +223,33 @@ extends Module {
         if (side == null) {
             return false;
         }
-        BlockPos neighbour = pos.func_177972_a(side);
-        EnumFacing opposite = side.func_176734_d();
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
         if (!BlockInteractionHelper.canBeClicked(neighbour)) {
             return false;
         }
-        Vec3d hitVec = new Vec3d((Vec3i)neighbour).func_72441_c(0.5, 0.5, 0.5).func_178787_e(new Vec3d(opposite.func_176730_m()).func_186678_a(0.5));
-        Block neighbourBlock = AutoFeetPlace.mc.field_71441_e.func_180495_p(neighbour).func_177230_c();
+        Vec3d hitVec = new Vec3d((Vec3i)neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Block neighbourBlock = AutoFeetPlace.mc.world.getBlockState(neighbour).getBlock();
         int obiSlot = this.findObiInHotbar();
         if (obiSlot == -1) {
             this.disable();
         }
         if (this.lastHotbarSlot != obiSlot) {
-            AutoFeetPlace.mc.field_71439_g.field_71071_by.field_70461_c = obiSlot;
+            AutoFeetPlace.mc.player.inventory.currentItem = obiSlot;
             this.lastHotbarSlot = obiSlot;
         }
         if (!this.isSneaking && BlockInteractionHelper.blackList.contains(neighbourBlock) || BlockInteractionHelper.shulkerList.contains(neighbourBlock)) {
-            AutoFeetPlace.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketEntityAction((Entity)AutoFeetPlace.mc.field_71439_g, CPacketEntityAction.Action.START_SNEAKING));
+            AutoFeetPlace.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoFeetPlace.mc.player, CPacketEntityAction.Action.START_SNEAKING));
             this.isSneaking = true;
         }
         if (this.rotate.getValue().booleanValue()) {
             BlockInteractionHelper.faceVectorPacketInstant(hitVec);
         }
-        AutoFeetPlace.mc.field_71442_b.func_187099_a(AutoFeetPlace.mc.field_71439_g, AutoFeetPlace.mc.field_71441_e, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        AutoFeetPlace.mc.field_71439_g.func_184609_a(EnumHand.MAIN_HAND);
-        AutoFeetPlace.mc.field_71467_ac = 4;
-        if (this.noGlitchBlocks.getValue().booleanValue() && !AutoFeetPlace.mc.field_71442_b.func_178889_l().equals((Object)GameType.CREATIVE)) {
-            AutoFeetPlace.mc.field_71439_g.field_71174_a.func_147297_a((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, neighbour, opposite));
+        AutoFeetPlace.mc.playerController.processRightClickBlock(AutoFeetPlace.mc.player, AutoFeetPlace.mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        AutoFeetPlace.mc.player.swingArm(EnumHand.MAIN_HAND);
+        AutoFeetPlace.mc.rightClickDelayTimer = 4;
+        if (this.noGlitchBlocks.getValue().booleanValue() && !AutoFeetPlace.mc.playerController.getCurrentGameType().equals((Object)GameType.CREATIVE)) {
+            AutoFeetPlace.mc.player.connection.sendPacket((Packet)new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, neighbour, opposite));
             if (ModuleManager.getModuleByName("NoBreakAnimation").isEnabled()) {
                 ((NoBreakAnimation)ModuleManager.getModuleByName("NoBreakAnimation")).resetMining();
             }
@@ -259,8 +261,8 @@ extends Module {
         int slot = -1;
         for (int i = 0; i < 9; ++i) {
             Block block;
-            ItemStack stack = AutoFeetPlace.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || !(stack.func_77973_b() instanceof ItemBlock) || !((block = ((ItemBlock)stack.func_77973_b()).func_179223_d()) instanceof BlockObsidian)) continue;
+            ItemStack stack = AutoFeetPlace.mc.player.inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock) || !((block = ((ItemBlock)stack.getItem()).getBlock()) instanceof BlockObsidian)) continue;
             slot = i;
             break;
         }

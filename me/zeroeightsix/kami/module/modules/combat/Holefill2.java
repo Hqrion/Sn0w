@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -38,7 +40,7 @@ public class Holefill2
 extends Module {
     private int totalTicksRunning = 0;
     private ArrayList<BlockPos> holes = new ArrayList();
-    private List<Block> whiteList = Arrays.asList(Blocks.field_150343_Z);
+    private List<Block> whiteList = Arrays.asList(Blocks.OBSIDIAN);
     String arm;
     BlockPos pos;
     private int waitCounter;
@@ -86,7 +88,7 @@ extends Module {
 
     @Override
     public void onEnable() {
-        if (Holefill2.mc.field_71439_g != null && this.chat.getValue().booleanValue()) {
+        if (Holefill2.mc.player != null && this.chat.getValue().booleanValue()) {
             Command.toggle_message(this);
         }
         if (this.find_in_hotbar() == -1) {
@@ -103,11 +105,11 @@ extends Module {
     public void find_new_holes() {
         this.holes.clear();
         for (BlockPos pos : BlockInteractionHelper.getSphere(EntityUtil.GetLocalPlayerPosFloored(), this.range.getValue().intValue(), this.range.getValue(), false, true, 0)) {
-            if (!Holefill2.mc.field_71441_e.func_180495_p(pos).func_177230_c().equals(Blocks.field_150350_a) || !Holefill2.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 1, 0)).func_177230_c().equals(Blocks.field_150350_a) || !Holefill2.mc.field_71441_e.func_180495_p(pos.func_177982_a(0, 2, 0)).func_177230_c().equals(Blocks.field_150350_a)) continue;
+            if (!Holefill2.mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR) || !Holefill2.mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals(Blocks.AIR) || !Holefill2.mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)) continue;
             boolean possible = true;
             for (BlockPos seems_blocks : new BlockPos[]{new BlockPos(0, -1, 0), new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)}) {
-                Block block = Holefill2.mc.field_71441_e.func_180495_p(pos.func_177971_a((Vec3i)seems_blocks)).func_177230_c();
-                if (block == Blocks.field_150357_h || block == Blocks.field_150343_Z || block == Blocks.field_150477_bB || block == Blocks.field_150467_bQ) continue;
+                Block block = Holefill2.mc.world.getBlockState(pos.add((Vec3i)seems_blocks)).getBlock();
+                if (block == Blocks.BEDROCK || block == Blocks.OBSIDIAN || block == Blocks.ENDER_CHEST || block == Blocks.ANVIL) continue;
                 possible = false;
                 break;
             }
@@ -118,9 +120,9 @@ extends Module {
 
     private int find_in_hotbar() {
         for (int i = 0; i < 9; ++i) {
-            ItemStack stack = Holefill2.mc.field_71439_g.field_71071_by.func_70301_a(i);
-            if (stack == ItemStack.field_190927_a || !(stack.func_77973_b() instanceof ItemBlock)) continue;
-            Block block = ((ItemBlock)stack.func_77973_b()).func_179223_d();
+            ItemStack stack = Holefill2.mc.player.inventory.getStackInSlot(i);
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) continue;
+            Block block = ((ItemBlock)stack.getItem()).getBlock();
             if (block instanceof BlockEnderChest && this.Echests.getValue().booleanValue()) {
                 return i;
             }

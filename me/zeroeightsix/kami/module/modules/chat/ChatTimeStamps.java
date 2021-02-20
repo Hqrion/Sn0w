@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -29,7 +31,7 @@ extends Module {
     @EventHandler
     public Listener<ClientChatReceivedEvent> listener = new Listener<ClientChatReceivedEvent>(event -> {
         TextComponentString newTextComponentString = new TextComponentString(ChatFormatting.GRAY + (this.deco.getValue() != false ? "<" : "") + new SimpleDateFormat("k:mm").format(new Date()) + (this.deco.getValue() != false ? ">" : "") + ChatFormatting.RESET + " ");
-        newTextComponentString.func_150257_a(event.getMessage());
+        newTextComponentString.appendSibling(event.getMessage());
         event.setMessage((ITextComponent)newTextComponentString);
     }, new Predicate[0]);
 }

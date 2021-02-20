@@ -1,3 +1,5 @@
+//Deobfuscated with https://github.com/PetoPetko/Minecraft-Deobfuscator3000 using mappings "1.12 stable mappings"!
+
 /*
  * Decompiled with CFR 0.151.
  * 
@@ -54,7 +56,7 @@ extends Module {
     private int list = GL11.glGenLists((int)1);
     @EventHandler
     public Listener<ChunkEvent> listener = new Listener<ChunkEvent>(event -> {
-        if (!event.getPacket().func_149274_i()) {
+        if (!event.getPacket().isFullChunk()) {
             chunks.add(event.getChunk());
             dirty = true;
             if (this.saveNewChunks.getValue().booleanValue()) {
@@ -80,9 +82,9 @@ extends Module {
             GL11.glEnable((int)3042);
             GL11.glLineWidth((float)1.0f);
             for (Chunk chunk : chunks) {
-                double posX = chunk.field_76635_g * 16;
+                double posX = chunk.x * 16;
                 double posY = 0.0;
-                double posZ = chunk.field_76647_h * 16;
+                double posZ = chunk.z * 16;
                 GL11.glColor3f((float)0.6f, (float)0.1f, (float)0.2f);
                 GL11.glBegin((int)2);
                 GL11.glVertex3d((double)posX, (double)posY, (double)posZ);
@@ -102,9 +104,9 @@ extends Module {
             GL11.glEndList();
             dirty = false;
         }
-        double x = ChunkFinder.mc.func_175598_ae().field_78725_b;
-        double y = this.relative.getValue() != false ? 0.0 : -ChunkFinder.mc.func_175598_ae().field_78726_c;
-        double z = ChunkFinder.mc.func_175598_ae().field_78723_d;
+        double x = ChunkFinder.mc.getRenderManager().renderPosX;
+        double y = this.relative.getValue() != false ? 0.0 : -ChunkFinder.mc.getRenderManager().renderPosY;
+        double z = ChunkFinder.mc.getRenderManager().renderPosZ;
         GL11.glTranslated((double)(-x), (double)(y + (double)this.yOffset.getValue().intValue()), (double)(-z));
         GL11.glCallList((int)this.list);
         GL11.glTranslated((double)x, (double)(-(y + (double)this.yOffset.getValue().intValue())), (double)z);
@@ -121,9 +123,9 @@ extends Module {
     }
 
     private String getNewChunkInfo(Chunk chunk) {
-        String rV = String.format("%d,%d,%d", System.currentTimeMillis(), chunk.field_76635_g, chunk.field_76647_h);
+        String rV = String.format("%d,%d,%d", System.currentTimeMillis(), chunk.x, chunk.z);
         if (this.alsoSaveNormalCoords.getValue().booleanValue()) {
-            rV = rV + String.format(",%d,%d", chunk.field_76635_g * 16 + 8, chunk.field_76647_h * 16 + 8);
+            rV = rV + String.format(",%d,%d", chunk.x * 16 + 8, chunk.z * 16 + 8);
         }
         return rV;
     }
@@ -155,17 +157,17 @@ extends Module {
 
     private Path getPath() {
         File file = null;
-        int dimension = ChunkFinder.mc.field_71439_g.field_71093_bK;
-        if (mc.func_71356_B()) {
+        int dimension = ChunkFinder.mc.player.dimension;
+        if (mc.isSingleplayer()) {
             try {
-                file = mc.func_71401_C().func_71218_a(dimension).getChunkSaveLocation();
+                file = mc.getIntegratedServer().getWorld(dimension).getChunkSaveLocation();
             }
             catch (Exception e) {
                 e.printStackTrace();
                 KamiMod.LOGGER.error("some exception happened when getting canonicalFile -> " + e.getMessage());
                 Command.sendChatMessage("onGetPath: " + e.getMessage());
             }
-            if (file.toPath().relativize(ChunkFinder.mc.field_71412_D.toPath()).getNameCount() != 2) {
+            if (file.toPath().relativize(ChunkFinder.mc.gameDir.toPath()).getNameCount() != 2) {
                 file = file.getParentFile();
             }
         } else {
@@ -179,7 +181,7 @@ extends Module {
         }
         file = new File(file, "newChunkLogs");
         String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-        file = new File(file, mc.func_110432_I().func_111285_a() + "_" + date + ".csv");
+        file = new File(file, mc.getSession().getUsername() + "_" + date + ".csv");
         Path rV = file.toPath();
         try {
             if (!Files.exists(rV, new LinkOption[0])) {
@@ -196,10 +198,10 @@ extends Module {
     }
 
     private Path makeMultiplayerDirectory() {
-        File rV = Minecraft.func_71410_x().field_71412_D;
+        File rV = Minecraft.getMinecraft().gameDir;
         switch (this.saveOption.getValue()) {
             case liteLoaderWdl: {
-                String folderName = ChunkFinder.mc.func_147104_D().field_78847_a;
+                String folderName = ChunkFinder.mc.getCurrentServerData().serverName;
                 rV = new File(rV, "saves");
                 rV = new File(rV, folderName);
                 break;
@@ -215,7 +217,7 @@ extends Module {
                 break;
             }
             default: {
-                String folderName = ChunkFinder.mc.func_147104_D().field_78847_a + "-" + ChunkFinder.mc.func_147104_D().field_78845_b;
+                String folderName = ChunkFinder.mc.getCurrentServerData().serverName + "-" + ChunkFinder.mc.getCurrentServerData().serverIP;
                 if (SystemUtils.IS_OS_WINDOWS) {
                     folderName = folderName.replace(":", "_");
                 }
@@ -227,7 +229,7 @@ extends Module {
     }
 
     private String getNHackInetName() {
-        String folderName = ChunkFinder.mc.func_147104_D().field_78845_b;
+        String folderName = ChunkFinder.mc.getCurrentServerData().serverIP;
         if (SystemUtils.IS_OS_WINDOWS) {
             folderName = folderName.replace(":", "_");
         }
@@ -300,18 +302,18 @@ extends Module {
             if ((Boolean)ChunkFinder.this.alsoSaveNormalCoords.getValue() != this.lastSaveNormal) {
                 return true;
             }
-            if (this.dimension != mc.field_71439_g.field_71093_bK) {
+            if (this.dimension != mc.player.dimension) {
                 return true;
             }
-            return !mc.func_147104_D().field_78845_b.equals(this.ip);
+            return !mc.getCurrentServerData().serverIP.equals(this.ip);
         }
 
         private void update() {
             this.lastSaveOption = (SaveOption)((Object)ChunkFinder.this.saveOption.getValue());
             this.lastInRegion = (Boolean)ChunkFinder.this.saveInRegionFolder.getValue();
             this.lastSaveNormal = (Boolean)ChunkFinder.this.alsoSaveNormalCoords.getValue();
-            this.dimension = mc.field_71439_g.field_71093_bK;
-            this.ip = mc.func_147104_D().field_78845_b;
+            this.dimension = mc.player.dimension;
+            this.ip = mc.getCurrentServerData().serverIP;
         }
     }
 
